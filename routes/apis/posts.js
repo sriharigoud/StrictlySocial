@@ -66,6 +66,18 @@ router.get("/:id", auth, async (req, res) => {
   }
 });
 
+// get posts by user id
+router.get("/user/:id", auth, async (req, res) => {
+  try {
+    const posts = await Post.find({user: req.params.id}).sort({ date: -1 });
+    res.json(posts);
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send("Server error");
+  }
+});
+
+
 // post delete
 router.delete("/:id", auth, async (req, res) => {
   try {

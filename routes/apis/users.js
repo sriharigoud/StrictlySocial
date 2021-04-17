@@ -6,7 +6,7 @@ const gravatar = require("gravatar");
 const bcrypt = require("bcryptjs");
 const config = require("config");
 const jwt = require("jsonwebtoken");
-
+const auth = require('../../middleware/auth');
 router.get("/", (req, res) => res.send("Users Route"));
 router.post(
   "/register",
@@ -73,4 +73,14 @@ router.post(
     }
   }
 );
+router.get('/:id', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select('-password');
+    res.json(user);
+  } catch (error) {
+    console.log(error.message)
+    res.status(500).send("Server error")
+  }
+});
+
 module.exports = router;
