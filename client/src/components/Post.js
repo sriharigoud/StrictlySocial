@@ -1,6 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 // import ReactTimeAgo from "react-time-ago";
+import Linkify from "react-simple-linkify";
+import urlParser from "js-video-url-parser";
 
 export default function Post({
   post,
@@ -13,6 +15,30 @@ export default function Post({
 }) {
   const [showComments, setShowComments] = React.useState(false);
   const toggleComment = () => setShowComments(!showComments);
+  function validateYouTubeUrl(url) {
+    let res = urlParser.parse(url);
+    if (res) {
+      if (res.provider === "youtube") {
+        return "https://www.youtube.com/embed/" + res.id;
+      } else if (res.provider === "vimeo") {
+        return "https://player.vimeo.com/video/" + res.id;
+      } else if (res.provider === "ted") {
+        return "https://embed.ted.com/talks/" + res.id;
+      }
+    }
+  }
+  const UrlEnhancer = (props) => {
+    const { url } = props;
+    const src = validateYouTubeUrl(url);
+    if (src) {
+      return <p><iframe height="300" className="w-100 border-0" title={src} src={src} /></p>;
+    }
+    return (
+      <a href={url} rel="noopener noreferrer" target="_blank">
+        {url}
+      </a>
+    );
+  };
   return (
     <div className="card my-2 gedf-card">
       <div className="card-header">
@@ -50,7 +76,7 @@ export default function Post({
           <h5 className="card-title">{post.title}</h5>
         </a>
 
-        {post.text && <p className="card-text">{post.text}</p>}
+        {post.text && <p className="card-text"><Linkify component={UrlEnhancer}>{post.text}</Linkify></p>}
         {post.imageName !== "none" && <img className="w-100" src={`${post.imageData}`}  alt="" />}
       </div>
       <div className="card-footer">
