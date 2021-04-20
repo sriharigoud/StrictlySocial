@@ -102,7 +102,7 @@ export default function Search() {
   return (
     <div className="container-fluid mt-0 pt-2 gedf-wrapper border border-top-0 h-100">
       <div className="row">
-        <div className="col-md-3">
+        <div className="col-md-3 d-none d-md-block">
         <BasicInfo
             setUserInfo={() => console.log("Do nothing")} userInfo={currentUser} setCurrentUser={setCurrentUser} currentUser={currentUser}
           />

@@ -91,7 +91,7 @@ export default function BasicInfo({
         <div className="h7 text-muted">Email : {userInfo.email}</div>
         <div className="h7">{userInfo.bio}</div>
       </div>
-      <ul className="list-group list-group-flush">
+      <ul className="list-group d-none d-md-block list-group-flush">
         <li className="list-group-item">
           <div className="h6 text-muted">Followers</div>
           <div className="h5">

@@ -140,9 +140,9 @@ export default function Profile() {
                     deleteComment={deleteComment}
                   />
                 ))}
-              {posts && posts.length === 0 && <h6>No Posts found</h6>}
+              {posts && posts.length === 0 && <h6 className="m-2">No Posts found</h6>}
             </Tab>
-            <Tab eventKey="following" title="Following">
+            <Tab eventKey="following" title={`Following (${userInfo.following && userInfo.following.length ? userInfo.following.length : 0})`}>
               {userInfo.following &&
                 userInfo.following.map((user, d) => (
                   <UserBox
@@ -155,10 +155,10 @@ export default function Profile() {
                   />
                 ))}
               {userInfo.following && userInfo.following.length === 0 && (
-                <h6>No Following found</h6>
+                <h6 className="m-2">No Following found</h6>
               )}
             </Tab>
-            <Tab eventKey="followers" title="Followers">
+            <Tab eventKey="followers" title={`Followers (${userInfo.followers && userInfo.followers.length ? userInfo.followers.length : 0})`}>
               {userInfo.followers &&
                 userInfo.followers.map((user, i) => (
                   <UserBox
@@ -171,7 +171,7 @@ export default function Profile() {
                   />
                 ))}
               {userInfo.followers && userInfo.followers.length === 0 && (
-                <h6>No Followers found</h6>
+                <h6 className="m-2">No Followers found</h6>
               )}
             </Tab>
           </Tabs>
