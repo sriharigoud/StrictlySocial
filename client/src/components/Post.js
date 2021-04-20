@@ -14,7 +14,7 @@ export default function Post({
   const [showComments, setShowComments] = React.useState(false);
   const toggleComment = () => setShowComments(!showComments);
   return (
-    <div className="card gedf-card">
+    <div className="card my-2 gedf-card">
       <div className="card-header">
         {post.user === userId && (
           <span className="float-right action-icons mr-2">

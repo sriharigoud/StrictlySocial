@@ -4,7 +4,7 @@ import { useLocation } from "react-router";
 import { Link } from "react-router-dom";
 import setAuthToken from "../utils/setAuthToken";
 import { getUser } from "../utils/utils";
-import UserBox from "./UserBox";
+import "./Home.css";
 
 export default function SideBar() {
   const userInfo = getUser();

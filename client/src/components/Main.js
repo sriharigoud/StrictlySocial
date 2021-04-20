@@ -1,7 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, useRouteMatch } from "react-router-dom";
-
-import { Carousel, Row, Col } from "react-bootstrap";
+import { Carousel } from "react-bootstrap";
 export default function Main() {
 
   return (
@@ -9,33 +7,22 @@ export default function Main() {
       <Carousel.Item>
         <img
           className="d-block w-100"
-          src="http://placekitten.com/800/400"
+          src={process.env.PUBLIC_URL + '/img/bg2.jpg'}
           alt="First slide"
         />
         <Carousel.Caption>
-          <h3>First slide label</h3>
+          {/* <h3>First slide label</h3> */}
         </Carousel.Caption>
       </Carousel.Item>
       <Carousel.Item>
         <img
           className="d-block w-100"
-          src="http://placekitten.com/800/400"
+          src={process.env.PUBLIC_URL + '/img/bg1.jpg'}
           alt="Second slide"
         />
 
         <Carousel.Caption>
-          <h3>Second slide label</h3>
-        </Carousel.Caption>
-      </Carousel.Item>
-      <Carousel.Item>
-        <img
-          className="d-block w-100"
-          src="http://placekitten.com/800/400"
-          alt="Third slide"
-        />
-
-        <Carousel.Caption>
-          <h3>Third slide label</h3>
+          {/* <h3>Second slide label</h3> */}
         </Carousel.Caption>
       </Carousel.Item>
     </Carousel>

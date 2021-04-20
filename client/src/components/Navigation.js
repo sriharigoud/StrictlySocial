@@ -21,7 +21,7 @@ export default function Navigation() {
     <div className="mb-0 w-100">
       <nav className="navbar navbar-light">
         <Link to="/home" title="Home" className="navbar-brand">
-          DevConnector
+          StrictlySocial
         </Link>
         {userInfo && userInfo.name && (
           <React.Fragment>
@@ -29,7 +29,7 @@ export default function Navigation() {
               <div className="input-group">
                 <input
                   type="text"
-                  placeholder="Search"
+                  placeholder="Search StrictlySocial"
                   className="form-control"
                   aria-label="Recipient's username"
                   onChange={(e) => setsearchQuery(e.target.value)}

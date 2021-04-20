@@ -50,7 +50,7 @@ export default function Regsiter() {
     <div className="mt-2 border py-2">
       <Container>
         <Row>
-          <Col xs={7} className="border-right">
+          <Col md={7} className="border-right mb-2">
             <Main />
           </Col>
           <Col>
