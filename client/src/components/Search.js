@@ -107,7 +107,7 @@ export default function Search() {
             setUserInfo={() => console.log("Do nothing")} userInfo={currentUser} setCurrentUser={setCurrentUser} currentUser={currentUser}
           />
         </div>
-        <div className="col-md-6 border-left border-right gedf-main gedf-main">
+        <div className="col-md-6 border-left border-right ">
           <h4>Search Results: </h4>
           <Tabs
             defaultActiveKey="people"

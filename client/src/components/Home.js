@@ -97,7 +97,7 @@ export default function Home() {
         <div className="col-md-3 d-none d-md-block">
           <BasicInfo setUserInfo={() => console.log("Do nothing")} userInfo={currentUser} setCurrentUser={setCurrentUser} currentUser={currentUser} />
         </div>
-        <div className="col-md-6 border-left border-right gedf-main gedf-main">
+        <div className="col-md-6 border-left border-right">
           <CreatePost setPosts={setPosts}  />
           {posts &&
             posts.map((post) => (

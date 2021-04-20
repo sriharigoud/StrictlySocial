@@ -116,7 +116,7 @@ export default function Profile() {
             currentUser={currentUser}
           />
         </div>
-        <div className="col-md-6 border-left border-right gedf-main gedf-main">
+        <div className="col-md-6 border-left border-right ">
           {currentUser._id === pathname.replace("/profile/", "") && (
             <CreatePost setPosts={setPosts}  />
           )}
