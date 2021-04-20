@@ -27,7 +27,7 @@ export default function Regsiter() {
         JSON.stringify(values),
         config
       );
-      doLogin(response.data.token);
+      doLogin(response.data);
       history.push("/home");
     } catch (error) {
       setErrors(error.response.data.errors);
@@ -47,7 +47,7 @@ export default function Regsiter() {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
   return (
-    <div>
+    <div className="mt-2 border py-2">
       <Container>
         <Row>
           <Col xs={7} className="border-right">

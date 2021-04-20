@@ -1,13 +1,21 @@
-import React from "react";
-import { Navbar, Nav } from "react-bootstrap";
-import { doLogout, isLogin } from "../utils/utils";
-import { Link, useHistory } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { doLogout } from "../utils/utils";
+import { Link, useHistory, useLocation } from "react-router-dom";
+import { getUser } from "../utils/utils";
+import { NavDropdown } from "react-bootstrap";
 
 export default function Navigation() {
+  const [userInfo, setUserInfo] = useState(null);
+  const [searchQuery, setsearchQuery] = useState('');
   let history = useHistory();
+  const { key } = useLocation();
+  useEffect(() => {
+    setUserInfo(getUser());
+  }, [key]);
   const logout = () => {
     doLogout();
-    history.push("/");
+    setUserInfo({});
+    history.push("/login");
   };
   return (
     <div className="mb-0 w-100">
@@ -15,27 +23,42 @@ export default function Navigation() {
         <Link to="/home" title="Home" className="navbar-brand">
           DevConnector
         </Link>
-        {isLogin() && <React.Fragment><form className="form-inline">
-          <div className="input-group">
-            <input
-              type="text"
-              placeholder="Search user or post"
-              className="form-control"
-              aria-label="Recipient's username"
-              aria-describedby="button-addon2"
-            />
-            <div className="input-group-append">
-              <button
-                className="btn btn-outline-primary"
-                type="button"
-                id="button-addon2"
-              >
-                <i className="fa fa-search"></i>
-              </button>
+        {userInfo && userInfo.name && (
+          <React.Fragment>
+            <form className="form-inline">
+              <div className="input-group">
+                <input
+                  type="text"
+                  placeholder="Search"
+                  className="form-control"
+                  aria-label="Recipient's username"
+                  onChange={(e) => setsearchQuery(e.target.value)}
+                  aria-describedby="button-addon2"
+                />
+                <div className="input-group-append">
+                  <button
+                    onClick={() => searchQuery && history.push("/search/"+searchQuery)}
+                    className="btn btn-outline-primary"
+                    type="button"
+                    id="button-addon2"
+                  >
+                    <i className="fa fa-search"></i>
+                  </button>
+                </div>
+              </div>
+            </form>
+            <div>
+              <NavDropdown title={userInfo.name} id="basic-nav-dropdown">
+                <Link to={`/home`}>Home</Link> <NavDropdown.Divider />
+                <Link to={`/profile/${userInfo._id}`}>My Profile</Link>
+                <NavDropdown.Divider />
+                <a role="button" onClick={() => logout()}>
+                  Logout
+                </a>
+              </NavDropdown>
             </div>
-          </div>
-        </form>
-        <a href="#" onClick={() => logout()}>Logout</a> </React.Fragment> }
+          </React.Fragment>
+        )}
       </nav>
     </div>
   );

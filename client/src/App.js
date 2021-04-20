@@ -1,12 +1,8 @@
-import React from "react";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect,
-} from "react-router-dom";
+import React, { useState } from "react";
+import { BrowserRouter as Router, Switch } from "react-router-dom";
 import "./App.css";
 import Home from "./components/Home";
+import Search from "./components/Search";
 import Register from "./components/Register";
 import Footer from "./components/Footer";
 import Login from "./components/Login";
@@ -14,8 +10,9 @@ import Navigation from "./components/Navigation";
 import "bootstrap/dist/css/bootstrap.min.css";
 import PublicRoute from "./components/PublicRoute";
 import PrivateRoute from "./components/PrivateRoute";
-import 'font-awesome/css/font-awesome.min.css';
+import "font-awesome/css/font-awesome.min.css";
 import Profile from "./components/Profile";
+import PostContainer from "./components/PostContainer";
 
 export default function App() {
   return (
@@ -24,13 +21,25 @@ export default function App() {
         <Navigation />
         <Switch>
           <PublicRoute restricted={true} component={Login} path="/" exact />
-          <PublicRoute restricted={true} component={Login} path="/login" exact />
-          <PublicRoute restricted={true} component={Register} path="/register" exact />
-          <PrivateRoute component={Home} path="/home/:id?" exact />
-          <PrivateRoute component={Profile} path="/profile/:id" exact />
+          <PublicRoute
+            restricted={true}
+            component={Login}
+            path="/login"
+            exact
+          />
+          <PublicRoute
+            restricted={true}
+            component={Register}
+            path="/register"
+            exact
+          />
+          <PrivateRoute component={Home} path="/home" exact />
+          <PrivateRoute component={Profile} path="/profile/:id" />
+          <PrivateRoute component={Search} path="/search/:searchQuery" exact />
+          <PrivateRoute component={PostContainer} path="/post/:id" exact />
         </Switch>
+        <Footer />
       </Router>
-      <Footer />
     </div>
   );
 }

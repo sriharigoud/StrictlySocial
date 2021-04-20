@@ -20,22 +20,19 @@ const UserSchema = new Schema({
   },
   bio: {
     type: String,
-    required: true,
+    required: false,
+    default: "",
   },
   following: [
     {
-      user: {
-        type: Schema.Types.ObjectId,
-        ref: "users",
-      },
+      type: Schema.Types.ObjectId,
+      ref: "user",
     },
   ],
   followers: [
     {
-      user: {
-        type: Schema.Types.ObjectId,
-        ref: "users",
-      },
+      type: Schema.Types.ObjectId,
+      ref: "user",
     },
   ],
   date: {

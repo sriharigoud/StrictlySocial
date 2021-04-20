@@ -7,7 +7,7 @@ const PostSchema = new Schema({
   },
   text: {
     type: String,
-    required: true,
+    // required: true,
   },
   name: {
     type: String,
@@ -49,6 +49,13 @@ const PostSchema = new Schema({
     type: Date,
     default: Date.now(),
   },
+  imageName: {
+    type: String,
+    default: "none"
+  },
+  imageData: {
+    type: String
+  }
 });
 
 module.exports = Posts = mongoose.model("post", PostSchema);

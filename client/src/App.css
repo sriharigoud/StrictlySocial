@@ -9,7 +9,10 @@ body {
   background: grey;
   height: 100%;
 }
-
+.dropdown-menu a{
+  color: #b664f2 !important;
+  margin-left: 16px;
+}
 .app {
   background: white;
   height: 100%;
@@ -24,7 +27,7 @@ body {
 .card-header .text-muted {
   color: #1d2124 !important;
 }
-.navbar a{
+.dropdown-toggle{
   color:white !important;
 }
 .navbar .navbar-brand {

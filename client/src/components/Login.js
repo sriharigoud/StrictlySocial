@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, {useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { Form, Button, Alert } from "react-bootstrap";
 import axios from "axios";
 import { doLogin } from "../utils/utils";
 import { Container, Row, Col } from "react-bootstrap";
 import Main from "./Main";
+
 export default function Login() {
   let history = useHistory();
   const [values, setValues] = useState({
@@ -26,7 +27,7 @@ export default function Login() {
         JSON.stringify(values),
         config
       );
-      doLogin(response.data.token);
+      doLogin(response.data);
       history.push("/home");
     } catch (error) {
       setErrors(error.response.data.errors);
@@ -46,7 +47,7 @@ export default function Login() {
   };
 
   return (
-    <div>
+    <div className="mt-2 border py-2">
       <Container>
         <Row>
           <Col xs={7} className="border-right">

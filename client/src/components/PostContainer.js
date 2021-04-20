@@ -3,24 +3,22 @@ import axios from "axios";
 import "./Home.css";
 import BasicInfo from "./BasicInfo";
 import Post from "./Post";
-import CreatePost from "./CreatePost";
 import SideBar from "./SideBar";
 import { getUser } from "../utils/utils";
 import setAuthToken from "../utils/setAuthToken";
+import { useLocation } from "react-router";
+import { Link } from "react-router-dom";
 
-export default function Home() {
+export default function PostContainer() {
   let [currentUser, setCurrentUser] = useState(getUser());
-  const [posts, setPosts] = useState([]);
+  const [post, setPost] = useState(null);
   const [commentText, setCommentText] = useState("");
-  
+  const { pathname, key } = useLocation();
+
   const toggleLike = async (post) => {
     try {
       const res = await axios.put(`/api/posts/likes/${post._id}`);
-      setPosts((prevPosts) => {
-        return prevPosts.map((a) =>
-          a._id === post._id ? { ...a, likes: res.data } : { ...a }
-        );
-      });
+      setPost({...post, likes: res.data});
     } catch (error) {
       console.log(error.message);
     }
@@ -37,11 +35,7 @@ export default function Home() {
           },
         }
       );
-      setPosts((prevPosts) => {
-        return prevPosts.map((a) =>
-          a._id === post._id ? { ...a, comments: res.data } : { ...a }
-        );
-      });
+      setPost({...post, comments: res.data});
     } catch (error) {
       console.log(error.message);
     }
@@ -52,9 +46,7 @@ export default function Home() {
       const confirmV = window.confirm("Delete Post?");
       if (confirmV) {
         const res = await axios.delete(`/api/posts/${post._id}`);
-        setPosts((prevPosts) => {
-          return prevPosts.filter((a) => a._id !== post._id);
-        });
+        setPost(null);
       }
     } catch (error) {
       console.log(error.message);
@@ -65,12 +57,10 @@ export default function Home() {
     try {
       const confirmV = window.confirm("Delete Comment?");
       if (confirmV) {
-        const res = await axios.delete(`/api/posts/comments/${post._id}/${comment._id}`);
-        setPosts((prevPosts) => {
-          return prevPosts.map((a) =>
-            a._id === post._id ? { ...a, comments: res.data } : { ...a }
-          );
-        });
+        const res = await axios.delete(
+          `/api/posts/comments/${post._id}/${comment._id}`
+        );
+        setPost({...post, comments: res.data});
       }
     } catch (error) {
       console.log(error.message);
@@ -82,36 +72,38 @@ export default function Home() {
       setAuthToken(currentUser.token);
     }
     async function fetchPosts() {
-      let response = await axios("/api/posts");
-      setPosts(response.data);
+      let response = await axios(
+        "/api/posts/" + pathname.replace("/post/", "")
+      );
+      setPost(response.data.post);
     }
     try {
       fetchPosts();
     } catch (error) {
       console.log(error.message);
     }
-  }, [getUser]);
+  }, [key, getUser]);
   return (
     <div className="container-fluid mt-0 pt-2 gedf-wrapper border border-top-0 h-100">
       <div className="row">
         <div className="col-md-3">
-          <BasicInfo setUserInfo={() => console.log("Do nothing")} userInfo={currentUser} setCurrentUser={setCurrentUser} currentUser={currentUser} />
+          <BasicInfo
+            userInfo={currentUser}
+            setCurrentUser={setCurrentUser}
+            currentUser={currentUser}
+          />
         </div>
         <div className="col-md-6 border-left border-right gedf-main gedf-main">
-          <CreatePost setPosts={setPosts}  />
-          {posts &&
-            posts.map((post) => (
-              <Post
-                key={post._id}
-                post={post}
-                userId={currentUser._id}
-                setCommentText={setCommentText}
-                submitComment={submitComment}
-                toggleLike={toggleLike}
-                deletePost={deletePost}
-                deleteComment={deleteComment}
-              />
-            ))}
+          {post && <Post
+            post={post}
+            userId={currentUser._id}
+            setCommentText={setCommentText}
+            submitComment={submitComment}
+            toggleLike={toggleLike}
+            deletePost={deletePost}
+            deleteComment={deleteComment}
+          />}
+          {post === null && (<React.Fragment><h3>No Post Found</h3> <Link to="/home">Click to go back to home</Link></React.Fragment>)}
         </div>
         <div className="col-md-3">
           <SideBar />

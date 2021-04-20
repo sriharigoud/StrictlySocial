@@ -4,6 +4,7 @@ const { check, validationResult } = require("express-validator");
 const auth = require("../../middleware/auth");
 const User = require("../../models/User");
 const Post = require("../../models/Post");
+const upload = require("../../middleware/multer");
 
 // create post
 router.post(
@@ -27,6 +28,8 @@ router.post(
         avatar: user.avatar,
         likes: [],
         comments: [],
+        imageName: "none",
+        imageData: ""
       });
 
       const newpost = await post.save();
@@ -41,13 +44,77 @@ router.post(
 // get all posts
 router.get("/", auth, async (req, res) => {
   try {
-    const posts = await Post.find().sort({ date: -1 });
+    const user = await User.findById(req.user.id);
+    const fowls = user.following.map((f) => f.toString());
+    fowls.push(req.user.id);
+    console.log(fowls);
+
+    // const posts = await Post.find().sort({ date: -1 });
+    const posts = await Post.find({ user: { $in: fowls } }).sort({ date: -1 });
     res.json(posts);
   } catch (error) {
     console.log(error.message);
     res.status(500).send("Server error");
   }
 });
+
+// get most liked posts
+router.get("/popular", auth, async (req, res) => {
+  try {
+    await Post.find().where('text').ne('').sort({ "likes": -1 }).limit(5).exec(function(err,result) {
+      if(err) return res.status(500).send("Server error");
+      res.json(result);
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send("Server error");
+  }
+});
+
+// search
+router.get("/search/:searchQuery", auth, async (req, res) => {
+  try {
+    await Post.find({
+      $or: [
+        {'text': {$regex: req.params.searchQuery, $options: 'i'}},
+        {'name': {$regex: req.params.searchQuery, $options: 'i'}},
+      ]}).limit(10).exec(function(err,result) {
+      if(err) return res.status(500).send("Server error");
+      res.json(result);
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send("Server error");
+  }
+});
+
+router.post(
+  "/uploadImage",
+  upload.single("imageData"),
+  auth,
+  async (req, res) => {
+    try {
+      let user = await User.findById(req.user.id);
+      const text = "";
+      let post = new Post({
+        user: user.id,
+        text,
+        name: user.name,
+        avatar: user.avatar,
+        likes: [],
+        comments: [],
+        imageName: req.body.imageName,
+        imageData: req.file.path
+      });
+
+      const newpost = await post.save();
+      res.json({ newpost });
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).send("Server error");
+    }
+  }
+);
 
 // get post by id
 router.get("/:id", auth, async (req, res) => {
@@ -69,14 +136,13 @@ router.get("/:id", auth, async (req, res) => {
 // get posts by user id
 router.get("/user/:id", auth, async (req, res) => {
   try {
-    const posts = await Post.find({user: req.params.id}).sort({ date: -1 });
+    const posts = await Post.find({ user: req.params.id }).sort({ date: -1 });
     res.json(posts);
   } catch (error) {
     console.log(error.message);
     res.status(500).send("Server error");
   }
 });
-
 
 // post delete
 router.delete("/:id", auth, async (req, res) => {
