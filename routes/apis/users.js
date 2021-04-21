@@ -115,14 +115,12 @@ router.post(
     try {
       const user = await User.findOne({ email: req.body.email });
       if (!user) {
-        return res
-          .status(400)
-          .json({
-            errors: [{ msg: "No account with that email address exists." }],
-          });
+        return res.status(400).json({
+          errors: [{ msg: "No account with that email address exists." }],
+        });
       }
-      let buf = await crypto.randomBytes(20)
-      var token = buf.toString('hex')
+      let buf = await crypto.randomBytes(20);
+      var token = buf.toString("hex");
       user.resetPasswordToken = token;
       user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
 
@@ -143,8 +141,7 @@ router.post(
         to: user.email,
         from: "strictlysocial2021@gmail.com",
         subject: "Password Reset",
-        text:
-          `You are receiving this because you (or someone else) have requested the reset of the password for your account.
+        text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.
           Please click on the following link, or paste this into your browser to complete the process:\n\n
           http://${req.headers.host}/reset/${token}\n\n"
           If you did not request this, please ignore this email and your password will remain unchanged.\n`,
@@ -217,6 +214,52 @@ router.post(
   }
 );
 
+router.get("/reset/:token", async function (req, res) {
+  const user = await User.findOne({
+    resetPasswordToken: req.params.token,
+    resetPasswordExpires: { $gt: Date.now() },
+  });
+  if (!user) {
+    return res.status(400).json({
+      errors: [{ msg: "Password reset token is invalid or has expired." }],
+    });
+  }
+  res.send(req.user);
+});
+
+router.post(
+  "/reset/:token",
+  [
+    check(
+      "password",
+      "Please enter a password with 6 or more characters"
+    ).isLength({ min: 6 }),
+  ],
+  async function (req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const user = await User.findOne({
+      resetPasswordToken: req.params.token,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
+    if (!user) {
+      return res.status(400).json({
+        errors: [{ msg: "Password reset token is invalid or has expired." }],
+      });
+    }
+    let { password } = req.body;
+    const salt = await bcrypt.genSaltSync(10);
+    user.password = await bcrypt.hash(password, salt);
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+
+    await user.save();
+    res.send("Password is updated successfully!")
+  }
+);
 router.put("/follow/:id", auth, async (req, res) => {
   try {
     let user = await User.findById(req.params.id)
