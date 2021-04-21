@@ -25,7 +25,16 @@ export default function Home() {
       console.log(error.message);
     }
   };
-
+  const sharePost = async (post) => {
+    try {
+        const res = await axios.get(`/api/posts/share/${post._id}`);
+        setPosts((prevPosts) => {
+          return [res.data.newpost, ...prevPosts];
+        });
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   const submitComment = async (post) => {
     try {
       const res = await axios.post(
@@ -110,6 +119,7 @@ export default function Home() {
                 toggleLike={toggleLike}
                 deletePost={deletePost}
                 deleteComment={deleteComment}
+                sharePost={sharePost}
               />
             ))}
             {!posts.length && <h6 className="my-3">Search & Follow someone to see Posts</h6>}

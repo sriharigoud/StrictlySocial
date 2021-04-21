@@ -40,7 +40,13 @@ export default function PostContainer() {
       console.log(error.message);
     }
   };
-
+  const sharePost = async (post) => {
+    try {
+        const res = await axios.get(`/api/posts/share/${post._id}`);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   const deletePost = async (post) => {
     try {
       const confirmV = window.confirm("Delete Post?");
@@ -102,6 +108,7 @@ export default function PostContainer() {
             toggleLike={toggleLike}
             deletePost={deletePost}
             deleteComment={deleteComment}
+            sharePost={sharePost}
           />}
           {post === null && (<React.Fragment><h3>No Post Found</h3> <Link to="/home">Click to go back to home</Link></React.Fragment>)}
         </div>

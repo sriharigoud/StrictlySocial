@@ -5,6 +5,7 @@ const auth = require("../../middleware/auth");
 const User = require("../../models/User");
 const Post = require("../../models/Post");
 const upload = require("../../middleware/multer");
+const mongoose = require("mongoose");
 
 // create post
 router.post(
@@ -29,7 +30,7 @@ router.post(
         likes: [],
         comments: [],
         imageName: "none",
-        imageData: ""
+        imageData: "",
       });
 
       const newpost = await post.save();
@@ -41,16 +42,51 @@ router.post(
   }
 );
 
+router.get("/share/:id", auth, async (req, res) => {
+  try {
+    let user = await User.findById(req.user.id);
+    let post = await Post.findById(req.params.id);
+    if (!post) {
+      return res.status(404).json({ msg: "Post not found" });
+    }
+
+    if (!user) {
+      return res.status(403).json({ msg: "Unauthorized access" });
+    }
+    const { text, imageName, imageData } = post;
+    let anewpost = new Post({
+      text,
+      imageName,
+      imageData,
+      likes: [],
+      comments: [],
+      avatar: user.avatar,
+      name:user.name,
+      owner:post.user,
+      user: user._id
+    });
+
+    let newpost = await anewpost.save();
+    res.json({
+      newpost: { ...newpost._doc, owner: { _id: post.user, name: post.name } },
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send("Server error");
+  }
+});
+
 // get all posts
 router.get("/", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
     const fowls = user.following.map((f) => f.toString());
     fowls.push(req.user.id);
-    console.log(fowls);
 
     // const posts = await Post.find().sort({ date: -1 });
-    const posts = await Post.find({ user: { $in: fowls } }).sort({ date: -1 });
+    const posts = await Post.find({ user: { $in: fowls } })
+      .populate("owner", "name")
+      .sort({ date: -1 });
     res.json(posts);
   } catch (error) {
     console.log(error.message);
@@ -61,10 +97,16 @@ router.get("/", auth, async (req, res) => {
 // get most liked posts
 router.get("/popular", auth, async (req, res) => {
   try {
-    await Post.find().where('text').ne('').sort({ "likes": -1 }).limit(5).exec(function(err,result) {
-      if(err) return res.status(500).send("Server error");
-      res.json(result);
-    });
+    await Post.find()
+      .where("text")
+      .ne("")
+      .populate("owner", "name")
+      .sort({ likes: -1 })
+      .limit(5)
+      .exec(function (err, result) {
+        if (err) return res.status(500).send("Server error");
+        res.json(result);
+      });
   } catch (error) {
     console.log(error.message);
     res.status(500).send("Server error");
@@ -76,18 +118,23 @@ router.get("/search/:searchQuery", auth, async (req, res) => {
   try {
     await Post.find({
       $or: [
-        {'text': {$regex: req.params.searchQuery, $options: 'i'}},
-        {'name': {$regex: req.params.searchQuery, $options: 'i'}},
-      ]}).limit(10).exec(function(err,result) {
-      if(err) return res.status(500).send("Server error");
-      res.json(result);
-    });
+        { text: { $regex: req.params.searchQuery, $options: "i" } },
+        { name: { $regex: req.params.searchQuery, $options: "i" } },
+      ],
+    })
+      .populate("owner", "name")
+      .limit(10)
+      .exec(function (err, result) {
+        if (err) return res.status(500).send("Server error");
+        res.json(result);
+      });
   } catch (error) {
     console.log(error.message);
     res.status(500).send("Server error");
   }
 });
 
+// create post with image
 router.post(
   "/uploadImage",
   upload.single("imageData"),
@@ -104,7 +151,7 @@ router.post(
         likes: [],
         comments: [],
         imageName: req.body.imageName,
-        imageData: req.file.path
+        imageData: req.file.path,
       });
 
       const newpost = await post.save();
@@ -119,7 +166,7 @@ router.post(
 // get post by id
 router.get("/:id", auth, async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id);
+    const post = await Post.findById(req.params.id).populate("owner", "name");
     if (!post) {
       return res.status(404).json({ msg: "Post not found" });
     }
@@ -136,7 +183,9 @@ router.get("/:id", auth, async (req, res) => {
 // get posts by user id
 router.get("/user/:id", auth, async (req, res) => {
   try {
-    const posts = await Post.find({ user: req.params.id }).sort({ date: -1 });
+    const posts = await Post.find({ user: req.params.id })
+      .populate("owner", "name")
+      .sort({ date: -1 });
     res.json(posts);
   } catch (error) {
     console.log(error.message);
@@ -147,7 +196,7 @@ router.get("/user/:id", auth, async (req, res) => {
 // post delete
 router.delete("/:id", auth, async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id);
+    const post = await Post.findById(req.params.id).populate("owner", "name");
     if (!post) {
       return res.status(404).json({ msg: "Post not found" });
     }
@@ -171,7 +220,7 @@ router.delete("/:id", auth, async (req, res) => {
 // Like/unlike
 router.put("/likes/:id", auth, async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id);
+    const post = await Post.findById(req.params.id).populate("owner", "name");
     if (!post) {
       return res.status(404).json({ msg: "Post not found" });
     }
@@ -209,7 +258,7 @@ router.post(
     }
     let { text } = req.body;
     try {
-      const post = await Post.findById(req.params.id);
+      const post = await Post.findById(req.params.id).populate("owner", "name");
 
       if (!post) {
         return res.status(404).json({ msg: "Post not found" });
@@ -239,6 +288,7 @@ router.post(
   }
 );
 
+// delte comment
 router.delete("/comments/:id/:commentId", auth, async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -246,7 +296,7 @@ router.delete("/comments/:id/:commentId", auth, async (req, res) => {
   }
   let { text } = req.body;
   try {
-    const post = await Post.findById(req.params.id);
+    const post = await Post.findById(req.params.id).populate("owner", "name");
 
     if (!post) {
       return res.status(404).json({ msg: "Post not found" });

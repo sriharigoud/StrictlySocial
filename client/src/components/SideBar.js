@@ -55,7 +55,7 @@ export default function SideBar() {
                       <Link to={`/profile/${user._id}`}>{user.name}</Link>
                     </h5>
                     <p title={"@"+user.email.split("@")[0]} className="my-0 w-75 text-truncate">{"@"+user.email.split("@")[0]}</p>
-                    <p className="my-0 text-muted"><small>Following: {user.following.length} | Followers: {user.followers.length}</small></p>
+                    <p className="my-0 text-muted"><small>Following: {user.following && user.following.length} | Followers: {user.followers && user.followers.length}</small></p>
 
                   </div>
                 </div>

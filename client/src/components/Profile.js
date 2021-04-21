@@ -62,6 +62,16 @@ export default function Profile() {
       console.log(error.message);
     }
   };
+  const sharePost = async (post) => {
+    try {
+        const res = await axios.get(`/api/posts/share/${post._id}`);
+        setPosts((prevPosts) => {
+          return [res.data.newpost, ...prevPosts];
+        });
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   const deleteComment = async ({ post, comment }) => {
     try {
       const confirmV = window.confirm("Delete Comment?");
@@ -138,6 +148,7 @@ export default function Profile() {
                     toggleLike={toggleLike}
                     deletePost={deletePost}
                     deleteComment={deleteComment}
+                    sharePost={sharePost}
                   />
                 ))}
               {posts && posts.length === 0 && <h6 className="m-2">No Posts found</h6>}

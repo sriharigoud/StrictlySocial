@@ -12,6 +12,7 @@ export default function Post({
   submitComment,
   setCommentText,
   deletePost,
+  sharePost,
   deleteComment,
 }) {
   const [showComments, setShowComments] = React.useState(false);
@@ -71,7 +72,7 @@ export default function Post({
             </div>
             <div className="ml-2">
               <div className="h5 m-0">
-                <Link to={`/profile/${post.user}`}>{post.name}</Link>
+                <Link to={`/profile/${post.user}`}>{post.name}</Link> {post.owner && (<span>Shared <Link to={`/profile/${post.owner._id}`}>{post.owner.name}</Link>'s Post</span>)}
               </div>
             </div>
           </div>
@@ -93,8 +94,8 @@ export default function Post({
         )}
         {post.imageName !== "none" && (
           <SRLWrapper>
-            <a href={post.imageData}>
-              <img className="w-100" src={post.imageData} alt="" />
+            <a href={'/'+post.imageData}>
+              <img className="w-100" src={'/'+post.imageData} alt="" />
             </a>
           </SRLWrapper>
         )}
@@ -112,7 +113,7 @@ export default function Post({
           <i className="fa fa-comment"></i> Comment (
           {post.comments && post.comments.length})
         </a>
-        <a href="#" class="card-link">
+        <a href="#"  onClick={() => sharePost(post)} class="card-link">
           <i class="fa fa-mail-forward"></i> Share
         </a>
         {showComments && (
