@@ -81,7 +81,7 @@ router.post(
 // most followed people
 router.get("/popular", auth, async (req, res) => {
   try {
-    await User.find().sort( "followers").limit(5).exec((err, result) => {
+    await User.find().sort({"followers":-1}).limit(5).exec((err, result) => {
       if(err) return res.status(500).send("Server error")
       res.json(result);
     })

@@ -42,7 +42,7 @@ export default function UserBox({ user, currentUser, setUserInfo, userInfo, setC
         <h5 className="mb-0">
           <Link to={`/profile/${user._id}`}>{user.name}</Link>
         </h5>
-        <p className="my-0">{user.email}</p>
+        <p className="my-0">{"@"+user.email.split("@")[0]}</p>
       </div>
     </div>
   );

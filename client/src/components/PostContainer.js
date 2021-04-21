@@ -93,7 +93,7 @@ export default function PostContainer() {
             currentUser={currentUser}
           />
         </div>
-        <div className="col-md-6 border-left border-right">
+        <div className="col-md-6 border-left border-rightp">
           {post && <Post
             post={post}
             userId={currentUser._id}

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { doLogin } from "../utils/utils";
 import axios from "axios";
 import { Modal, Button, Form } from "react-bootstrap";
+import { SRLWrapper } from "simple-react-lightbox";
 export default function BasicInfo({
   userInfo,
   setUserInfo,
@@ -33,21 +34,25 @@ export default function BasicInfo({
 
   const saveProfile = async () => {
     try {
-      const res = await axios.post(`/api/users/`, JSON.stringify({text: value}), {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const res = await axios.post(
+        `/api/users/`,
+        JSON.stringify({ text: value }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       setUserInfo({ ...userInfo, bio: res.data.bio });
       setCurrentUser({
         ...currentUser,
-        bio: res.data.bio
+        bio: res.data.bio,
       });
       doLogin({
         ...currentUser,
-        bio: res.data.bio
+        bio: res.data.bio,
       });
-      handleClose()
+      handleClose();
     } catch (error) {
       console.log(error.message);
     }
@@ -59,12 +64,20 @@ export default function BasicInfo({
   };
 
   useEffect(() => {
-    setValue(userInfo.bio)
-  },[userInfo])
+    setValue(userInfo.bio);
+  }, [userInfo]);
 
   return (
     <div className="card">
-      <img src={userInfo.avatar} alt={userInfo.name} />
+      <SRLWrapper>
+        <a href={userInfo.avatar}>
+          <img
+           className="w-100"
+            src={userInfo.avatar}
+            alt={userInfo.name}
+          />
+        </a>
+      </SRLWrapper>
       {currentUser && currentUser._id === userInfo._id && (
         <button
           className="btn btn-primary w-50 m-auto"
@@ -88,7 +101,7 @@ export default function BasicInfo({
       )}
       <div className="card-body">
         <div className="h5 heading">{userInfo.name}</div>
-        <div className="h7 text-muted">Email : {userInfo.email}</div>
+        <div className="h7 text-muted">Email : {"@"+userInfo.email.split("@")[0]}</div>
         <div className="h7">{userInfo.bio}</div>
       </div>
       <ul className="list-group d-none d-md-block list-group-flush">

@@ -39,14 +39,14 @@ export default function SideBar() {
           <p className="card-text border-top">
             {users &&
               users.map((user, d) => (
-                <div className="d-flex border-bottom my-2 py-2 flex-row comment-row">
+                <div className="d-flex border-bottom my-1 py-1 flex-row comment-row">
                   <div className="p-1">
                     <span className="round">
                       <img
                         className="rounded-circle"
                         src={user.avatar}
                         alt="user"
-                        width="40"
+                        width="65"
                       />
                     </span>
                   </div>
@@ -54,7 +54,9 @@ export default function SideBar() {
                     <h5 className="mb-0">
                       <Link to={`/profile/${user._id}`}>{user.name}</Link>
                     </h5>
-                    <p className="my-0 mw-100 text-truncate">{user.email}</p>
+                    <p title={"@"+user.email.split("@")[0]} className="my-0 w-75 text-truncate">{"@"+user.email.split("@")[0]}</p>
+                    <p className="my-0 text-muted"><small>Following: {user.following.length} | Followers: {user.followers.length}</small></p>
+
                   </div>
                 </div>
               ))}

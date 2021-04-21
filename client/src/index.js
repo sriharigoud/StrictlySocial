@@ -7,11 +7,14 @@ import TimeAgo from 'javascript-time-ago'
 
 import en from 'javascript-time-ago/locale/en'
 import ru from 'javascript-time-ago/locale/ru'
+import SimpleReactLightbox from 'simple-react-lightbox'
 
 TimeAgo.addDefaultLocale(en)
 TimeAgo.addLocale(ru)
 ReactDOM.render(
+  <SimpleReactLightbox>
     <App />
+    </SimpleReactLightbox>
   ,
   document.getElementById('root')
 );

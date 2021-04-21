@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 // import ReactTimeAgo from "react-time-ago";
 import Linkify from "react-simple-linkify";
 import urlParser from "js-video-url-parser";
+import { SRLWrapper } from "simple-react-lightbox";
 
 export default function Post({
   post,
@@ -11,7 +12,7 @@ export default function Post({
   submitComment,
   setCommentText,
   deletePost,
-  deleteComment
+  deleteComment,
 }) {
   const [showComments, setShowComments] = React.useState(false);
   const toggleComment = () => setShowComments(!showComments);
@@ -31,7 +32,16 @@ export default function Post({
     const { url } = props;
     const src = validateYouTubeUrl(url);
     if (src) {
-      return <p><iframe height="300" className="w-100 border-0" title={src} src={src} /></p>;
+      return (
+        <p>
+          <iframe
+            height="300"
+            className="w-100 border-0"
+            title={src}
+            src={src}
+          />
+        </p>
+      );
     }
     return (
       <a href={url} rel="noopener noreferrer" target="_blank">
@@ -76,19 +86,34 @@ export default function Post({
           <h5 className="card-title">{post.title}</h5>
         </a>
 
-        {post.text && <p className="card-text"><Linkify component={UrlEnhancer}>{post.text}</Linkify></p>}
-        {post.imageName !== "none" && <img className="w-100" src={`${post.imageData}`}  alt="" />}
+        {post.text && (
+          <p className="card-text">
+            <Linkify component={UrlEnhancer}>{post.text}</Linkify>
+          </p>
+        )}
+        {post.imageName !== "none" && (
+          <SRLWrapper>
+            <a href={post.imageData}>
+              <img className="w-100" src={post.imageData} alt="" />
+            </a>
+          </SRLWrapper>
+        )}
       </div>
       <div className="card-footer">
         <a className="card-link" onClick={() => toggleLike(post)}>
           <i className="fa fa-gittip"></i>
-          {post.likes && post.likes.some((className) => className.user === userId)
+          {post.likes &&
+          post.likes.some((className) => className.user === userId)
             ? " Unlike"
             : " Like"}
           ({post && post.likes && post.likes.length})
         </a>
         <a className="card-link" onClick={toggleComment}>
-          <i className="fa fa-comment"></i> Comment ({post.comments && post.comments.length})
+          <i className="fa fa-comment"></i> Comment (
+          {post.comments && post.comments.length})
+        </a>
+        <a href="#" class="card-link">
+          <i class="fa fa-mail-forward"></i> Share
         </a>
         {showComments && (
           <div className="comments mt-2 border-top">
@@ -115,8 +140,11 @@ export default function Post({
             </div>
             <div className="comment-section">
               {post.comments &&
-                post.comments.map((comment,i) => (
-                  <div key={i} className="d-flex border-top pt-1 flex-row comment-row">
+                post.comments.map((comment, i) => (
+                  <div
+                    key={i}
+                    className="d-flex border-top pt-1 flex-row comment-row"
+                  >
                     <div className="p-2">
                       <span className="round">
                         <img
@@ -130,7 +158,11 @@ export default function Post({
                     <div className="comment-text w-100">
                       {comment.user === userId && (
                         <span className="float-right action-icons mr-2">
-                          <a role="button" onClick={() => deleteComment({post, comment})} title="Delete">
+                          <a
+                            role="button"
+                            onClick={() => deleteComment({ post, comment })}
+                            title="Delete"
+                          >
                             <i className="fa fa-remove"></i>
                           </a>
                         </span>
