@@ -101,7 +101,7 @@ export default function BasicInfo({
       )}
       <div className="card-body">
         <div className="h5 heading">{userInfo.name}</div>
-        <div className="h7 text-muted">Email : {"@"+userInfo.email.split("@")[0]}</div>
+        <div className="h7 text-muted">Email : {userInfo.email && "@"+userInfo.email.split("@")[0]}</div>
         <div className="h7">{userInfo.bio}</div>
       </div>
       <ul className="list-group d-none d-md-block list-group-flush">
