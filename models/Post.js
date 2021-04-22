@@ -60,6 +60,10 @@ const PostSchema = new Schema({
   },
   imageData: {
     type: String
+  },
+  linkData: {
+    type: Object,
+    default: {}
   }
 });
 

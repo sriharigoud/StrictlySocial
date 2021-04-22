@@ -31,19 +31,19 @@ export default function Post({
   }
   const UrlEnhancer = (props) => {
     const { url } = props;
-    const src = validateYouTubeUrl(url);
-    if (src) {
-      return (
-        <p>
-          <iframe
-            height="300"
-            className="w-100 border-0"
-            title={src}
-            src={src}
-          />
-        </p>
-      );
-    }
+    // const src = validateYouTubeUrl(url);
+    // if (src) {
+    //   return (
+    //     <p>
+    //       <iframe
+    //         height="300"
+    //         className="w-100 border-0"
+    //         title={src}
+    //         src={src}
+    //       />
+    //     </p>
+    //   );
+    // }
     return (
       <a href={url} rel="noopener noreferrer" target="_blank">
         {url}
@@ -89,7 +89,18 @@ export default function Post({
 
         {post.text && (
           <p className="card-text">
-            <Linkify component={UrlEnhancer}>{post.text}</Linkify>
+            <Linkify component={UrlEnhancer}>
+              {post.text}
+              </Linkify>
+              {post.linkData && post.linkData.url && (
+                <a className="card p-2" href={post.linkData.url} rel="noopener noreferrer" target="_blank">
+                  <div>
+                    {post.linkData.ogImage && <img className="w-100" src={post.linkData.ogImage} alt="" />}
+                    {post.linkData.title && <p>{post.linkData.title}</p>}
+                    {post.linkData.description && <p>{post.linkData.description}</p>}
+                  </div>
+               </a>
+              )}
           </p>
         )}
         {post.imageName !== "none" && (
@@ -113,8 +124,8 @@ export default function Post({
           <i className="fa fa-comment"></i> Comment (
           {post.comments && post.comments.length})
         </a>
-        <a href="#"  onClick={() => sharePost(post)} class="card-link">
-          <i class="fa fa-mail-forward"></i> Share
+        <a href="#"  onClick={() => sharePost(post)} className="card-link">
+          <i className="fa fa-mail-forward"></i> Share
         </a>
         {showComments && (
           <div className="comments mt-2 border-top">

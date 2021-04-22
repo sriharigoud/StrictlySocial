@@ -1,4 +1,6 @@
 const express = require("express");
+const request = require("request");
+const cheerio = require("cheerio");
 const router = express.Router();
 const { check, validationResult } = require("express-validator");
 const auth = require("../../middleware/auth");
@@ -19,22 +21,90 @@ router.post(
     }
 
     const { text } = req.body;
+
     try {
       let user = await User.findById(req.user.id);
+      let resObj = {};
+      if (text.match(/(https?:\/\/[^\s]+)/g)) {
+        let [url] = text.match(/(https?:\/\/[^\s]+)/g);
+        await request(url, async function (error, response, responseHtml) {
+          //set a reference to the document that came back
+          let $ = cheerio.load(responseHtml),
+            //create a reference to the meta elements
+            $title = $("head title").text(),
+            $desc = $('meta[name="description"]').attr("content"),
+            $kwd = $('meta[name="keywords"]').attr("content"),
+            $ogTitle = $('meta[property="og:title"]').attr("content"),
+            $ogImage = $('meta[property="og:image"]').attr("content"),
+            $ogkeywords = $('meta[property="og:keywords"]').attr("content"),
+            $images = $("img");
+            
+          resObj.url = url;
 
-      let post = new Post({
-        user: user.id,
-        text,
-        name: user.name,
-        avatar: user.avatar,
-        likes: [],
-        comments: [],
-        imageName: "none",
-        imageData: "",
-      });
+          if ($title) {
+            resObj.title = $title;
+          }
 
-      const newpost = await post.save();
-      res.json({ newpost });
+          if ($desc) {
+            resObj.description = $desc;
+          }
+
+          if ($kwd) {
+            resObj.keywords = $kwd;
+          }
+
+          if ($ogImage && $ogImage.length) {
+            resObj.ogImage = $ogImage;
+          }
+
+          if ($ogTitle && $ogTitle.length) {
+            resObj.ogTitle = $ogTitle;
+          }
+
+          if ($ogkeywords && $ogkeywords.length) {
+            resObj.ogkeywords = $ogkeywords;
+          }
+
+          if ($images && $images.length) {
+            resObj.images = [];
+
+            for (var i = 0; i < $images.length; i++) {
+              resObj.images.push($($images[i]).attr("src"));
+            }
+          }
+          let post = new Post({
+            user: user.id,
+            text,
+            name: user.name,
+            avatar: user.avatar,
+            likes: [],
+            comments: [],
+            imageName: "none",
+            imageData: "",
+            linkData: resObj,
+          });
+    
+          const newpost = await post.save();
+          res.json({ newpost });
+        });
+      } else {
+        let post = new Post({
+          user: user.id,
+          text,
+          name: user.name,
+          avatar: user.avatar,
+          likes: [],
+          comments: [],
+          imageName: "none",
+          imageData: "",
+          linkData: resObj,
+        });
+  
+        const newpost = await post.save();
+        res.json({ newpost });
+      }
+
+
     } catch (error) {
       console.log(error.message);
       res.status(500).send("Server error");
@@ -61,9 +131,9 @@ router.get("/share/:id", auth, async (req, res) => {
       likes: [],
       comments: [],
       avatar: user.avatar,
-      name:user.name,
-      owner:post.user,
-      user: user._id
+      name: user.name,
+      owner: post.user,
+      user: user._id,
     });
 
     let newpost = await anewpost.save();
