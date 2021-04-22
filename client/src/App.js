@@ -13,6 +13,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import "font-awesome/css/font-awesome.min.css";
 import Profile from "./components/Profile";
 import PostContainer from "./components/PostContainer";
+import ResetPassword from "./components/ResetPassword";
 
 export default function App() {
   return (
@@ -31,6 +32,12 @@ export default function App() {
             restricted={true}
             component={Register}
             path="/register"
+            exact
+          />
+          <PublicRoute
+            restricted={false}
+            component={ResetPassword}
+            path="/reset/:id"
             exact
           />
           <PrivateRoute component={Home} path="/home" exact />

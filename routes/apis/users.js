@@ -110,17 +110,17 @@ router.post(
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).send("Please enter a valid email");
     }
     try {
       const user = await User.findOne({ email: req.body.email });
+      console.log(user)
       if (!user) {
-        return res.status(400).json({
-          errors: [{ msg: "No account with that email address exists." }],
-        });
+        return res.status(400).send("No account with that email address exists.");
       }
+
       let buf = await crypto.randomBytes(20);
-      var token = buf.toString("hex");
+      var token = await buf.toString("hex");
       user.resetPasswordToken = token;
       user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
 
@@ -143,7 +143,7 @@ router.post(
         subject: "Password Reset",
         text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.
           Please click on the following link, or paste this into your browser to complete the process:\n\n
-          http://${req.headers.host}/reset/${token}\n\n"
+          http://${req.headers.host}/api/reset/${token}\n\n"
           If you did not request this, please ignore this email and your password will remain unchanged.\n`,
       };
 
@@ -224,7 +224,7 @@ router.get("/reset/:token", async function (req, res) {
       errors: [{ msg: "Password reset token is invalid or has expired." }],
     });
   }
-  res.send(req.user);
+  res.json(user);
 });
 
 router.post(
