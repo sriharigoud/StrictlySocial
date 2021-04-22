@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const { check, validationResult } = require("express-validator");
+const upload = require("../../middleware/multer");
+
 const User = require("../../models/User");
 const gravatar = require("gravatar");
 const bcrypt = require("bcryptjs");
@@ -10,6 +12,8 @@ const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 const auth = require("../../middleware/auth");
 var smtpTransport = require("nodemailer-smtp-transport");
+const Post = require("../../models/Post");
+
 
 router.get("/", (req, res) => res.send("Users Route"));
 
@@ -114,9 +118,11 @@ router.post(
     }
     try {
       const user = await User.findOne({ email: req.body.email });
-      console.log(user)
+      console.log(user);
       if (!user) {
-        return res.status(400).send("No account with that email address exists.");
+        return res
+          .status(400)
+          .send("No account with that email address exists.");
       }
 
       let buf = await crypto.randomBytes(20);
@@ -194,6 +200,7 @@ router.get("/search/:searchQuery", auth, async (req, res) => {
 // update user
 router.post(
   "/",
+  upload.single("imageData"),
   [check("text", "Text is required").not().isEmpty()],
   auth,
   async (req, res) => {
@@ -205,7 +212,32 @@ router.post(
     try {
       const user = await User.findById(req.user.id);
       user.bio = text;
-      await user.save(text);
+      user.imageName = req.body.imageName;
+      user.imageData = req.file.path;
+      await user.save();
+
+      const filter = { user: user._id.toString() };
+      const update = { avatar: "/"+req.file.path };
+
+      let doc = await Post.updateMany(filter, update);
+      res.json(user);
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).send("Server error");
+    }
+  }
+);
+
+router.post(
+  "/updateProfilePic",
+  upload.single("imageData"),
+  auth,
+  async (req, res) => {
+    try {
+      let user = await User.findById(req.user.id);
+      (user.imageName = req.body.imageName),
+        (user.imageData = req.file.path),
+        await user.save();
       res.json(user);
     } catch (error) {
       console.log(error.message);
@@ -257,7 +289,7 @@ router.post(
     user.resetPasswordExpires = undefined;
 
     await user.save();
-    res.send("Password is updated successfully!")
+    res.send("Password is updated successfully!");
   }
 );
 router.put("/follow/:id", auth, async (req, res) => {

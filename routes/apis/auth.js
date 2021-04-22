@@ -61,7 +61,9 @@ router.post(
             avatar: user.avatar,
             following: user.following,
             followers: user.followers,
-            bio:user.bio
+            bio:user.bio,
+            imageData:user.imageData,
+            imageName:user.imageName,
           });
         }
       );

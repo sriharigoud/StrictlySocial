@@ -29,28 +29,43 @@ export default function BasicInfo({
       });
     } catch (error) {
       console.log(error.message);
+      if(typeof error.message === "string" ){
+        alert(error.message)
+      }
     }
   };
 
   const saveProfile = async () => {
     try {
+      let imageFormObj = new FormData();
+      if(file){
+      imageFormObj.append('imageName', Date.now()+"postimage");
+      imageFormObj.append('imageData', file);
+      }
+      imageFormObj.append('text', value);
       const res = await axios.post(
         `/api/users/`,
-        JSON.stringify({ text: value }),
+        imageFormObj,
         {
           headers: {
             "Content-Type": "application/json",
           },
         }
       );
-      setUserInfo({ ...userInfo, bio: res.data.bio });
+      setUserInfo({ ...userInfo, bio: res.data.bio,
+        imageName: res.data.imageName,
+        imageData: res.data.imageData });
       setCurrentUser({
         ...currentUser,
         bio: res.data.bio,
+        imageName: res.data.imageName,
+        imageData: res.data.imageData,
       });
       doLogin({
         ...currentUser,
         bio: res.data.bio,
+        imageName: res.data.imageName,
+        imageData: res.data.imageData
       });
       handleClose();
     } catch (error) {
@@ -62,7 +77,11 @@ export default function BasicInfo({
   const handleEdit = () => {
     handleShow();
   };
-
+  const [file, setFile] = useState();
+  const fileChangedHandler = (event) => {
+    setFile(event.target.files[0])
+  }
+  
   useEffect(() => {
     setValue(userInfo.bio);
   }, [userInfo]);
@@ -70,10 +89,10 @@ export default function BasicInfo({
   return (
     <div className="card">
       <SRLWrapper>
-        <a href={userInfo.avatar}>
+        <a href={userInfo.imageData ? '/'+userInfo.imageData : userInfo.avatar}>
           <img
            className="w-100"
-            src={userInfo.avatar}
+            src={userInfo.imageData ? '/'+userInfo.imageData : userInfo.avatar}
             alt={userInfo.name}
           />
         </a>
@@ -101,7 +120,7 @@ export default function BasicInfo({
       )}
       <div className="card-body">
         <div className="h5 heading">{userInfo.name}</div>
-        <div className="h7 text-muted">Email : {userInfo.email && "@"+userInfo.email.split("@")[0]}</div>
+        <div className="h7 text-muted">{userInfo.email && "@"+userInfo.email.split("@")[0]}</div>
         <div className="h7">{userInfo.bio}</div>
       </div>
       <ul className="list-group d-none d-md-block list-group-flush">
@@ -130,6 +149,9 @@ export default function BasicInfo({
               rows={3}
             />
           </Form.Group>
+          <Form.Group>
+    <Form.File onChange={fileChangedHandler} id="exampleFormControlFile1" label="Profile Photo" />
+  </Form.Group>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>

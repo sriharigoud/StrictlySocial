@@ -48,6 +48,13 @@ const UserSchema = new Schema({
     type: String,
     required: false,
     default: "",
+  },
+  imageName: {
+    type: String,
+    default: "none"
+  },
+  imageData: {
+    type: String
   }
 });
 
