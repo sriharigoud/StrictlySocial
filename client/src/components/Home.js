@@ -7,12 +7,13 @@ import CreatePost from "./CreatePost";
 import SideBar from "./SideBar";
 import { getUser } from "../utils/utils";
 import setAuthToken from "../utils/setAuthToken";
+import { Link } from "react-router-dom";
 
 export default function Home() {
   let [currentUser, setCurrentUser] = useState(getUser());
   const [posts, setPosts] = useState([]);
   const [commentText, setCommentText] = useState("");
-  
+
   const toggleLike = async (post) => {
     try {
       const res = await axios.put(`/api/posts/likes/${post._id}`);
@@ -27,10 +28,10 @@ export default function Home() {
   };
   const sharePost = async (post) => {
     try {
-        const res = await axios.get(`/api/posts/share/${post._id}`);
-        setPosts((prevPosts) => {
-          return [res.data.newpost, ...prevPosts];
-        });
+      const res = await axios.get(`/api/posts/share/${post._id}`);
+      setPosts((prevPosts) => {
+        return [res.data.newpost, ...prevPosts];
+      });
     } catch (error) {
       console.log(error.message);
     }
@@ -74,7 +75,9 @@ export default function Home() {
     try {
       const confirmV = window.confirm("Delete Comment?");
       if (confirmV) {
-        const res = await axios.delete(`/api/posts/comments/${post._id}/${comment._id}`);
+        const res = await axios.delete(
+          `/api/posts/comments/${post._id}/${comment._id}`
+        );
         setPosts((prevPosts) => {
           return prevPosts.map((a) =>
             a._id === post._id ? { ...a, comments: res.data } : { ...a }
@@ -104,10 +107,15 @@ export default function Home() {
     <div className="container-fluid mt-0 pt-2 gedf-wrapper border border-top-0 h-100">
       <div className="row">
         <div className="col-md-3 d-none d-md-block">
-          <BasicInfo setUserInfo={() => console.log("Do nothing")} userInfo={currentUser} setCurrentUser={setCurrentUser} currentUser={currentUser} />
-        </div>
+          <BasicInfo
+            setUserInfo={() => console.log("Do nothing")}
+            userInfo={currentUser}
+            setCurrentUser={setCurrentUser}
+            currentUser={currentUser}
+          />
+         </div>
         <div className="col-md-6 border-left border-right">
-          <CreatePost setPosts={setPosts}  />
+          <CreatePost setPosts={setPosts} />
           {posts &&
             posts.map((post) => (
               <Post
@@ -122,7 +130,9 @@ export default function Home() {
                 sharePost={sharePost}
               />
             ))}
-            {!posts.length && <h6 className="my-3">Search & Follow someone to see Posts</h6>}
+          {!posts.length && (
+            <h6 className="my-3">Search & Follow someone to see Posts</h6>
+          )}
         </div>
         <div className="col-md-3">
           <SideBar />

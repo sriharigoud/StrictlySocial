@@ -33,37 +33,7 @@ export default function SideBar() {
   }, [key, getUser]);
   return (
     <React.Fragment>
-      <div className="card mb-2 gedf-card">
-        <div className="card-body px-2">
-          <h5 className="card-title mb-2">Explore</h5>
-          <div className="card-text border-top border-bottom">
-            <ul className="list-group custom-nav border-0 mt-0 px-0 pt-0 list-group-flush">
-              <li className="list-group-item my-0 py-2 px-1">
-                <Link to="/news">
-                  <i class="fa fa-fw fa-newspaper-o"></i> News
-                </Link>
-              </li>
-              <li className="list-group-item my-0 py-2 px-1">
-                <Link to="/covid19">
-                  <i class="fa fa-fw fa-medkit"></i> Covid19
-                </Link>
-              </li>
-              <li className="list-group-item my-0 py-2 px-1">
-                <Link to="/entertainment">
-                  <i class="fa fa-fw fa-film"></i> Entertainment
-                </Link>
-              </li>
-              <li className="list-group-item my-0 py-2 px-1">
-                <Link to="/sports">
-                  <i class="fa fa-fw fa-trophy"></i> Sports
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <div className="card mb-2 gedf-card">
+            <div className="card mb-2 gedf-card">
         <div className="card-body px-2">
           <h5 className="card-title mb-2">Most followed people</h5>
           <div className="card-text border-top">

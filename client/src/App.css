@@ -27,6 +27,9 @@ body {
 .userContainer:hover > .editProfile{
   display:block !important;
 }
+.userContainer > img{
+  height: 150px;
+}
 .navbar,
 .card-header {
   background: #d7a2fd !important;
