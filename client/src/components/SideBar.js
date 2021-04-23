@@ -30,13 +30,43 @@ export default function SideBar() {
       }
     }
     getPopular();
-  }, [key,getUser]);
+  }, [key, getUser]);
   return (
     <React.Fragment>
       <div className="card mb-2 gedf-card">
         <div className="card-body px-2">
+          <h5 className="card-title mb-2">Explore</h5>
+          <div className="card-text border-top border-bottom">
+            <ul className="list-group custom-nav border-0 mt-0 px-0 pt-0 list-group-flush">
+              <li className="list-group-item my-0 py-2 px-1">
+                <Link to="/news">
+                  <i class="fa fa-fw fa-newspaper-o"></i> News
+                </Link>
+              </li>
+              <li className="list-group-item my-0 py-2 px-1">
+                <Link to="/covid19">
+                  <i class="fa fa-fw fa-medkit"></i> Covid19
+                </Link>
+              </li>
+              <li className="list-group-item my-0 py-2 px-1">
+                <Link to="/entertainment">
+                  <i class="fa fa-fw fa-film"></i> Entertainment
+                </Link>
+              </li>
+              <li className="list-group-item my-0 py-2 px-1">
+                <Link to="/sports">
+                  <i class="fa fa-fw fa-trophy"></i> Sports
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div className="card mb-2 gedf-card">
+        <div className="card-body px-2">
           <h5 className="card-title mb-2">Most followed people</h5>
-          <p className="card-text border-top">
+          <div className="card-text border-top">
             {users &&
               users.map((user, d) => (
                 <div className="d-flex border-bottom my-1 py-1 flex-row comment-row">
@@ -54,20 +84,29 @@ export default function SideBar() {
                     <h5 className="mb-0">
                       <Link to={`/profile/${user._id}`}>{user.name}</Link>
                     </h5>
-                    <p title={"@"+user.email.split("@")[0]} className="my-0 w-75 text-truncate">{"@"+user.email.split("@")[0]}</p>
-                    <p className="my-0 text-muted"><small>Following: {user.following && user.following.length} | Followers: {user.followers && user.followers.length}</small></p>
-
+                    <p
+                      title={"@" + user.email.split("@")[0]}
+                      className="my-0 w-75 text-truncate"
+                    >
+                      {"@" + user.email.split("@")[0]}
+                    </p>
+                    <p className="my-0 text-muted">
+                      <small>
+                        Following: {user.following && user.following.length} |
+                        Followers: {user.followers && user.followers.length}
+                      </small>
+                    </p>
                   </div>
                 </div>
               ))}
-          </p>
+          </div>
         </div>
       </div>
       <div className="card mb-2 gedf-card">
         <div className="card-body px-2">
           <h5 className="card-title mb-2">Most liked posts</h5>
-          <p className="card-text">
-            <ul className="list-group m-0 border-top  border-bottom p-0 list-group-flush">
+          <div className="card-text">
+            <ul className="list-group custom-nav m-0 border-top  border-bottom p-0 list-group-flush">
               {posts &&
                 posts.map((post, i) => (
                   <li key={i} className="list-group-item my-0 py-1 px-1">
@@ -77,7 +116,7 @@ export default function SideBar() {
                   </li>
                 ))}
             </ul>
-          </p>
+          </div>
         </div>
       </div>
       <div className="card mb-2 gedf-card">

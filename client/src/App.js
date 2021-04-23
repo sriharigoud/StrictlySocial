@@ -17,6 +17,10 @@ import ResetPassword from "./components/ResetPassword";
 import {createBrowserHistory} from 'history';
 import axios from 'axios';
 import { doLogout } from "./utils/utils";
+import Covid19 from "./components/explore/Covid19";
+import Entertainment from "./components/explore/Entertainment";
+import Sports from "./components/explore/Sports";
+import News from "./components/explore/News";
 
 const history = createBrowserHistory();
 
@@ -32,7 +36,7 @@ axios.interceptors.response.use(response => response, error => {
 });
 export default function App() {
   return (
-    <div className="container h-auto app px-0 border-right border-left border-light">
+    <div className="container-fluid h-auto app px-0 border-right border-left border-light">
       <Router history={history}>
         <Navigation />
         <Switch>
@@ -56,6 +60,10 @@ export default function App() {
             exact
           />
           <PrivateRoute component={Home} path="/home" exact />
+          <PrivateRoute component={News} path="/news" exact />
+          <PrivateRoute component={Sports} path="/sports" exact />
+          <PrivateRoute component={Entertainment} path="/entertainment" exact />
+          <PrivateRoute component={Covid19} path="/covid19" exact />
           <PrivateRoute component={Profile} path="/profile/:id" />
           <PrivateRoute component={Search} path="/search/:searchQuery" exact />
           <PrivateRoute component={PostContainer} path="/post/:id" exact />

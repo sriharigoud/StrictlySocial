@@ -188,7 +188,7 @@ export default function Profile() {
             </Tab>
             <Tab eventKey="photos" title="Photos">
             <SRLWrapper>
-            <div className="row">
+            <div className="row px-3">
 
             {posts &&
                 posts.filter(post => post.imageName !== 'none').map((post) => (

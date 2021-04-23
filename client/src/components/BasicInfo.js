@@ -88,10 +88,10 @@ export default function BasicInfo({
   return (
     <div className="card">
       <div style={{position:'relative'}} className="userContainer">
-      <SRLWrapper>
-        <a
+      {/* <SRLWrapper> */}
+        {/* <a
           href={userInfo.imageData ? "/" + userInfo.imageData : userInfo.avatar}
-        >
+        > */}
           <img
             className="w-100"
             src={
@@ -99,8 +99,8 @@ export default function BasicInfo({
             }
             alt={userInfo.name}
           />
-        </a>
-      </SRLWrapper>
+        {/* </a> */}
+      {/* </SRLWrapper> */}
       {currentUser && currentUser._id === userInfo._id && (
         <button
           className="btn btn-primary w-50 m-auto editProfile"
@@ -152,6 +152,8 @@ export default function BasicInfo({
           </a>
         </li>
       </ul> */}
+
+      
       <ul className="list-group d-none d-md-block list-group-flush">
         <li className="list-group-item">
           <div className="h6 text-muted">Followers</div>

@@ -151,6 +151,20 @@ body {
  
 }
 
+.custom-nav .list-group-item:hover{
+  background: #eed6ff;
+  text-decoration: none;
+}
+
+.custom-nav .list-group-item a{
+  height: 100%;
+  width: 100%;
+  display: block;
+}
+
+.custom-nav .list-group-item a:hover{
+  text-decoration: none;
+}
 
 @media (max-width: 767px) {
   .header{
