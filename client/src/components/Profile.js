@@ -10,6 +10,7 @@ import CreatePost from "./CreatePost";
 import { doLogin, getUser } from "../utils/utils";
 import { Tabs, Tab } from "react-bootstrap";
 import UserBox from "./UserBox";
+import { SRLWrapper } from "simple-react-lightbox";
 
 export default function Profile() {
   let [currentUser, setCurrentUser] = useState(getUser());
@@ -184,6 +185,24 @@ export default function Profile() {
               {userInfo.followers && userInfo.followers.length === 0 && (
                 <h6 className="m-2">No Followers found</h6>
               )}
+            </Tab>
+            <Tab eventKey="photos" title="Photos">
+            <SRLWrapper>
+            <div className="row">
+
+            {posts &&
+                posts.filter(post => post.imageName !== 'none').map((post) => (
+            <div className="col-lg-3 col-md-4 col-xs-6 m-0 p-0 thumb">
+                <a href={"/"+post.imageData} className="thumbnail">
+                    <img className="img-thumbnail"
+                         src={"/"+post.imageData}
+                         alt="Another alt text" />
+                </a> </div> 
+                ))}             
+
+              {posts && (posts.length === 0 || !posts.filter(post => post.imageName !== 'none').length) && <h6 className="m-2">No Photos found</h6>}
+              </div>
+              </SRLWrapper>
             </Tab>
           </Tabs>
         </div>

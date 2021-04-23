@@ -8,11 +8,10 @@ const gravatar = require("gravatar");
 const bcrypt = require("bcryptjs");
 const config = require("config");
 const jwt = require("jsonwebtoken");
-const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 const auth = require("../../middleware/auth");
-var smtpTransport = require("nodemailer-smtp-transport");
 const Post = require("../../models/Post");
+const transporter = require("../../utils/smtpConfig");
 
 
 router.get("/", (req, res) => res.send("Users Route"));
@@ -131,17 +130,6 @@ router.post(
       user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
 
       await user.save();
-
-      var transporter = nodemailer.createTransport(
-        smtpTransport({
-          service: "gmail",
-          host: "smtp.gmail.com",
-          auth: {
-            user: "strictlysocial2021@gmail.com",
-            pass: "srihari123",
-          },
-        })
-      );
 
       var mailOptions = {
         to: user.email,

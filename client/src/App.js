@@ -14,11 +14,26 @@ import "font-awesome/css/font-awesome.min.css";
 import Profile from "./components/Profile";
 import PostContainer from "./components/PostContainer";
 import ResetPassword from "./components/ResetPassword";
+import {createBrowserHistory} from 'history';
+import axios from 'axios';
+import { doLogout } from "./utils/utils";
 
+const history = createBrowserHistory();
+
+axios.interceptors.response.use(response => response, error => {
+  const status = error.response ? error.response.status : null
+  if (status === 401) {
+    console.log(history);
+    doLogout();
+    history.push("/login");
+  }
+
+  return Promise.reject(error);
+});
 export default function App() {
   return (
     <div className="container h-auto app px-0 border-right border-left border-light">
-      <Router>
+      <Router history={history}>
         <Navigation />
         <Switch>
           <PublicRoute restricted={true} component={Login} path="/" exact />

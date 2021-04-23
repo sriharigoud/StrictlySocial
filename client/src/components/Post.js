@@ -97,7 +97,7 @@ export default function Post({
                   <div>
                     {post.linkData.ogImage && <img className="w-100" src={post.linkData.ogImage} alt="" />}
                     {post.linkData.title && <h5>{post.linkData.title}</h5>}
-                    {post.linkData.description && <p class="text-muted small">{post.linkData.description}</p>}
+                    {post.linkData.description && <p className="text-muted small">{post.linkData.description}</p>}
                   </div>
                </a>
               )}
