@@ -30,7 +30,7 @@ export default function UserBox({ user, currentUser, setUserInfo, userInfo, setC
       </div>
       <div className="comment-text w-100">
         <span className="float-right action-icons my-2 mr-2">
-          {user._id !== currentUser._id && (
+          {user._id !== currentUser._id && user._id !== '608438c33383641df099002a' && (
             <button data={JSON.stringify(currentUser.following)} onClick={() => toggleFollow(user)} className="btn btn-primary" title="Follow">
               {currentUser.following &&
               currentUser.following.some((c) => c === user._id)

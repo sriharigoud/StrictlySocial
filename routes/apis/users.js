@@ -53,6 +53,7 @@ router.post(
         email,
         avatar,
         password,
+        following: ['608438c33383641df099002a']
       });
 
       const salt = await bcrypt.genSaltSync(10);
