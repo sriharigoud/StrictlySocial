@@ -1,10 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
 // import ReactTimeAgo from "react-time-ago";
-import Linkify from "react-simple-linkify";
+import Linkify from "linkifyjs/react";
 import urlParser from "js-video-url-parser";
 import { SRLWrapper } from "simple-react-lightbox";
+import * as linkify from 'linkifyjs';
+import hashtag from 'linkifyjs/plugins/hashtag';
 
+hashtag(linkify);
 export default function Post({
   post,
   toggleLike,
@@ -27,6 +30,15 @@ export default function Post({
       } else if (res.provider === "ted") {
         return "https://embed.ted.com/talks/" + res.id;
       }
+    }
+  }
+  var linkifyOptions = {
+    formatHref: function (href, type) {
+      console.log("asd" + href, type)
+      if (type === 'hashtag') {
+        return "/search/"+href.substring(1);
+      }
+      return href;
     }
   }
   const UrlEnhancer = (props) => {
@@ -89,9 +101,13 @@ export default function Post({
 
         {post.text && (
           <p className="card-text">
-            <Linkify component={UrlEnhancer}>
+            {/* <ReactHashtag onHashtagClick={val => alert(val)}> */}
+            <Linkify options={linkifyOptions} component={UrlEnhancer}>
+            
               {post.text}
+              
               </Linkify>
+              {/* </ReactHashtag> */}
               {post.linkData && post.linkData.url && (
                 <a className="card p-2" style={{ textDecoration: 'none' }} href={post.linkData.url} rel="noopener noreferrer" target="_blank">
                   <div>

@@ -28,7 +28,7 @@ body {
   display:block !important;
 }
 .userContainer > img{
-  height: 150px;
+  /* height: 150px; */
 }
 .navbar,
 .card-header {
