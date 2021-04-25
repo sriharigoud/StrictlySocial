@@ -194,7 +194,7 @@ export default function Profile() {
                 posts.filter(post => post.imageName !== 'none').map((post) => (
             <div className="col-lg-3 col-md-4 col-xs-6 m-0 p-0 thumb">
                 <a href={"/"+post.imageData} className="thumbnail">
-                    <img className="img-thumbnail"
+                    <img onError={(e) => e.target.src = process.env.PUBLIC_URL + "/img/no-image-available_1.jpg"} className="img-thumbnail"
                          src={"/"+post.imageData}
                          alt="" />
                 </a> </div> 

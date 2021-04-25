@@ -104,7 +104,7 @@ export default function Post({
         {post.imageName !== "none" && (
           <SRLWrapper>
             <a href={'/'+post.imageData}>
-              <img className="w-100" src={'/'+post.imageData} alt="" />
+              <img onError={(e) => e.target.src = process.env.PUBLIC_URL + "/img/no-image-available_1.jpg"} className="w-100" src={'/'+post.imageData} alt="" />
             </a>
           </SRLWrapper>
         )}
