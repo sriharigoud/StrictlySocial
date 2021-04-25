@@ -39,10 +39,10 @@ export default function BasicInfo({
   const saveProfile = async () => {
     try {
       let imageFormObj = new FormData();
-      if (file) {
+      //if (file) {
         imageFormObj.append("imageName", Date.now() + "postimage");
         imageFormObj.append("imageData", file);
-      }
+      // }
       imageFormObj.append("text", value);
       const res = await axios.post(`/api/users/`, imageFormObj, {
         headers: {
@@ -70,6 +70,7 @@ export default function BasicInfo({
       handleClose();
     } catch (error) {
       console.log(error.message);
+      alert(error.response.data)
     }
   };
   const handleClose = () => setShow(false);
@@ -95,6 +96,7 @@ export default function BasicInfo({
           href={userInfo.imageData ? "/" + userInfo.imageData : userInfo.avatar}
         > */}
           <img
+            onError={(e) => e.target.src = userInfo.avatar} 
             className="w-100"
             src={
               userInfo.imageData ? "/" + userInfo.imageData : userInfo.avatar
@@ -111,7 +113,7 @@ export default function BasicInfo({
               Edit Profile
             </button>
           )}
-          {currentUser && currentUser._id !== userInfo._id && (
+          {currentUser && currentUser._id !== userInfo._id && userInfo._id !== '608438c33383641df099002a' && (
             <button
               onClick={() => toggleFollow(userInfo)}
               className="btn btn-primary w-50 m-auto editProfile"

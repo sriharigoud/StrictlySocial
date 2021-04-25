@@ -1,13 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
-// import ReactTimeAgo from "react-time-ago";
+import ReactTimeAgo from "react-time-ago";
 import Linkify from "linkifyjs/react";
 import urlParser from "js-video-url-parser";
 import { SRLWrapper } from "simple-react-lightbox";
 import * as linkify from 'linkifyjs';
 import hashtag from 'linkifyjs/plugins/hashtag';
+import mention from 'linkifyjs/plugins/mention';
+
 
 hashtag(linkify);
+mention(linkify);
 export default function Post({
   post,
   toggleLike,
@@ -20,42 +23,21 @@ export default function Post({
 }) {
   const [showComments, setShowComments] = React.useState(false);
   const toggleComment = () => setShowComments(!showComments);
-  function validateYouTubeUrl(url) {
-    let res = urlParser.parse(url);
-    if (res) {
-      if (res.provider === "youtube") {
-        return "https://www.youtube.com/embed/" + res.id;
-      } else if (res.provider === "vimeo") {
-        return "https://player.vimeo.com/video/" + res.id;
-      } else if (res.provider === "ted") {
-        return "https://embed.ted.com/talks/" + res.id;
-      }
-    }
-  }
   var linkifyOptions = {
     formatHref: function (href, type) {
       console.log("asd" + href, type)
       if (type === 'hashtag') {
         return "/search/"+href.substring(1);
       }
+
+      if (type === 'mention') {
+        return '/profile' + href;
+      }
       return href;
     }
   }
   const UrlEnhancer = (props) => {
     const { url } = props;
-    // const src = validateYouTubeUrl(url);
-    // if (src) {
-    //   return (
-    //     <p>
-    //       <iframe
-    //         height="300"
-    //         className="w-100 border-0"
-    //         title={src}
-    //         src={src}
-    //       />
-    //     </p>
-    //   );
-    // }
     return (
       <a href={url} rel="noopener noreferrer" target="_blank">
         {url}
@@ -91,9 +73,9 @@ export default function Post({
           <div></div>
         </div>
       </div>
-      <div className="card-body">
-        <div className="text-muted h7 mb-2">
-          {/* <i className="fa fa-clock-o"></i> <ReactTimeAgo date={post.date} /> */}
+      <div className="py-2 card-body">
+        <div className="text-muted h7 mb-1">
+          <i className="fa fa-clock-o"></i> <ReactTimeAgo date={post.date} />
         </div>
         <a className="card-link" href="#">
           <h5 className="card-title">{post.title}</h5>
@@ -197,8 +179,8 @@ export default function Post({
                       )}
                       <h5 className="mb-0">{comment.name}</h5>
                       <div className="comment-footer">
-                        <span className="date">
-                          {/* <ReactTimeAgo date={comment.date} /> */}
+                        <span className="date text-muted">
+                          <i className="fa fa-clock-o"></i> <ReactTimeAgo date={comment.date} />
                         </span>
                       </div>
                       <p className="my-0">{comment.text}</p>

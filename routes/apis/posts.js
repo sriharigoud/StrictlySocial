@@ -1,13 +1,16 @@
 const express = require("express");
 const request = require("request");
+const fs = require("fs");
 const cheerio = require("cheerio");
+const path = require("path");
 const router = express.Router();
 const { check, validationResult } = require("express-validator");
 const auth = require("../../middleware/auth");
 const User = require("../../models/User");
 const Post = require("../../models/Post");
-const upload = require("../../middleware/multer");
-const mongoose = require("mongoose");
+const multerConfig = require("../../helpers/multer");
+const multer = require("multer");
+const sharp = require("sharp");
 
 // create post
 router.post(
@@ -207,25 +210,43 @@ router.get("/search/:searchQuery", auth, async (req, res) => {
 // create post with image
 router.post(
   "/uploadImage",
-  upload.single("imageData"),
   auth,
   async (req, res) => {
+    let upload = multer({
+      storage: multerConfig.storage,
+      fileFilter: multerConfig.imageFilter,
+    }).single("imageData");
     try {
-      let user = await User.findById(req.user.id);
-      const text = "";
-      let post = new Post({
-        user: user.id,
-        text,
-        name: user.name,
-        avatar: user.imageData ? user.imageData : user.avatar,
-        likes: [],
-        comments: [],
-        imageName: req.body.imageName,
-        imageData: req.file.path,
-      });
+      new Promise((resolve, reject) => {
+        upload(req, res, async function (err) {
+          if (req.fileValidationError) {
+            return res.status(500).send(req.fileValidationError);
+          } else if (err instanceof multer.MulterError) {
+            return res.status(500).send(err);
+          } else if (err) {
+            return res.status(500).send(err);
+          }
+         
+          resolve()
+        });
+      }).then(async () => {
+        // Display uploaded image for user validation
+        let user = await User.findById(req.user.id);
+        const text = "";
+        let post = new Post({
+          user: user.id,
+          text,
+          name: user.name,
+          avatar: user.imageData ? user.imageData : user.avatar,
+          likes: [],
+          comments: [],
+          imageName: req.body.imageName,
+          imageData: req.file.path,
+        });
 
-      const newpost = await post.save();
-      res.json({ newpost });
+        const newpost = await post.save();
+        res.json({ newpost });
+      })
     } catch (error) {
       console.log(error.message);
       res.status(500).send("Server error");
@@ -273,6 +294,9 @@ router.delete("/:id", auth, async (req, res) => {
 
     if (post.user.toString() !== req.user.id) {
       return res.status(403).json({ msg: "Unauthorized access" });
+    }
+    if(post.imageName != "none"){
+      fs.unlinkSync(post.imageData);
     }
 
     await post.remove();

@@ -29,7 +29,8 @@
     "nodemailer-smtp-transport": "^2.7.4",
     "react-time-ago": "^6.2.2",
     "request": "^2.88.2",
-    "save": "^2.4.0"
+    "save": "^2.4.0",
+    "sharp": "^0.28.1"
   },
   "devDependencies": {
     "concurrently": "^6.0.1",

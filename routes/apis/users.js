@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { check, validationResult } = require("express-validator");
 const upload = require("../../middleware/multer");
-
+const ObjectId = require("mongoose").Types.ObjectId;
 const User = require("../../models/User");
 const gravatar = require("gravatar");
 const bcrypt = require("bcryptjs");
@@ -11,10 +11,9 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const auth = require("../../middleware/auth");
 const Post = require("../../models/Post");
-const transporter = require("../../utils/smtpConfig");
-
-
-router.get("/", (req, res) => res.send("Users Route"));
+const transporter = require("../../helpers/smtpConfig");
+const multerConfig = require("../../helpers/multer");
+const multer = require("multer");
 
 router.post(
   "/register",
@@ -53,7 +52,7 @@ router.post(
         email,
         avatar,
         password,
-        following: ['608438c33383641df099002a']
+        following: ["608438c33383641df099002a"],
       });
 
       const salt = await bcrypt.genSaltSync(10);
@@ -155,10 +154,18 @@ router.post(
 
 router.get("/:id", auth, async (req, res) => {
   try {
-    const user = await User.findById(req.params.id)
-      .populate("following", "-password")
-      .populate("followers", "-password")
-      .select("-password");
+    let user;
+    if (ObjectId.isValid(req.params.id)) {
+      user = await User.findById(req.params.id)
+        .populate("following", "-password")
+        .populate("followers", "-password")
+        .select("-password");
+    } else {
+      user = await User.findOne({ email: { $regex: req.params.id + ".*" } })
+        .populate("following", "-password")
+        .populate("followers", "-password")
+        .select("-password");
+    }
     res.json(user);
   } catch (error) {
     console.log(error.message);
@@ -187,35 +194,55 @@ router.get("/search/:searchQuery", auth, async (req, res) => {
 });
 
 // update user
-router.post(
-  "/",
-  upload.single("imageData"),
-  [check("text", "Text is required").not().isEmpty()],
-  auth,
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-    const { text } = req.body;
-    try {
-      const user = await User.findById(req.user.id);
-      user.bio = text;
-      user.imageName = req.body.imageName;
-      user.imageData = req.file.path;
-      await user.save();
-
-      const filter = { user: user._id.toString() };
-      const update = { avatar: "/"+req.file.path };
-
-      let doc = await Post.updateMany(filter, update);
-      res.json(user);
-    } catch (error) {
-      console.log(error.message);
-      res.status(500).send("Server error");
-    }
+router.post("/", auth, async (req, res) => {
+  let upload = multer({
+    storage: multerConfig.storage,
+    limits: { fileSize: 1024 * 1024 * 5 },
+    fileFilter: multerConfig.imageFilter,
+  }).single("imageData");
+  try {
+    let user = await User.findById(req.user.id);
+      new Promise((resolve, reject) => {
+        upload(req, res, function (err) {
+          // req.file contains information of uploaded file
+          // req.body contains information of text fields, if there were any
+          console.log(err)
+          if (req.fileValidationError) {
+            return res.status(500).send(req.fileValidationError);
+          } else if (err instanceof multer.MulterError) {
+            return res.status(500).send(err);
+          } else if (err) {
+            return res.status(500).send(err);
+          }
+      
+          // Display uploaded image for user validation
+          resolve()
+        });
+      }).then(async () => {
+        if(!req.body.text){
+          return res.status(500).send("Bio can't be blank");
+        }
+        user.bio = req.body.text;
+        if(req.file){
+          user.imageName = req.body.imageName;
+          user.imageData = req.file.path;
+        }
+        await user.save();
+        
+        if(req.file){
+          const filter = { user: user._id.toString() };
+          const update = { avatar: "/" + req.file.path };
+      
+          let doc = await Post.updateMany(filter, update);
+        }
+        res.json(user);
+      })
+   
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send("Server error");
   }
-);
+});
 
 router.post(
   "/updateProfilePic",

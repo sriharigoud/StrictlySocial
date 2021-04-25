@@ -91,12 +91,12 @@ export default function Profile() {
     }
   };
   useEffect(() => {
-    async function fetchPosts() {
+    async function fetchPosts(userid) {
       if (currentUser.token) {
         setAuthToken(currentUser.token);
       }
       let response = await axios(
-        "/api/posts/user/" + pathname.replace("/profile/", "")
+        "/api/posts/user/" + userid
       );
       setPosts(response.data);
     }
@@ -108,9 +108,9 @@ export default function Profile() {
         "/api/users/" + pathname.replace("/profile/", "")
       );
       setUserInfo(response.data);
+      fetchPosts(response.data._id);
     }
     try {
-      fetchPosts();
       getUserInfo();
     } catch (error) {
       console.log(error.message);
@@ -196,7 +196,7 @@ export default function Profile() {
                 <a href={"/"+post.imageData} className="thumbnail">
                     <img className="img-thumbnail"
                          src={"/"+post.imageData}
-                         alt="Another alt text" />
+                         alt="" />
                 </a> </div> 
                 ))}             
 

@@ -50,7 +50,7 @@ export default function Navigation() {
             <div>
               <NavDropdown title={userInfo.name} id="basic-nav-dropdown">
                 <Link to={`/home`}>Home</Link> <NavDropdown.Divider />
-                <Link to={`/profile/${userInfo._id}`}>My Profile</Link>
+                <Link to={`/profile/${userInfo.email.split("@")[0]}`}>My Profile</Link>
                 <NavDropdown.Divider />
                 <a role="button" onClick={() => logout()}>
                   Logout
