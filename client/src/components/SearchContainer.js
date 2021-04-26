@@ -45,6 +45,7 @@ export default function SearchContainer({searchKey, showPeople}) {
           a._id === post._id ? { ...a, comments: res.data } : { ...a }
         );
       });
+      setCommentText("")
     } catch (error) {
       console.log(error.message);
     }
@@ -127,6 +128,7 @@ export default function SearchContainer({searchKey, showPeople}) {
                     deletePost={deletePost}
                     deleteComment={deleteComment}
                     currentUser={currentUser}
+                    commentText={commentText}
                   />
                 ))}
                 {!posts.length && <h6>No Posts Found</h6>}

@@ -22,7 +22,8 @@ export default function Post({
   deletePost,
   sharePost,
   deleteComment,
-  currentUser
+  currentUser,
+  commentText
 }) {
   const [users, setUsers] = useState([]);
   const [showComments, setShowComments] = useState(false);
@@ -192,6 +193,7 @@ export default function Post({
                 rows={1}
                 className="form-control mr-3"
                 onChange={(text) => setCommentText(text)}
+                value={commentText}
                 style={{ width: "100%" }}
               >
                 {users &&

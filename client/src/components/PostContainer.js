@@ -36,6 +36,7 @@ export default function PostContainer() {
         }
       );
       setPost({...post, comments: res.data});
+      setCommentText("")
     } catch (error) {
       console.log(error.message);
     }
@@ -110,6 +111,7 @@ export default function PostContainer() {
             deleteComment={deleteComment}
             sharePost={sharePost}
             currentUser={currentUser}
+            commentText={commentText}
           />}
           {post === null && (<React.Fragment><h3>No Post Found</h3> <Link to="/home">Click to go back to home</Link></React.Fragment>)}
         </div>

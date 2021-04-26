@@ -46,6 +46,7 @@ export default function Profile() {
           a._id === post._id ? { ...a, comments: res.data } : { ...a }
         );
       });
+      setCommentText("")
     } catch (error) {
       console.log(error.message);
     }
@@ -151,6 +152,7 @@ export default function Profile() {
                     deleteComment={deleteComment}
                     sharePost={sharePost}
                     currentUser={currentUser}
+                    commentText={commentText}
                   />
                 ))}
               {posts && posts.length === 0 && <h6 className="m-2">No Posts found</h6>}

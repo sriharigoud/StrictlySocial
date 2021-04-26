@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Tabs, Tab } from "react-bootstrap";
 import axios from "axios";
 import Mentions from "rc-mentions";
@@ -64,7 +64,6 @@ export default function CreatePost({ setPosts }) {
   };
   debounce(loadGithubUsers, 1000);
 
-
   return (
     <div className="card p-2 gedf-card">
       <Tabs
@@ -93,6 +92,7 @@ export default function CreatePost({ setPosts }) {
               onChange={(text) => setText(text)}
               style={{ width: "100%" }}
               defaultValue={text}
+              value={text}
             >
               {users && users.map((user) => (<Option key={user._id} value={user.email.split("@")[0]}>{user.name}</Option>))}
             </Mentions>

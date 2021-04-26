@@ -52,6 +52,7 @@ export default function Home() {
           a._id === post._id ? { ...a, comments: res.data } : { ...a }
         );
       });
+      setCommentText("")
     } catch (error) {
       console.log(error.message);
     }
@@ -129,6 +130,7 @@ export default function Home() {
                 deleteComment={deleteComment}
                 sharePost={sharePost}
                 currentUser={currentUser}
+                commentText={commentText}
               />
             ))}
           {!posts.length && (
