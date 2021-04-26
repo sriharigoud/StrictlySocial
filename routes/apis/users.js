@@ -11,6 +11,7 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const auth = require("../../middleware/auth");
 const Post = require("../../models/Post");
+const Notification = require("../../models/Notification");
 const transporter = require("../../helpers/smtpConfig");
 const multerConfig = require("../../helpers/multer");
 const multer = require("multer");
@@ -102,6 +103,20 @@ router.get("/popular", auth, async (req, res) => {
         if (err) return res.status(500).send("Server error");
         res.json(result);
       });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send("Server error");
+  }
+});
+
+// most followed people
+router.get("/notifications", auth, async (req, res) => {
+  try {
+    let notifications = await Notification.find({receiver: req.user.id})
+    .sort({date: -1})
+    .populate({path: "sender", select: '_id, name'})
+    .populate({path: "post", select: '_id, text'});
+    res.json(notifications);
   } catch (error) {
     console.log(error.message);
     res.status(500).send("Server error");
@@ -342,6 +357,12 @@ router.put("/follow/:id", auth, async (req, res) => {
     );
     if (followingIndex == -1) {
       currentUser.following.unshift(req.params.id);
+      const notification = new Notification({
+        sender: req.params.id,
+        receiver: req.user.id,
+        action: "follow"
+      })
+      await notification.save();
     } else {
       currentUser.following.splice(followingIndex, 1);
     }

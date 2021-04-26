@@ -35,7 +35,7 @@ export default function SideBar() {
     <React.Fragment>
             <div className="card mb-2 gedf-card">
         <div className="card-body px-2">
-          <h5 className="card-title mb-2">Most followed people</h5>
+          <h5 className="card-title mb-2">Who to follow</h5>
           <div className="card-text border-top">
             {users &&
               users.map((user, d) => (
@@ -75,7 +75,7 @@ export default function SideBar() {
       </div>
       <div className="card mb-2 gedf-card">
         <div className="card-body px-2">
-          <h5 className="card-title mb-2">Most liked posts</h5>
+          <h5 className="card-title mb-2">Posts to look at</h5>
           <div className="card-text">
             <ul className="list-group custom-nav m-0 border-top  border-bottom p-0 list-group-flush">
               {posts &&

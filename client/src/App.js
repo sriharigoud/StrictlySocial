@@ -21,6 +21,7 @@ import Covid19 from "./components/explore/Covid19";
 import Entertainment from "./components/explore/Entertainment";
 import Sports from "./components/explore/Sports";
 import News from "./components/explore/News";
+import Notifications from "./components/Notifications";
 
 const history = createBrowserHistory();
 
@@ -61,6 +62,7 @@ export default function App() {
           />
           <PrivateRoute component={Home} path="/home" exact />
           <PrivateRoute component={News} path="/news" exact />
+          <PrivateRoute component={Notifications} path="/notifications" exact />
           <PrivateRoute component={Sports} path="/sports" exact />
           <PrivateRoute component={Entertainment} path="/entertainment" exact />
           <PrivateRoute component={Covid19} path="/covid19" exact />

@@ -10,8 +10,8 @@ const User = require("../../models/User");
 const Post = require("../../models/Post");
 const multerConfig = require("../../helpers/multer");
 const multer = require("multer");
-const sharp = require("sharp");
 const cloudinary = require("cloudinary").v2;
+const Notification = require("../../models/Notification");
 
 // create post
 router.post(
@@ -138,9 +138,17 @@ router.get("/share/:id", auth, async (req, res) => {
       name: user.name,
       owner: post.user,
       user: user._id,
+      linkData: post.linkData
     });
 
     let newpost = await anewpost.save();
+    const notification = new Notification({
+      sender: req.user.id,
+      receiver: post.user,
+      post: req.params.id,
+      action: "share"
+    })
+    await notification.save()
     res.json({
       newpost: { ...newpost._doc, owner: { _id: post.user, name: post.name } },
     });
@@ -335,6 +343,13 @@ router.put("/likes/:id", auth, async (req, res) => {
     );
     if (likeIndex == -1) {
       post.likes.unshift({ user: req.user.id });
+      const notification = new Notification({
+        sender: req.user.id,
+        receiver: post.user,
+        post: req.params.id,
+        action: "like"
+      })
+      await notification.save()
     } else {
       post.likes.splice(likeIndex, 1);
     }
@@ -380,9 +395,14 @@ router.post(
       };
 
       post.comments.unshift(comment);
-
       const re = await post.save();
-      console.log(re)
+      const notification = new Notification({
+        sender: req.user.id,
+        receiver: post.user,
+        post: req.params.id,
+        action: "comment"
+      })
+      await notification.save()
       res.json(post.comments.map(c => c._id == re.comments[0]._id ? Object.assign(re.comments[0], {user: {_id:req.user.id, name: user.name, avatar: user.avatar, imageData: user.imageData}}) : c));
     } catch (error) {
       console.log(error.message);
