@@ -298,7 +298,11 @@ router.delete("/:id", auth, async (req, res) => {
       return res.status(403).json({ msg: "Unauthorized access" });
     }
     if(post.imageName != "none"){
-      await cloudinary.uploader.destroy(post.imageName);
+      try {
+        await cloudinary.uploader.destroy(post.imageName);
+      } catch (error) {
+        console.log(error.message)
+      }
     }
 
     await post.remove();
