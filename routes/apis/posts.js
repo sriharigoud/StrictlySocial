@@ -160,6 +160,8 @@ router.get("/", auth, async (req, res) => {
     // const posts = await Post.find().sort({ date: -1 });
     const posts = await Post.find({ user: { $in: fowls } })
       .populate("owner", "name")
+      .populate({path: "user", select: "name avatar imageData"})
+      .populate({path: "comments.user", select: "name avatar imageData"})
       .sort({ date: -1 });
     res.json(posts);
   } catch (error) {
@@ -233,7 +235,7 @@ router.post(
       }).then(async () => {
         // Display uploaded image for user validation
         let user = await User.findById(req.user.id);
-        console.log(req.file);
+        console.log(cloudinary.image(req.file.filename, {fetch_format: "auto"}));
         const text = "";
         let post = new Post({
           user: user.id,
@@ -259,7 +261,8 @@ router.post(
 // get post by id
 router.get("/:id", auth, async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id).populate("owner", "name");
+    const post = await Post.findById(req.params.id).populate("owner", "name").populate({path: "user", select: "name avatar imageData"})
+    .populate({path: "comments.user", select: "name avatar imageData"});
     if (!post) {
       return res.status(404).json({ msg: "Post not found" });
     }
@@ -278,6 +281,8 @@ router.get("/user/:id", auth, async (req, res) => {
   try {
     const posts = await Post.find({ user: req.params.id })
       .populate("owner", "name")
+      .populate({path: "user", select: "name avatar imageData"})
+      .populate({path: "comments.user", select: "name avatar imageData"})
       .sort({ date: -1 });
     res.json(posts);
   } catch (error) {

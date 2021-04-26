@@ -64,7 +64,7 @@ export default function Post({
   return (
     <div className="card my-2 gedf-card">
       <div className="card-header">
-        {post.user === userId && (
+        {post.user._id === userId && (
           <span className="float-right action-icons mr-2">
             <a role="button" onClick={() => deletePost(post)} title="Delete">
               <i className="fa fa-remove"></i>
@@ -75,15 +75,16 @@ export default function Post({
           <div className="d-flex justify-content-between align-items-center">
             <div className="mr-2">
               <img
+                onError={(e) => e.target.src = post.user.avatar}
                 className="rounded-circle"
                 width="45"
-                src={post.avatar}
+                src={post.user.imageData ? post.user.imageData : post.user.avatar}
                 alt=""
               />
             </div>
             <div className="ml-2">
               <div className="h5 m-0">
-                <Link to={`/profile/${post.user}`}>{post.name}</Link>{" "}
+                <Link to={`/profile/${post.user._id}`}>{post.name}</Link>{" "}
                 {post.owner && (
                   <span>
                     Shared{" "}
@@ -221,15 +222,16 @@ export default function Post({
                     <div className="p-2">
                       <span className="round">
                         <img
+                          onError={(e) => e.target.src = comment.user.avatar}
                           className="img-fluid img-responsive rounded-circle"
-                          src={comment.avatar}
+                          src={comment.user.imageData ? comment.user.imageData : comment.user.avatar}
                           alt="user"
                           width="50"
                         />
                       </span>
                     </div>
                     <div className="comment-text w-100">
-                      {comment.user === userId && (
+                      {comment.user._id === userId && (
                         <span className="float-right action-icons mr-2">
                           <a
                             role="button"

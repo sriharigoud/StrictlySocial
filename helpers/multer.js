@@ -17,12 +17,13 @@ cloudinary.config({
 
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
-    // params: {
+    params: {
     //   folder: "sample",
     //   format: async () => "jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF",
     //   public_id: (req, file) => file.filename,
     //   quality_analysis: 60
-    // },
+        transformation: {quality: 60}
+    },
   });
   
 // const storage = multer.diskStorage({
