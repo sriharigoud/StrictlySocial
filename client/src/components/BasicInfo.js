@@ -70,7 +70,9 @@ export default function BasicInfo({
       handleClose();
     } catch (error) {
       console.log(error.message);
+      if(error.response){
       alert(error.response.data)
+      }
     }
   };
   const handleClose = () => setShow(false);
@@ -99,7 +101,7 @@ export default function BasicInfo({
             onError={(e) => e.target.src = userInfo.avatar} 
             className="w-100"
             src={
-              userInfo.imageData ? "/" + userInfo.imageData : userInfo.avatar
+              userInfo.imageData ? userInfo.imageData : userInfo.avatar
             }
             alt={userInfo.name}
           />
@@ -137,22 +139,22 @@ export default function BasicInfo({
         {/* <ul className="list-group border-0 mt-0 px-2 pt-0 list-group-flush">
         <li className="list-group-item my-0 py-2 px-1">
           <a href="#home">
-            <i class="fa fa-fw fa-home"></i> Home
+            <i className="fa fa-fw fa-home"></i> Home
           </a>
         </li>
         <li className="list-group-item my-0 py-2 px-1">
           <a href="#home">
-            <i class="fa fa-fw fa-home"></i> Explore
+            <i className="fa fa-fw fa-home"></i> Explore
           </a>
         </li>
         <li className="list-group-item my-0 py-2 px-1">
           <a href="#home">
-            <i class="fa fa-fw fa-home"></i> Notifications
+            <i className="fa fa-fw fa-home"></i> Notifications
           </a>
         </li>
         <li className="list-group-item my-0 py-2 px-1">
           <a href="#home">
-            <i class="fa fa-fw fa-home"></i> Profile
+            <i className="fa fa-fw fa-home"></i> Profile
           </a>
         </li>
       </ul> */}
@@ -208,22 +210,22 @@ export default function BasicInfo({
             <ul className="list-group custom-nav border-0 mt-0 px-0 pt-0 list-group-flush">
               <li className="list-group-item my-0 py-2 px-1">
                 <Link to="/news">
-                  <i class="fa fa-fw fa-newspaper-o"></i> News
+                  <i className="fa fa-fw fa-newspaper-o"></i> News
                 </Link>
               </li>
               <li className="list-group-item my-0 py-2 px-1">
                 <Link to="/covid19">
-                  <i class="fa fa-fw fa-medkit"></i> Covid19
+                  <i className="fa fa-fw fa-medkit"></i> Covid19
                 </Link>
               </li>
               <li className="list-group-item my-0 py-2 px-1">
                 <Link to="/entertainment">
-                  <i class="fa fa-fw fa-film"></i> Entertainment
+                  <i className="fa fa-fw fa-film"></i> Entertainment
                 </Link>
               </li>
               <li className="list-group-item my-0 py-2 px-1">
                 <Link to="/sports">
-                  <i class="fa fa-fw fa-trophy"></i> Sports
+                  <i className="fa fa-fw fa-trophy"></i> Sports
                 </Link>
               </li>
             </ul>

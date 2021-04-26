@@ -150,6 +150,7 @@ export default function Profile() {
                     deletePost={deletePost}
                     deleteComment={deleteComment}
                     sharePost={sharePost}
+                    currentUser={currentUser}
                   />
                 ))}
               {posts && posts.length === 0 && <h6 className="m-2">No Posts found</h6>}
@@ -193,9 +194,9 @@ export default function Profile() {
             {posts &&
                 posts.filter(post => post.imageName !== 'none').map((post) => (
             <div className="col-lg-3 col-md-4 col-xs-6 m-0 p-0 thumb">
-                <a href={"/"+post.imageData} className="thumbnail">
+                <a href={post.imageData} className="thumbnail">
                     <img onError={(e) => e.target.src = process.env.PUBLIC_URL + "/img/no-image-available_1.jpg"} className="img-thumbnail"
-                         src={"/"+post.imageData}
+                         src={post.imageData}
                          alt="" />
                 </a> </div> 
                 ))}             

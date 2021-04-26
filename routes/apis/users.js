@@ -14,6 +14,7 @@ const Post = require("../../models/Post");
 const transporter = require("../../helpers/smtpConfig");
 const multerConfig = require("../../helpers/multer");
 const multer = require("multer");
+const cloudinary = require("cloudinary").v2;
 
 router.post(
   "/register",
@@ -224,17 +225,24 @@ router.post("/", auth, async (req, res) => {
         }
         user.bio = req.body.text;
         if(req.file){
-          user.imageName = req.body.imageName;
+          if(user.imageName != "none"){
+            try {
+              await cloudinary.uploader.destroy(user.imageName);
+            } catch (error) {
+              console.log(error.message);
+            }
+          }
+          user.imageName = req.file.filename;
           user.imageData = req.file.path;
         }
         await user.save();
         
-        if(req.file){
-          const filter = { user: user._id.toString() };
-          const update = { avatar: "/" + req.file.path };
+        // if(req.file){
+        //   const filter = { user: user._id.toString() };
+        //   const update = { avatar: "/" + req.file.path };
       
-          let doc = await Post.updateMany(filter, update);
-        }
+        //   let doc = await Post.updateMany(filter, update);
+        // }
         res.json(user);
       })
    

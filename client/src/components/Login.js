@@ -55,7 +55,9 @@ export default function Login() {
       handleClose();
     } catch (error) {
       console.log(error)
-      alert(error.response.data)  
+      if(error.response){
+        alert(error.response.data)
+        }
     }
   };
 

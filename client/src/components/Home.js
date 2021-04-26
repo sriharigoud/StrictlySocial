@@ -128,6 +128,7 @@ export default function Home() {
                 deletePost={deletePost}
                 deleteComment={deleteComment}
                 sharePost={sharePost}
+                currentUser={currentUser}
               />
             ))}
           {!posts.length && (

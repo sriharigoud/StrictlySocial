@@ -42,7 +42,9 @@ export default function CreatePost({ setPosts }) {
       }
     } catch (error) {
       console.log(error.message);
-      alert(error.response.data)
+      if(error.response){
+        alert(error.response.data)
+        }
     }
   };
   const fileChangedHandler = (event) => {

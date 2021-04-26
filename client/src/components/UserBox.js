@@ -22,7 +22,8 @@ export default function UserBox({ user, currentUser, setUserInfo, userInfo, setC
         <span className="round">
           <img
             className="img-fluid img-responsive rounded-circle"
-            src={user.avatar}
+            onError={(e) => e.target.src = user.avatar}
+            src={user.imageData ? user.imageData : user.avatar}
             alt="user"
             width="50"
           />

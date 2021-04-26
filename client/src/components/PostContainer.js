@@ -109,6 +109,7 @@ export default function PostContainer() {
             deletePost={deletePost}
             deleteComment={deleteComment}
             sharePost={sharePost}
+            currentUser={currentUser}
           />}
           {post === null && (<React.Fragment><h3>No Post Found</h3> <Link to="/home">Click to go back to home</Link></React.Fragment>)}
         </div>

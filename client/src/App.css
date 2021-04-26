@@ -138,6 +138,10 @@ body {
   border-radius: 3px;
   overflow: hidden;
 }
+.rc-mentions textarea:focus{
+  border: none;
+  outline: none;
+}
 .rc-mentions-dropdown {
   border: 1px solid #999;
   border-radius: 3px;

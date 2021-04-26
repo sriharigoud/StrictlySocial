@@ -39,12 +39,13 @@ export default function SideBar() {
           <div className="card-text border-top">
             {users &&
               users.map((user, d) => (
-                <div className="d-flex border-bottom my-1 py-1 flex-row comment-row">
+                <div key={user._id} className="d-flex border-bottom my-1 py-1 flex-row comment-row">
                   <div className="p-1">
                     <span className="round">
                       <img
+                        onError={(e) => e.target.src = user.avatar}
                         className="rounded-circle"
-                        src={user.avatar}
+                        src={user.imageData ? user.imageData : user.avatar}
                         alt="user"
                         width="65"
                       />

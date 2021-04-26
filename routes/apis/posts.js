@@ -11,6 +11,7 @@ const Post = require("../../models/Post");
 const multerConfig = require("../../helpers/multer");
 const multer = require("multer");
 const sharp = require("sharp");
+const cloudinary = require("cloudinary").v2;
 
 // create post
 router.post(
@@ -133,7 +134,7 @@ router.get("/share/:id", auth, async (req, res) => {
       imageData,
       likes: [],
       comments: [],
-      avatar: user.avatar,
+      avatar: user.imageData ? user.imageData : user.avatar,
       name: user.name,
       owner: post.user,
       user: user._id,
@@ -232,6 +233,7 @@ router.post(
       }).then(async () => {
         // Display uploaded image for user validation
         let user = await User.findById(req.user.id);
+        console.log(req.file);
         const text = "";
         let post = new Post({
           user: user.id,
@@ -240,7 +242,7 @@ router.post(
           avatar: user.imageData ? user.imageData : user.avatar,
           likes: [],
           comments: [],
-          imageName: req.body.imageName,
+          imageName: req.file.filename,
           imageData: req.file.path,
         });
 
@@ -296,7 +298,7 @@ router.delete("/:id", auth, async (req, res) => {
       return res.status(403).json({ msg: "Unauthorized access" });
     }
     if(post.imageName != "none"){
-      fs.unlinkSync(post.imageData);
+      await cloudinary.uploader.destroy(post.imageName);
     }
 
     await post.remove();
@@ -364,7 +366,7 @@ router.post(
         text,
         user: req.user.id,
         name: user.name,
-        avatar: user.avatar,
+        avatar: user.imageData ? user.imageData : user.avatar,
       };
 
       post.comments.unshift(comment);

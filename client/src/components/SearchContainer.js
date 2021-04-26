@@ -126,6 +126,7 @@ export default function SearchContainer({searchKey, showPeople}) {
                     toggleLike={toggleLike}
                     deletePost={deletePost}
                     deleteComment={deleteComment}
+                    currentUser={currentUser}
                   />
                 ))}
                 {!posts.length && <h6>No Posts Found</h6>}
