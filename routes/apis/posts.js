@@ -363,7 +363,8 @@ router.post(
     }
     let { text } = req.body;
     try {
-      const post = await Post.findById(req.params.id).populate("owner", "name");
+      const post = await Post.findById(req.params.id).populate("owner", "name").populate({path: "comments.user", select: "name avatar imageData"})
+      ;
 
       if (!post) {
         return res.status(404).json({ msg: "Post not found" });
@@ -380,9 +381,9 @@ router.post(
 
       post.comments.unshift(comment);
 
-      await post.save();
-
-      res.json(post.comments);
+      const re = await post.save();
+      console.log(re)
+      res.json(post.comments.map(c => c._id == re.comments[0]._id ? Object.assign(re.comments[0], {user: {_id:req.user.id, name: user.name, avatar: user.avatar, imageData: user.imageData}}) : c));
     } catch (error) {
       console.log(error.message);
       if (error.kind === "ObjectId") {
@@ -401,7 +402,7 @@ router.delete("/comments/:id/:commentId", auth, async (req, res) => {
   }
   let { text } = req.body;
   try {
-    const post = await Post.findById(req.params.id).populate("owner", "name");
+    const post = await Post.findById(req.params.id).populate("owner", "name").populate({path: "comments.user", select: "name avatar imageData"});
 
     if (!post) {
       return res.status(404).json({ msg: "Post not found" });
@@ -409,7 +410,7 @@ router.delete("/comments/:id/:commentId", auth, async (req, res) => {
 
     const commentIndex = post.comments.findIndex(
       (comment) =>
-        comment.user == req.user.id.toString() &&
+        comment.user._id == req.user.id.toString() &&
         comment.id == req.params.commentId
     );
     if (commentIndex !== -1) {
