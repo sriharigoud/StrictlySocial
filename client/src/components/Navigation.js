@@ -4,7 +4,7 @@ import { Link, useHistory, useLocation } from "react-router-dom";
 import { getUser } from "../utils/utils";
 import { NavDropdown } from "react-bootstrap";
 
-export default function Navigation() {
+export default function Navigation({notifications}) {
   const [userInfo, setUserInfo] = useState(null);
   const [searchQuery, setsearchQuery] = useState('');
   let history = useHistory();
@@ -48,9 +48,9 @@ export default function Navigation() {
               </div>
             </form>
             <div>
-              <NavDropdown title={userInfo.name} id="basic-nav-dropdown">
+              <NavDropdown title={userInfo.name} id="collasible-nav-dropdown">
                 <Link to={`/home`}>Home</Link> <NavDropdown.Divider />
-                <Link to={`/notifications`}>Notifications</Link> <NavDropdown.Divider />
+                <Link to={`/notifications`}>Notifications ({notifications.length})</Link> <NavDropdown.Divider />
                 <Link to={`/profile/${userInfo.email.split("@")[0]}`}>My Profile</Link>
                 <NavDropdown.Divider />
                 <a role="button" onClick={() => logout()}>

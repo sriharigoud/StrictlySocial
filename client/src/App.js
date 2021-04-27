@@ -52,12 +52,16 @@ axios.interceptors.response.use(
 );
 export default function App() {
   let [currentUser, setCurrentUser] = useState(getUser());
+  let [notifications, setNotifications] = useState([]);
   useEffect(() => {
     channel.bind("inserted", function (data) {
       if (
         currentUser._id === data.receiver &&
         currentUser._id !== data.sender._id
       ) {
+        if(!notifications.some(notification => notification._id === data._id)){
+          setNotifications(prev => [data, ...prev])
+        }
         if (data.action === "like") {
           NotificationManager.info(
             `${data.sender.name} liked your post ${
@@ -99,7 +103,7 @@ export default function App() {
   return (
     <div className="container-fluid h-auto app px-0 border-right border-left border-light">
       <Router history={history}>
-        <Navigation />
+        <Navigation notifications={notifications} />
         <Switch>
           <PublicRoute restricted={true} component={Login} path="/" exact />
           <PublicRoute
@@ -124,6 +128,7 @@ export default function App() {
           <PrivateRoute component={News} path="/news" exact />
           <PrivateRoute
             channel={channel}
+            setNts={setNotifications}
             component={Notifications}
             path="/notifications"
             exact
@@ -137,7 +142,7 @@ export default function App() {
         </Switch>
         <Footer />
       </Router>
-      <NotificationContainer />
+      <NotificationContainer className="d-none d-block-md" />
     </div>
   );
 }

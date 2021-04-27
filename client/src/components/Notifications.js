@@ -9,7 +9,7 @@ import "./Home.css";
 import SideBar from "./SideBar";
 import ReactTimeAgo from "react-time-ago";
 
-export default function Notifications({ channel }) {
+export default function Notifications({ channel, setNts }) {
   let [currentUser, setCurrentUser] = useState(getUser());
   const userInfo = getUser();
   const [notifications, setNotifications] = useState([]);
@@ -22,6 +22,7 @@ export default function Notifications({ channel }) {
       }
 };
   useEffect(() => {
+    setNts([])
     if (userInfo.token) {
       setAuthToken(userInfo.token);
     }
