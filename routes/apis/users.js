@@ -358,8 +358,8 @@ router.put("/follow/:id", auth, async (req, res) => {
     if (followingIndex == -1) {
       currentUser.following.unshift(req.params.id);
       const notification = new Notification({
-        sender: req.params.id,
-        receiver: req.user.id,
+        sender: req.user.id,
+        receiver: req.params.id,
         action: "follow"
       })
       await notification.save();

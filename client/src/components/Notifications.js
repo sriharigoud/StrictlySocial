@@ -58,7 +58,7 @@ export default function Notifications({ channel }) {
                 notifications.length > 0 &&
                 notifications.map((notification) => (
                   <span>
-                    {notification.action === "like" && notification.post ? (
+                    {notification.action === "like" && notification.sender._id !==currentUser._id && notification.post ? (
                       <li
                         key={notification._id}
                         className="list-group-item my-0 py-1 px-1"
@@ -84,7 +84,7 @@ export default function Notifications({ channel }) {
                           <ReactTimeAgo date={notification.date} />
                         </div>
                       </li>
-                    ) : notification.action === "share" && notification.post ? (
+                    ) : notification.action === "share" && notification.sender._id !==currentUser._id && notification.post ? (
                       <li
                         key={notification._id}
                         className="list-group-item my-0 py-1 px-1"
@@ -108,7 +108,7 @@ export default function Notifications({ channel }) {
                           <ReactTimeAgo date={notification.date} />
                         </div>
                       </li>
-                    ) : notification.action === "comment" &&
+                    ) : notification.action === "comment" && notification.sender._id !==currentUser._id &&
                       notification.post ? (
                       <li
                         key={notification._id}
@@ -135,7 +135,7 @@ export default function Notifications({ channel }) {
                           <ReactTimeAgo date={notification.date} />
                         </div>
                       </li>
-                    ) : notification.action === "follow" ? (
+                    ) : notification.action === "follow" && notification.sender._id !==currentUser._id ? (
                       <li
                         key={notification._id}
                         className="list-group-item my-0 py-1 px-1"
@@ -153,7 +153,7 @@ export default function Notifications({ channel }) {
                           <ReactTimeAgo date={notification.date} />
                         </div>
                       </li>
-                    ) : notification.action === "tag" && notification.post ? (
+                    ) : notification.action === "tag" && notification.sender._id !==currentUser._id && notification.post ? (
                       <li
                         key={notification._id}
                         className="list-group-item my-0 py-1 px-1"
@@ -179,7 +179,7 @@ export default function Notifications({ channel }) {
                           <ReactTimeAgo date={notification.date} />
                         </div>
                       </li>
-                    ) : notification.action === "mention" &&
+                    ) : notification.action === "mention" && notification.sender._id !==currentUser._id &&
                       notification.post ? (
                       <li
                         key={notification._id}

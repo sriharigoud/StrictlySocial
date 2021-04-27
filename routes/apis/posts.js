@@ -121,8 +121,11 @@ router.post(
             console.log(error)
           }
         }
-
-        res.json({ newpost });
+        anewpost = await Post.findOne({ _id: newpost._id })
+        .populate("owner", "name")
+        .populate({path: "user", select: "name avatar imageData"})
+        .populate({path: "comments.user", select: "name avatar imageData"})
+        res.json({ newpost: anewpost });
       }
 
 
@@ -166,8 +169,13 @@ router.get("/share/:id", auth, async (req, res) => {
       action: "share"
     })
     await notification.save()
+    anewpost = await Post.findOne({ _id: newpost._id })
+        .populate("owner", "name")
+        .populate({path: "user", select: "name avatar imageData"})
+        .populate({path: "comments.user", select: "name avatar imageData"})
+        res.json({ newpost: anewpost });
     res.json({
-      newpost: { ...newpost._doc, owner: { _id: post.user, name: post.name } },
+      newpost: anewpost,
     });
   } catch (error) {
     console.log(error.message);
