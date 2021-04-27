@@ -30,7 +30,6 @@ export default function Post({
   const toggleComment = () => setShowComments(!showComments);
   var linkifyOptions = {
     formatHref: function (href, type) {
-      console.log("asd" + href, type);
       if (type === "hashtag") {
         return "/search/" + href.substring(1);
       }

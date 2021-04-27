@@ -8,23 +8,19 @@ import BasicInfo from "./BasicInfo";
 import "./Home.css";
 import SideBar from "./SideBar";
 import ReactTimeAgo from "react-time-ago";
-import Pusher from 'pusher-js';
 
-export default function Notifications() {
+export default function Notifications({ channel }) {
   let [currentUser, setCurrentUser] = useState(getUser());
   const userInfo = getUser();
   const [notifications, setNotifications] = useState([]);
   const { key } = useLocation();
+  
   const addNotification = (newNotification) => {
-      console.log(23)
-    setNotifications(prevState => [newNotification, notifications]);
-  }
-  let pusher = new Pusher("1194970", {
-    cluster: "ap2"
-  });
-  let channel = pusher.subscribe('notifications');
-  console.log(channel,pusher)
-  channel.bind('inserted', addNotification)
+      console.log(newNotification, currentUser)
+      if(newNotification.receiver === currentUser._id){
+        setNotifications(pre => [newNotification, ...pre]);
+      }
+};
   useEffect(() => {
     if (userInfo.token) {
       setAuthToken(userInfo.token);
@@ -38,6 +34,9 @@ export default function Notifications() {
       }
     }
     getPopular();
+    channel.bind('inserted', function(data) {
+        addNotification(data)
+    });
 
   }, [key, getUser]);
   return (
@@ -90,7 +89,7 @@ export default function Notifications() {
                         key={notification._id}
                         className="list-group-item my-0 py-1 px-1"
                       >
-                        <i class="fa fa-comment"></i>{" "}
+                        <i class="fa fa-mail-forward"></i>{" "}
                         <Link
                           className="d-inline"
                           to={"/profile/" + notification.sender._id}
@@ -115,7 +114,7 @@ export default function Notifications() {
                         key={notification._id}
                         className="list-group-item my-0 py-1 px-1"
                       >
-                        <i class="fa fa-mail-forward"></i>{" "}
+                        <i class="fa fa-comment"></i>{" "}
                         <Link
                           className="d-inline"
                           to={"/profile/" + notification.sender._id}

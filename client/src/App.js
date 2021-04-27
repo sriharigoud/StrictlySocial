@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Pusher from 'pusher-js';
 import { BrowserRouter as Router, Switch } from "react-router-dom";
 import "./App.css";
 import Home from "./components/Home";
@@ -22,7 +23,13 @@ import Entertainment from "./components/explore/Entertainment";
 import Sports from "./components/explore/Sports";
 import News from "./components/explore/News";
 import Notifications from "./components/Notifications";
+Pusher.logToConsole = true;
 
+var pusher = new Pusher('7dc61c61506f7d658f25', {
+  cluster: 'ap2'
+});
+
+var channel = pusher.subscribe('notifications');
 const history = createBrowserHistory();
 
 axios.interceptors.response.use(response => response, error => {
@@ -62,7 +69,7 @@ export default function App() {
           />
           <PrivateRoute component={Home} path="/home" exact />
           <PrivateRoute component={News} path="/news" exact />
-          <PrivateRoute component={Notifications} path="/notifications" exact />
+          <PrivateRoute channel={channel} component={Notifications} path="/notifications" exact />
           <PrivateRoute component={Sports} path="/sports" exact />
           <PrivateRoute component={Entertainment} path="/entertainment" exact />
           <PrivateRoute component={Covid19} path="/covid19" exact />
