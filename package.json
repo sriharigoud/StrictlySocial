@@ -30,6 +30,7 @@
     "multer-storage-cloudinary": "^4.0.0",
     "nodemailer": "^6.5.0",
     "nodemailer-smtp-transport": "^2.7.4",
+    "pusher": "^5.0.0",
     "react-time-ago": "^6.2.2",
     "request": "^2.88.2",
     "save": "^2.4.0",

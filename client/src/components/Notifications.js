@@ -8,12 +8,23 @@ import BasicInfo from "./BasicInfo";
 import "./Home.css";
 import SideBar from "./SideBar";
 import ReactTimeAgo from "react-time-ago";
+import Pusher from 'pusher-js';
 
 export default function Notifications() {
   let [currentUser, setCurrentUser] = useState(getUser());
   const userInfo = getUser();
   const [notifications, setNotifications] = useState([]);
   const { key } = useLocation();
+  const addNotification = (newNotification) => {
+      console.log(23)
+    setNotifications(prevState => [newNotification, notifications]);
+  }
+  let pusher = new Pusher("1194970", {
+    cluster: "ap2"
+  });
+  let channel = pusher.subscribe('notifications');
+  console.log(channel,pusher)
+  channel.bind('inserted', addNotification)
   useEffect(() => {
     if (userInfo.token) {
       setAuthToken(userInfo.token);
@@ -27,6 +38,7 @@ export default function Notifications() {
       }
     }
     getPopular();
+
   }, [key, getUser]);
   return (
     <React.Fragment>
@@ -124,7 +136,7 @@ export default function Notifications() {
                           <ReactTimeAgo date={notification.date} />
                         </div>
                       </li>
-                    ) :  notification.action === "follow" ? (
+                    ) : notification.action === "follow" ? (
                       <li
                         key={notification._id}
                         className="list-group-item my-0 py-1 px-1"
@@ -143,19 +155,19 @@ export default function Notifications() {
                         </div>
                       </li>
                     ) : notification.action === "tag" && notification.post ? (
-                        <li
-                          key={notification._id}
-                          className="list-group-item my-0 py-1 px-1"
+                      <li
+                        key={notification._id}
+                        className="list-group-item my-0 py-1 px-1"
+                      >
+                        <i class="fa fa-user-plus"></i>{" "}
+                        <Link
+                          className="d-inline"
+                          to={"/profile/" + notification.sender._id}
                         >
-                          <i class="fa fa-user-plus"></i>{" "}
-                          <Link
-                            className="d-inline"
-                            to={"/profile/" + notification.sender._id}
-                          >
-                            {notification.sender.name}
-                          </Link>{" "}
-                          tagged you in the post {" "}
-                          <Link
+                          {notification.sender.name}
+                        </Link>{" "}
+                        tagged you in the post{" "}
+                        <Link
                           className="d-inline"
                           to={"/post/" + notification.post._id}
                         >
@@ -163,25 +175,26 @@ export default function Notifications() {
                             ? "Image"
                             : notification.post.text.substring(0, 50)}
                         </Link>{" "}
-                          <div className="date text-muted">
-                            <i className="fa fa-clock-o"></i>{" "}
-                            <ReactTimeAgo date={notification.date} />
-                          </div>
-                        </li>
-                      ) : notification.action === "mention" && notification.post ? (
-                        <li
-                          key={notification._id}
-                          className="list-group-item my-0 py-1 px-1"
+                        <div className="date text-muted">
+                          <i className="fa fa-clock-o"></i>{" "}
+                          <ReactTimeAgo date={notification.date} />
+                        </div>
+                      </li>
+                    ) : notification.action === "mention" &&
+                      notification.post ? (
+                      <li
+                        key={notification._id}
+                        className="list-group-item my-0 py-1 px-1"
+                      >
+                        <i class="fa fa-user-plus"></i>{" "}
+                        <Link
+                          className="d-inline"
+                          to={"/profile/" + notification.sender._id}
                         >
-                          <i class="fa fa-user-plus"></i>{" "}
-                          <Link
-                            className="d-inline"
-                            to={"/profile/" + notification.sender._id}
-                          >
-                            {notification.sender.name}
-                          </Link>{" "}
-                          mentioned in the comments of the post {" "}
-                          <Link
+                          {notification.sender.name}
+                        </Link>{" "}
+                        mentioned in the comments of the post{" "}
+                        <Link
                           className="d-inline"
                           to={"/post/" + notification.post._id}
                         >
@@ -189,12 +202,14 @@ export default function Notifications() {
                             ? "Image"
                             : notification.post.text.substring(0, 50)}
                         </Link>{" "}
-                          <div className="date text-muted">
-                            <i className="fa fa-clock-o"></i>{" "}
-                            <ReactTimeAgo date={notification.date} />
-                          </div>
-                        </li>
-                      ) : ""}
+                        <div className="date text-muted">
+                          <i className="fa fa-clock-o"></i>{" "}
+                          <ReactTimeAgo date={notification.date} />
+                        </div>
+                      </li>
+                    ) : (
+                      ""
+                    )}
                   </span>
                 ))}
             </ul>

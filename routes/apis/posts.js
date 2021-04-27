@@ -108,7 +108,7 @@ router.post(
         const newpost = await post.save();
         const tags = text.match(/@[0-9a-z](\.?[0-9a-z])*/gi);
 
-        if(tags.length > 0){
+        if(tags && tags.length > 0){
           const ausers = await User.find({ email: { $in: tags.map(e => new RegExp(e.split("@")[1])) } })
           const notifications = ausers.map(a =>  { 
             if(a._id != user.id) { // dont notifcation to the post owner
@@ -424,7 +424,7 @@ router.post(
       }
 
       const tags = text.match(/@[0-9a-z](\.?[0-9a-z])*/gi);
-      if(tags.length > 0){
+      if(tags && tags.length > 0){
         const ausers = await User.find({ email: { $in: tags.map(e => new RegExp(e.split("@")[1])) } })
         const notifications = ausers.map(a =>  { 
           if(a._id != req.user.id.toString()){ // dont send notifcation to the use who comments
