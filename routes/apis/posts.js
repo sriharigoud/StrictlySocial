@@ -12,7 +12,7 @@ const multerConfig = require("../../helpers/multer");
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
 const Notification = require("../../models/Notification");
-
+var mentionsRegex = require('mentions-regex');
 // create post
 router.post(
   "/",
@@ -103,8 +103,25 @@ router.post(
           imageData: "",
           linkData: resObj,
         });
+
   
         const newpost = await post.save();
+        const tags = text.match(/@[0-9a-z](\.?[0-9a-z])*/gi);
+
+        if(tags.length > 0){
+          const ausers = await User.find({ email: { $in: tags.map(e => new RegExp(e.split("@")[1])) } })
+          const notifications = ausers.map(a =>  { 
+            if(a._id != user.id) { // dont notifcation to the post owner
+              return {'sender':user.id, 'receiver': a._id, 'action':'tag', 'post': newpost._id}
+            }
+          });
+          try {
+            await Notification.insertMany(notifications);
+          } catch (error) {
+            console.log(error)
+          }
+        }
+
         res.json({ newpost });
       }
 
@@ -182,8 +199,8 @@ router.get("/", auth, async (req, res) => {
 router.get("/popular", auth, async (req, res) => {
   try {
     await Post.find()
-      .where("text")
-      .ne("")
+      // .where("text")
+      // .ne("")
       .populate("owner", "name")
       .sort({ likes: -1 })
       .limit(5)
@@ -396,13 +413,30 @@ router.post(
 
       post.comments.unshift(comment);
       const re = await post.save();
-      const notification = new Notification({
-        sender: req.user.id,
-        receiver: post.user,
-        post: req.params.id,
-        action: "comment"
-      })
-      await notification.save()
+      if(req.user.id !== post.user){ //send notification only if commented user not him/her
+        const notification = new Notification({
+          sender: req.user.id,
+          receiver: post.user,
+          post: req.params.id,
+          action: "comment"
+        })
+        await notification.save()
+      }
+
+      const tags = text.match(/@[0-9a-z](\.?[0-9a-z])*/gi);
+      if(tags.length > 0){
+        const ausers = await User.find({ email: { $in: tags.map(e => new RegExp(e.split("@")[1])) } })
+        const notifications = ausers.map(a =>  { 
+          if(a._id != req.user.id.toString()){ // dont send notifcation to the use who comments
+           return {'sender':req.user.id, 'receiver': a._id, 'action':'mention', 'post': post._id}
+          }
+        });
+        try {
+          await Notification.insertMany(notifications);
+        } catch (error) {
+          console.log(error)
+        }
+      }
       res.json(post.comments.map(c => c._id == re.comments[0]._id ? Object.assign(re.comments[0], {user: {_id:req.user.id, name: user.name, avatar: user.avatar, imageData: user.imageData}}) : c));
     } catch (error) {
       console.log(error.message);

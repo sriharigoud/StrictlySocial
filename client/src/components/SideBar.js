@@ -82,7 +82,7 @@ export default function SideBar() {
                 posts.map((post, i) => (
                   <li key={i} className="list-group-item my-0 py-1 px-1">
                     <Link to={`/post/${post._id}`}>
-                      {post.text.substr(0, 50)}
+                      {post.text ? post.text.substr(0, 50) : "Image"}
                     </Link>
                   </li>
                 ))}
