@@ -75,6 +75,7 @@ export default function Navigation({ notifications }) {
                 <Link to={`/profile/${userInfo.email.split("@")[0]}`}>
                   My Profile
                 </Link>
+              {""}
                 <NavDropdown.Divider />
                 <a role="button" onClick={() => logout()}>
                   Logout

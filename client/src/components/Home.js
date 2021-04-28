@@ -109,7 +109,7 @@ export default function Home() {
       <div className="row">
         <div className="col-md-3 ">
           <BasicInfo
-            hideProfileInfoSmallDevices = {true}
+            hideProfileInfoSmallDevices = {true} 
             setUserInfo={() => console.log("Do nothing")}
             userInfo={currentUser}
             setCurrentUser={setCurrentUser}

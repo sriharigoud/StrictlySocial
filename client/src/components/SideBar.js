@@ -6,6 +6,7 @@ import setAuthToken from "../utils/setAuthToken";
 import { getUser } from "../utils/utils";
 import "./Home.css";
 
+
 export default function SideBar() {
   const userInfo = getUser();
   const [posts, setPosts] = useState([]);
