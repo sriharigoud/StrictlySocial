@@ -4,9 +4,9 @@ import { Link, useHistory, useLocation } from "react-router-dom";
 import { getUser } from "../utils/utils";
 import { NavDropdown } from "react-bootstrap";
 
-export default function Navigation({ notifications }) {
+export default function Navigation({notifications}) {
   const [userInfo, setUserInfo] = useState(null);
-  const [searchQuery, setsearchQuery] = useState("");
+  const [searchQuery, setsearchQuery] = useState('');
   let history = useHistory();
   const { key } = useLocation();
   useEffect(() => {
@@ -37,9 +37,7 @@ export default function Navigation({ notifications }) {
                 />
                 <div className="input-group-append">
                   <button
-                    onClick={() =>
-                      searchQuery && history.push("/search/" + searchQuery)
-                    }
+                    onClick={() => searchQuery && history.push("/search/"+searchQuery)}
                     className="btn btn-outline-primary"
                     type="button"
                     id="button-addon2"
@@ -49,32 +47,11 @@ export default function Navigation({ notifications }) {
                 </div>
               </div>
             </form>
-            <div className="mt-2">
-              <span className="round float-left pt-0 mr-1 mt-1 ">
-                <img
-                  onError={(e) => (e.target.src = userInfo.avatar)}
-                  className="rounded-circle"
-                  src={
-                    userInfo.imageData ? userInfo.imageData : userInfo.avatar
-                  }
-                  alt="user"
-                  width="30"
-                  height="30"
-                />
-              </span>
-              <NavDropdown
-                title={userInfo.name}
-                className="float-right"
-                id="collasible-nav-dropdown"
-              >
+            <div>
+              <NavDropdown title={userInfo.name} id="collasible-nav-dropdown">
                 <Link to={`/home`}>Home</Link> <NavDropdown.Divider />
-                <Link to={`/notifications`}>
-                  Notifications ({notifications.length})
-                </Link>{" "}
-                <NavDropdown.Divider />
-                <Link to={`/profile/${userInfo.email.split("@")[0]}`}>
-                  My Profile
-                </Link>
+                <Link to={`/notifications`}>Notifications ({notifications.length})</Link> <NavDropdown.Divider />
+                <Link to={`/profile/${userInfo.email.split("@")[0]}`}>My Profile</Link>
                 <NavDropdown.Divider />
                 <a role="button" onClick={() => logout()}>
                   Logout
