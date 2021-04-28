@@ -17,7 +17,6 @@ const pusher = new Pusher({
   useTLS: true,
 });
 const db = mongoose.connection;
-const channel = "notifications";
 db.once("open", () => {
   const notificationsCollection = db.collection("notifications");
   const changeStream = notificationsCollection.watch();
@@ -27,37 +26,37 @@ db.once("open", () => {
       const nss = await Notification.findOne({ _id: notification._id })
         .populate({ path: "sender", select: "_id, name" })
         .populate({ path: "post", select: "_id, text" });
-      console.log();
+      console.log(nss);
       pusher.trigger("notifications", "inserted", nss);
     }
   });
 
-  const postsCollection = db.collection("posts");
-  const postsCollectionchangeStream = postsCollection.watch();
-  postsCollectionchangeStream.on("change", async (change) => {
-    if (change.operationType === "insert") {
-      const post = change.fullDocument;
-      const nss = await Post.findOne({ _id: post._id })
-        .populate("owner", "name")
-        .populate({ path: "user", select: "name avatar imageData" })
-        .populate({ path: "comments.user", select: "name avatar imageData" });
-      pusher.trigger("posts", "inserted", nss);
-    } else if (change.operationType === "update") {
-      const post = change.fullDocument;
-      const nss = await Post.findOne({ _id: post._id })
-        .populate("owner", "name")
-        .populate({ path: "user", select: "name avatar imageData" })
-        .populate({ path: "comments.user", select: "name avatar imageData" });
-      pusher.trigger("posts", "updated", nss);
-    } else if (change.operationType === "update") {
-      const post = change.fullDocument;
-      const nss = await Post.findOne({ _id: post._id })
-        .populate("owner", "name")
-        .populate({ path: "user", select: "name avatar imageData" })
-        .populate({ path: "comments.user", select: "name avatar imageData" });
-      pusher.trigger("posts", "deleted", nss);
-    }
-  });
+  // const postsCollection = db.collection("posts");
+  // const postsCollectionchangeStream = postsCollection.watch();
+  // postsCollectionchangeStream.on("change", async (change) => {
+  //   if (change.operationType === "insert") {
+  //     const post = change.fullDocument;
+  //     const nss = await Post.findOne({ _id: post._id })
+  //       .populate("owner", "name")
+  //       .populate({ path: "user", select: "name avatar imageData" })
+  //       .populate({ path: "comments.user", select: "name avatar imageData" });
+  //     pusher.trigger("posts", "inserted", nss);
+  //   } else if (change.operationType === "update") {
+  //     const post = change.fullDocument;
+  //     const nss = await Post.findOne({ _id: post._id })
+  //       .populate("owner", "name")
+  //       .populate({ path: "user", select: "name avatar imageData" })
+  //       .populate({ path: "comments.user", select: "name avatar imageData" });
+  //     pusher.trigger("posts", "updated", nss);
+  //   } else if (change.operationType === "update") {
+  //     const post = change.fullDocument;
+  //     const nss = await Post.findOne({ _id: post._id })
+  //       .populate("owner", "name")
+  //       .populate({ path: "user", select: "name avatar imageData" })
+  //       .populate({ path: "comments.user", select: "name avatar imageData" });
+  //     pusher.trigger("posts", "deleted", nss);
+  //   }
+  // });
 });
 
 app.use(express.json({ extended: true }));

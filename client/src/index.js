@@ -8,13 +8,18 @@ import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
 import ru from 'javascript-time-ago/locale/ru'
 import SimpleReactLightbox from 'simple-react-lightbox'
+import store from './redux/store';
+import { Provider } from 'react-redux';
 
 TimeAgo.addDefaultLocale(en)
 TimeAgo.addLocale(ru)
 ReactDOM.render(
+  <Provider store={store}>
+
   <SimpleReactLightbox>
     <App />
     </SimpleReactLightbox>
+    </Provider>
   ,
   document.getElementById('root')
 );

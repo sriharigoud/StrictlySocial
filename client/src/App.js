@@ -17,17 +17,20 @@ import PostContainer from "./components/PostContainer";
 import ResetPassword from "./components/ResetPassword";
 import { createBrowserHistory } from "history";
 import axios from "axios";
-import { doLogout, getUser } from "./utils/utils";
+import { doLogout } from "./utils/utils";
 import Covid19 from "./components/explore/Covid19";
 import Entertainment from "./components/explore/Entertainment";
 import Sports from "./components/explore/Sports";
 import News from "./components/explore/News";
 import Notifications from "./components/Notifications";
+import {connect} from 'react-redux';
+
 import {
   NotificationContainer,
   NotificationManager,
 } from "react-notifications";
 import "react-notifications/lib/notifications.css";
+import { AddNotification, setAll } from "./redux/Notifications/Notifications.actions";
 Pusher.logToConsole = true;
 
 var pusher = new Pusher("7dc61c61506f7d658f25", {
@@ -50,17 +53,22 @@ axios.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-export default function App() {
-  let [currentUser, setCurrentUser] = useState(getUser());
+function App({AddNotification}) {
   let [notifications, setNotifications] = useState([]);
+  
   useEffect(() => {
     channel.bind("inserted", function (data) {
+      const currentUser = JSON.parse(localStorage.getItem("user"));
       if (
+        currentUser &&
         currentUser._id === data.receiver &&
         currentUser._id !== data.sender._id
       ) {
-        if(!notifications.some(notification => notification._id === data._id)){
-          setNotifications(prev => [data, ...prev])
+        if (
+          !notifications.some((notification) => notification._id === data._id)
+        ) {
+          setNotifications((prev) => [data, ...prev]);
+          AddNotification(data);
         }
         if (data.action === "like") {
           NotificationManager.info(
@@ -93,13 +101,15 @@ export default function App() {
             }`
           );
         } else if (data.action === "follow") {
-          NotificationManager.info(
-            `${data.sender.name} started following you`
-          );
+          NotificationManager.info(`${data.sender.name} started following you`);
         }
       }
     });
-  }, [getUser]);
+    
+    return () => {
+      channel.unbind();
+    };
+  });
   return (
     <div className="container-fluid h-auto app px-0 border-right border-left border-light">
       <Router history={history}>
@@ -146,3 +156,12 @@ export default function App() {
     </div>
   );
 }
+
+const mapDispatchToProps = dispatch => {
+  return {
+    AddNotification: (data) => dispatch(AddNotification(data)),
+    setAll: () => dispatch(setAll()),
+  }
+}
+
+export default connect(null, mapDispatchToProps)(App)

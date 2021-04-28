@@ -103,14 +103,14 @@ export default function Post({
       </div>
       <div className="py-2 card-body">
         <div className="text-muted h7 mb-1">
-          <i className="fa fa-clock-o"></i> <ReactTimeAgo date={post.date} />
+          <i className="fa fa-clock-o"></i> <ReactTimeAgo date={new Date(post.date)} />
         </div>
         <a className="card-link" href="#">
           <h5 className="card-title">{post.title}</h5>
         </a>
 
         {post.text && (
-          <p className="card-text">
+          <div className="card-text">
             {/* <ReactHashtag onHashtagClick={val => alert(val)}> */}
             <Linkify options={linkifyOptions} component={UrlEnhancer}>
               {post.text}
@@ -137,7 +137,7 @@ export default function Post({
                 </div>
               </a>
             )}
-          </p>
+          </div>
         )}
         {post.imageName !== "none" && (
           <SRLWrapper>
@@ -247,7 +247,7 @@ export default function Post({
                       <div className="comment-footer">
                         <span className="date text-muted">
                           <i className="fa fa-clock-o"></i>{" "}
-                          <ReactTimeAgo date={comment.date} />
+                          <ReactTimeAgo date={new Date(comment.date)} />
                         </span>
                       </div>
                       <p className="my-0">

@@ -8,36 +8,39 @@ import BasicInfo from "./BasicInfo";
 import "./Home.css";
 import SideBar from "./SideBar";
 import ReactTimeAgo from "react-time-ago";
+import { setAll } from "../redux/Notifications/Notifications.actions";
+import { connect } from "react-redux";
 
-export default function Notifications({ channel, setNts }) {
+function Notifications({ channel, setNts, notifications, setAll }) {
   let [currentUser, setCurrentUser] = useState(getUser());
   const userInfo = getUser();
-  const [notifications, setNotifications] = useState([]);
+  // const [notifications, setNotifications] = useState();
   const { key } = useLocation();
   
-  const addNotification = (newNotification) => {
-      console.log(newNotification, currentUser)
-      if(newNotification.receiver === currentUser._id){
-        setNotifications(pre => [newNotification, ...pre]);
-      }
-};
+//   const addNotification = (newNotification) => {
+//       console.log(newNotification, currentUser)
+//       if(newNotification.receiver === currentUser._id){
+//         setNotifications(pre => [newNotification, ...pre]);
+//       }
+// };
   useEffect(() => {
-    setNts([])
+    // setNts([])
     if (userInfo.token) {
       setAuthToken(userInfo.token);
     }
     async function getPopular() {
       try {
         const res = await axios.get("/api/users/notifications");
-        setNotifications(res.data);
+        // setNotifications(res.data)
+        setAll(res.data);
       } catch (error) {
         console.log(error.message);
       }
     }
     getPopular();
-    channel.bind('inserted', function(data) {
-        addNotification(data)
-    });
+    // channel.bind('inserted', function(data) {
+    //     addNotification(data)
+    // });
 
   }, [key, getUser]);
   return (
@@ -226,3 +229,16 @@ export default function Notifications({ channel, setNts }) {
     </React.Fragment>
   );
 }
+
+const mapStateToProps = state => {
+  return {
+    notifications: state.notifications.notifications,
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    setAll: (payload) => dispatch(setAll(payload)),
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Notifications);

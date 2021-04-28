@@ -28,7 +28,13 @@
     <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
     <script>
         // Enable pusher logging - don't include this in production
-  
+        Pusher.logToConsole = true;
+
+        var pusher = new Pusher("7dc61c61506f7d658f25", {
+          cluster: "ap2",
+        });
+        
+        var channel = pusher.subscribe("notifications");
     </script>
     <style>
       html{
