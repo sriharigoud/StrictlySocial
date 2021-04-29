@@ -83,9 +83,13 @@ router.post(
             following: user.following,
             followers: user.followers,
             bio: user.bio,
+            imageData:user.imageData,
+            imageName:user.imageName
           });
         }
       );
+
+
     } catch (error) {
       console.log(error.message);
       res.status(500).send("Server error");

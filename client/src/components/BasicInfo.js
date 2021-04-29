@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { doLogin } from "../utils/utils";
 import axios from "axios";
 import { Modal, Button, Form } from "react-bootstrap";
-import { SRLWrapper } from "simple-react-lightbox";
 import { Image, Transformation } from "cloudinary-react";
 import { Link } from "react-router-dom";
 export default function BasicInfo({
