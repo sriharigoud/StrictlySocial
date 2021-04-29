@@ -89,7 +89,11 @@ router.post(
           });
     
           const newpost = await post.save();
-          res.json({ newpost });
+          anewpost = await Post.findOne({ _id: newpost._id })
+        .populate("owner", "name")
+        .populate({path: "user", select: "name avatar imageData imageName"})
+        .populate({path: "comments.user", select: "name avatar imageData imageName"})
+        res.json({ newpost: anewpost });
         });
       } else {
         let post = new Post({
@@ -123,8 +127,8 @@ router.post(
         }
         anewpost = await Post.findOne({ _id: newpost._id })
         .populate("owner", "name")
-        .populate({path: "user", select: "name avatar imageData"})
-        .populate({path: "comments.user", select: "name avatar imageData"})
+        .populate({path: "user", select: "name avatar imageData imageName"})
+        .populate({path: "comments.user", select: "name avatar imageData imageName"})
         res.json({ newpost: anewpost });
       }
 
@@ -171,8 +175,8 @@ router.get("/share/:id", auth, async (req, res) => {
     await notification.save()
     anewpost = await Post.findOne({ _id: newpost._id })
         .populate("owner", "name")
-        .populate({path: "user", select: "name avatar imageData"})
-        .populate({path: "comments.user", select: "name avatar imageData"})
+        .populate({path: "user", select: "name avatar imageData imageName"})
+        .populate({path: "comments.user", select: "name avatar imageData imageName"})
         res.json({ newpost: anewpost });
     res.json({
       newpost: anewpost,
@@ -193,8 +197,8 @@ router.get("/", auth, async (req, res) => {
     // const posts = await Post.find().sort({ date: -1 });
     const posts = await Post.find({ user: { $in: fowls } })
       .populate("owner", "name")
-      .populate({path: "user", select: "name avatar imageData"})
-      .populate({path: "comments.user", select: "name avatar imageData"})
+      .populate({path: "user", select: "name avatar imageData imageName"})
+      .populate({path: "comments.user", select: "name avatar imageData imageName"})
       .sort({ date: -1 });
     res.json(posts);
   } catch (error) {
@@ -232,8 +236,8 @@ router.get("/search/:searchQuery", auth, async (req, res) => {
       ],
     })
     .populate("owner", "name")
-    .populate({path: "user", select: "name avatar imageData"})
-    .populate({path: "comments.user", select: "name avatar imageData"})
+    .populate({path: "user", select: "name avatar imageData imageName"})
+    .populate({path: "comments.user", select: "name avatar imageData imageName"})
       .limit(10)
       .exec(function (err, result) {
         if (err) return res.status(500).send("Server error");
@@ -296,8 +300,8 @@ router.post(
 // get post by id
 router.get("/:id", auth, async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id).populate("owner", "name").populate({path: "user", select: "name avatar imageData"})
-    .populate({path: "comments.user", select: "name avatar imageData"});
+    const post = await Post.findById(req.params.id).populate("owner", "name").populate({path: "user", select: "name avatar imageData imageName"})
+    .populate({path: "comments.user", select: "name avatar imageData imageName"});
     if (!post) {
       return res.status(404).json({ msg: "Post not found" });
     }
@@ -316,8 +320,8 @@ router.get("/user/:id", auth, async (req, res) => {
   try {
     const posts = await Post.find({ user: req.params.id })
       .populate("owner", "name")
-      .populate({path: "user", select: "name avatar imageData"})
-      .populate({path: "comments.user", select: "name avatar imageData"})
+      .populate({path: "user", select: "name avatar imageData imageName"})
+      .populate({path: "comments.user", select: "name avatar imageData imageName"})
       .sort({ date: -1 });
     res.json(posts);
   } catch (error) {
@@ -405,7 +409,7 @@ router.post(
     }
     let { text } = req.body;
     try {
-      const post = await Post.findById(req.params.id).populate("owner", "name").populate({path: "comments.user", select: "name avatar imageData"})
+      const post = await Post.findById(req.params.id).populate("owner", "name").populate({path: "comments.user", select: "name avatar imageData imageName"})
       ;
 
       if (!post) {
@@ -447,7 +451,7 @@ router.post(
           console.log(error)
         }
       }
-      res.json(post.comments.map(c => c._id == re.comments[0]._id ? Object.assign(re.comments[0], {user: {_id:req.user.id, name: user.name, avatar: user.avatar, imageData: user.imageData}}) : c));
+      res.json(post.comments.map(c => c._id == re.comments[0]._id ? Object.assign(re.comments[0], {user: {_id:req.user.id, name: user.name, avatar: user.avatar, imageData: user.imageData, imageName: user.imageName}}) : c));
     } catch (error) {
       console.log(error.message);
       if (error.kind === "ObjectId") {
@@ -466,7 +470,7 @@ router.delete("/comments/:id/:commentId", auth, async (req, res) => {
   }
   let { text } = req.body;
   try {
-    const post = await Post.findById(req.params.id).populate("owner", "name").populate({path: "comments.user", select: "name avatar imageData"});
+    const post = await Post.findById(req.params.id).populate("owner", "name").populate({path: "comments.user", select: "name avatar imageData imageName"});
 
     if (!post) {
       return res.status(404).json({ msg: "Post not found" });

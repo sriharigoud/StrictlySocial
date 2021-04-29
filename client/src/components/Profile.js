@@ -12,10 +12,10 @@ import { Tabs, Tab } from "react-bootstrap";
 import UserBox from "./UserBox";
 import { SRLWrapper } from "simple-react-lightbox";
 import { setAllPosts } from "../redux/Posts/Posts.actions";
-import {connect} from 'react-redux';
+import { connect } from "react-redux";
 import PostList from "./PostList";
 
-function Profile({posts, setAllPosts}) {
+function Profile({ posts, setAllPosts }) {
   let [currentUser, setCurrentUser] = useState(getUser());
   const [userInfo, setUserInfo] = useState({});
   const { pathname, key } = useLocation();
@@ -24,9 +24,7 @@ function Profile({posts, setAllPosts}) {
       if (currentUser.token) {
         setAuthToken(currentUser.token);
       }
-      let response = await axios(
-        "/api/posts/user/" + userid
-      );
+      let response = await axios("/api/posts/user/" + userid);
       setAllPosts(response.data);
     }
     async function getUserInfo() {
@@ -58,7 +56,7 @@ function Profile({posts, setAllPosts}) {
         </div>
         <div className="col-md-6 border-left border-right ">
           {currentUser._id === pathname.replace("/profile/", "") && (
-            <CreatePost  />
+            <CreatePost />
           )}
           <hr />
           <Tabs
@@ -67,9 +65,16 @@ function Profile({posts, setAllPosts}) {
             id="noanim-tab-example"
           >
             <Tab eventKey="feed" title="Feed" className="pt-1">
-             <PostList />
+              <PostList />
             </Tab>
-            <Tab eventKey="following" title={`Following (${userInfo.following && userInfo.following.length ? userInfo.following.length : 0})`}>
+            <Tab
+              eventKey="following"
+              title={`Following (${
+                userInfo.following && userInfo.following.length
+                  ? userInfo.following.length
+                  : 0
+              })`}
+            >
               {userInfo.following &&
                 userInfo.following.map((user, d) => (
                   <UserBox
@@ -85,7 +90,14 @@ function Profile({posts, setAllPosts}) {
                 <h6 className="m-2">No Following found</h6>
               )}
             </Tab>
-            <Tab eventKey="followers" title={`Followers (${userInfo.followers && userInfo.followers.length ? userInfo.followers.length : 0})`}>
+            <Tab
+              eventKey="followers"
+              title={`Followers (${
+                userInfo.followers && userInfo.followers.length
+                  ? userInfo.followers.length
+                  : 0
+              })`}
+            >
               {userInfo.followers &&
                 userInfo.followers.map((user, i) => (
                   <UserBox
@@ -102,21 +114,36 @@ function Profile({posts, setAllPosts}) {
               )}
             </Tab>
             <Tab eventKey="photos" title="Photos">
-            <SRLWrapper>
-            <div className="row px-3">
+              <SRLWrapper>
+                <div className="row px-3">
+                  {posts &&
+                    posts
+                      .filter((post) => post.imageName !== "none")
+                      .map((post) => (
+                        <div
+                          key={post._id}
+                          className="col-lg-3 col-md-4 col-xs-6 m-0 p-0 thumb"
+                        >
+                          <a href={post.imageData} className="thumbnail">
+                            <img
+                              onError={(e) =>
+                                (e.target.src =
+                                  process.env.PUBLIC_URL +
+                                  "/img/no-image-available_1.jpg")
+                              }
+                              className="img-thumbnail"
+                              src={post.imageData}
+                              alt=""
+                            />
+                          </a>{" "}
+                        </div>
+                      ))}
 
-            {posts &&
-                posts.filter(post => post.imageName !== 'none').map((post) => (
-            <div key={post._id} className="col-lg-3 col-md-4 col-xs-6 m-0 p-0 thumb">
-                <a href={post.imageData} className="thumbnail">
-                    <img onError={(e) => e.target.src = process.env.PUBLIC_URL + "/img/no-image-available_1.jpg"} className="img-thumbnail"
-                         src={post.imageData}
-                         alt="" />
-                </a> </div> 
-                ))}             
-
-              {posts && (posts.length === 0 || !posts.filter(post => post.imageName !== 'none').length) && <h6 className="m-2">No Photos found</h6>}
-              </div>
+                  {posts &&
+                    (posts.length === 0 ||
+                      !posts.filter((post) => post.imageName !== "none")
+                        .length) && <h6 className="m-2">No Photos found</h6>}
+                </div>
               </SRLWrapper>
             </Tab>
           </Tabs>
@@ -129,15 +156,15 @@ function Profile({posts, setAllPosts}) {
   );
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     posts: state.posts.posts,
-  }
-}
-const mapDispatchToProps = dispatch => {
+  };
+};
+const mapDispatchToProps = (dispatch) => {
   return {
     setAllPosts: (payload) => dispatch(setAllPosts(payload)),
-  }
-}
+  };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);

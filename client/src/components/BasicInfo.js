@@ -3,13 +3,14 @@ import { doLogin } from "../utils/utils";
 import axios from "axios";
 import { Modal, Button, Form } from "react-bootstrap";
 import { SRLWrapper } from "simple-react-lightbox";
-import { Link } from "react-router-dom"; 
+import { Image, Transformation } from "cloudinary-react";
+import { Link } from "react-router-dom";
 export default function BasicInfo({
   userInfo,
   setUserInfo,
   setCurrentUser,
   currentUser,
-  hideProfileInfoSmallDevices
+  hideProfileInfoSmallDevices,
 }) {
   const [show, setShow] = useState(false);
   const [value, setValue] = useState(userInfo.bio);
@@ -41,8 +42,8 @@ export default function BasicInfo({
     try {
       let imageFormObj = new FormData();
       //if (file) {
-        imageFormObj.append("imageName", Date.now() + "postimage");
-        imageFormObj.append("imageData", file);
+      imageFormObj.append("imageName", Date.now() + "postimage");
+      imageFormObj.append("imageData", file);
       // }
       imageFormObj.append("text", value);
       const res = await axios.post(`/api/users/`, imageFormObj, {
@@ -71,8 +72,8 @@ export default function BasicInfo({
       handleClose();
     } catch (error) {
       console.log(error.message);
-      if(error.response){
-      alert(error.response.data)
+      if (error.response) {
+        alert(error.response.data);
       }
     }
   };
@@ -92,20 +93,30 @@ export default function BasicInfo({
 
   return (
     <React.Fragment>
-      <div className={!hideProfileInfoSmallDevices ? "card" : "card d-none d-md-block"}>
+      <div
+        className={
+          !hideProfileInfoSmallDevices ? "card" : "card d-none d-md-block"
+        }
+      >
         <div style={{ position: "relative" }} className="userContainer">
-          {/* <SRLWrapper> */}
-          {/* <a
-          href={userInfo.imageData ? "/" + userInfo.imageData : userInfo.avatar}
-        > */}
-          <img
-            onError={(e) => e.target.src = userInfo.avatar} 
-            className="w-100"
-            src={
-              userInfo.imageData ? userInfo.imageData : userInfo.avatar
-            }
-            alt={userInfo.name}
-          />
+          {userInfo.imageName === "none" && (
+            <img className="w-100" src={userInfo.avatar} alt={userInfo.name} />
+          )}
+          {userInfo.imageName !== "none" && (
+            <Image
+              placeholderColor="red"
+              cloudName={"strictlysocial"}
+              publicId={userInfo.imageName}
+            >
+              <Transformation
+                width="300"
+                height="300"
+                gravity="faces"
+                crop="fill"
+              />
+            </Image>
+          )}
+         
           {/* </a> */}
           {/* </SRLWrapper> */}
           {currentUser && currentUser._id === userInfo._id && (
@@ -116,22 +127,31 @@ export default function BasicInfo({
               Edit Profile
             </button>
           )}
-          {currentUser && currentUser._id !== userInfo._id && userInfo._id !== '608438c33383641df099002a' && (
-            <button
-              onClick={() => toggleFollow(userInfo)}
-              className="btn btn-primary w-50 m-auto editProfile"
-            >
-              {userInfo.followers &&
-              userInfo.followers.some(
-                (className) => className._id === currentUser._id
-              )
-                ? " Unfollow"
-                : " Follow"}
-            </button>
-          )}
+          {currentUser &&
+            currentUser._id !== userInfo._id &&
+            userInfo._id !== "608438c33383641df099002a" && (
+              <button
+                onClick={() => toggleFollow(userInfo)}
+                className="btn btn-primary w-50 m-auto editProfile"
+              >
+                {userInfo.followers &&
+                userInfo.followers.some(
+                  (className) => className._id === currentUser._id
+                )
+                  ? " Unfollow"
+                  : " Follow"}
+              </button>
+            )}
         </div>
         <div className="card-body px-3 py-1 pb-0">
-          <div className="h5 my-0 heading"><Link style={{textDecoration: 'none'}} to={`/profile/${userInfo._id}`}>{userInfo.name}</Link></div>
+          <div className="h5 my-0 heading">
+            <Link
+              style={{ textDecoration: "none" }}
+              to={`/profile/${userInfo._id}`}
+            >
+              {userInfo.name}
+            </Link>
+          </div>
           <div className="h7 my-0 text-muted">
             {userInfo.email && "@" + userInfo.email.split("@")[0]}
           </div>

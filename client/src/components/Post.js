@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import ReactTimeAgo from "react-time-ago";
 import Linkify from "linkifyjs/react";
+import { Image, Transformation } from "cloudinary-react";
 import { SRLWrapper } from "simple-react-lightbox";
 import * as linkify from "linkifyjs";
 import hashtag from "linkifyjs/plugins/hashtag";
@@ -73,16 +74,31 @@ export default function Post({
         <div className="d-flex justify-content-between align-items-center">
           <div className="d-flex justify-content-between align-items-center">
             <div className="mr-2">
-              <img
-                onError={(e) => (e.target.src = post.user.avatar)}
-                className="rounded-circle"
-                width="45"
-                height="45"
-                src={
-                  post.user.imageData ? post.user.imageData : post.user.avatar
-                }
-                alt=""
-              />
+              {post.user.imageName === "none" && (
+                <img
+                  onError={(e) => (e.target.src = post.user.avatar)}
+                  className="rounded-circle"
+                  width="45"
+                  height="45"
+                  src={post.user.avatar}
+                  alt=""
+                />
+              )}
+              {post.user.imageName !== "none" && (
+                <Image
+                  className="rounded-circle mr-2"
+                  placeholderColor="red"
+                  cloudName={"strictlysocial"}
+                  publicId={post.user.imageName}
+                >
+                  <Transformation
+                    width="45"
+                    height="45"
+                    gravity="faces"
+                    crop="fill"
+                  />
+                </Image>
+              )}
             </div>
             <div className="ml-2">
               <div className="h5 m-0">
@@ -178,18 +194,31 @@ export default function Post({
         {showComments && (
           <div className="comments mt-2 border-top">
             <div className="row add-comment-section my-2">
-              <img
-                onError={(e) => (e.target.src = currentUser.avatar)}
-                src={
-                  currentUser.imageData
-                    ? currentUser.imageData
-                    : currentUser.avatar
-                }
-                className="rounded-circle mr-2"
-                width="40"
-                height="40"
-                alt=""
-              />
+              {currentUser.imageName === "none" && (
+                <img
+                  onError={(e) => (e.target.src = currentUser.avatar)}
+                  src={currentUser.avatar}
+                  className="rounded-circle mr-2"
+                  width="40"
+                  height="40"
+                  alt=""
+                />
+              )}
+              {currentUser.imageName !== "none" && (
+                <Image
+                  className="rounded-circle mr-2"
+                  placeholderColor="red"
+                  cloudName={"strictlysocial"}
+                  publicId={currentUser.imageName}
+                >
+                  <Transformation
+                    width="40"
+                    height="40"
+                    gravity="faces"
+                    crop="fill"
+                  />
+                </Image>
+              )}
               {/* <input
                 type="text"
                 onChange={(e) => setCommentText(e.target.value)}
@@ -228,18 +257,33 @@ export default function Post({
                   <div key={i} className="border-top pt-1 mx-0 row comment-row">
                     <div className="col-1 pt-2 ">
                       <span className="round">
-                        <img
-                          onError={(e) => (e.target.src = comment.user.avatar)}
-                          className="rounded-circle"
-                          src={
-                            comment.user.imageData
-                              ? comment.user.imageData
-                              : comment.user.avatar
-                          }
-                          alt="user"
-                          width="50"
-                          height="50"
-                        />
+                        {comment.user.imageName === "none" && (
+                          <img
+                            onError={(e) =>
+                              (e.target.src = comment.user.avatar)
+                            }
+                            className="rounded-circle"
+                            src={comment.user.avatar}
+                            alt="user"
+                            width="50"
+                            height="50"
+                          />
+                        )}
+                        {comment.user.imageName !== "none" && (
+                          <Image
+                            className="rounded-circle mr-2"
+                            placeholderColor="red"
+                            cloudName={"strictlysocial"}
+                            publicId={comment.user.imageName}
+                          >
+                            <Transformation
+                              width="50"
+                              height="50"
+                              gravity="faces"
+                              crop="fill"
+                            />
+                          </Image>
+                        )}
                       </span>
                     </div>
                     <div className="comment-text pl-4 h-50 col-11">

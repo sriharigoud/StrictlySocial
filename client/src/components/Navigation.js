@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { doLogout } from "../utils/utils";
+import { Image, Transformation } from "cloudinary-react";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { getUser } from "../utils/utils";
 import { NavDropdown } from "react-bootstrap";
@@ -56,17 +57,33 @@ export default function Navigation({ notifications }) {
               </div>
             </form>
             <div className="mt-2">
-              <span className="round float-left pt-0 mr-1 mt-1 ">
-                <img
+              <span className="round float-left pt-0 mr-0 mt-1 ">
+              {userInfo.imageName === "none" && <img
                   onError={(e) => (e.target.src = userInfo.avatar)}
                   className="rounded-circle"
                   src={
-                    userInfo.imageData ? userInfo.imageData : userInfo.avatar
+                    userInfo.avatar
                   }
-                  alt="user"
+                  alt={userInfo.name}
                   width="30"
                   height="30"
-                />
+                />}
+                {userInfo.imageName !== "none" && (
+                <Image
+                  alt={userInfo.name}
+                  className="rounded-circle mr-2"
+                  placeholderColor="red"
+                  cloudName={"strictlysocial"}
+                  publicId={userInfo.imageName}
+                >
+                  <Transformation
+                    width="30"
+                    height="30"
+                    gravity="faces"
+                    crop="fill"
+                  />
+                </Image>
+              )}
               </span>
               <NavDropdown
                 title={userInfo.name}

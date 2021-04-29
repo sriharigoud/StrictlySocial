@@ -8,6 +8,7 @@
     "@testing-library/user-event": "^12.8.3",
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
+    "cloudinary-react": "^1.7.0",
     "js-video-url-parser": "^0.4.3",
     "linkifyjs": "^3.0.0-beta.3",
     "lodash": "^4.17.21",

@@ -1,11 +1,11 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
+import { Image, Transformation } from "cloudinary-react";
 import { useLocation } from "react-router";
 import { Link } from "react-router-dom";
 import setAuthToken from "../utils/setAuthToken";
 import { getUser } from "../utils/utils";
 import "./Home.css";
-
 
 export default function SideBar() {
   const userInfo = getUser();
@@ -34,23 +34,44 @@ export default function SideBar() {
   }, [key, getUser]);
   return (
     <React.Fragment>
-            <div className="card mb-2 gedf-card">
+      <div className="card mb-2 gedf-card">
         <div className="card-body px-2">
           <h5 className="card-title mb-2">Who to follow</h5>
           <div className="card-text border-top">
             {users &&
               users.map((user, d) => (
-                <div key={user._id} className="d-flex border-bottom my-1 py-1 flex-row comment-row">
+                <div
+                  key={user._id}
+                  className="d-flex border-bottom my-1 py-1 flex-row comment-row"
+                >
                   <div className="p-1">
                     <span className="round">
-                      <img
-                        onError={(e) => e.target.src = user.avatar}
-                        className="rounded-circle"
-                        src={user.imageData ? user.imageData : user.avatar}
-                        alt="user"
-                        width="50"
-                        height="50"
-                      />
+                      {user.imageName === "none" && (
+                        <img
+                          onError={(e) => (e.target.src = user.avatar)}
+                          className="rounded-circle"
+                          src={user.avatar}
+                          alt="user"
+                          width="50"
+                          height="50"
+                        />
+                      )}
+                      {user.imageName !== "none" && (
+                        <Image
+                          alt={user.name}
+                          className="rounded-circle mr-2"
+                          placeholderColor="red"
+                          cloudName={"strictlysocial"}
+                          publicId={user.imageName}
+                        >
+                          <Transformation
+                            width="50"
+                            height="50"
+                            gravity="faces"
+                            crop="fill"
+                          />
+                        </Image>
+                      )}
                     </span>
                   </div>
                   <div className="comment-text w-100">
