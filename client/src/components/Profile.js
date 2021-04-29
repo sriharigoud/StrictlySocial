@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./Home.css";
 import BasicInfo from "./BasicInfo";
-import Post from "./Post";
 import SideBar from "./SideBar";
 import { useLocation } from "react-router-dom";
 import setAuthToken from "../utils/setAuthToken";
 import CreatePost from "./CreatePost";
-import { doLogin, getUser } from "../utils/utils";
+import { getUser } from "../utils/utils";
+import { Image, Transformation } from "cloudinary-react";
 import { Tabs, Tab } from "react-bootstrap";
 import UserBox from "./UserBox";
 import { SRLWrapper } from "simple-react-lightbox";
@@ -125,7 +125,7 @@ function Profile({ posts, setAllPosts }) {
                           className="col-lg-3 col-md-4 col-xs-6 m-0 p-0 thumb"
                         >
                           <a href={post.imageData} className="thumbnail">
-                            <img
+                            {/* <img
                               onError={(e) =>
                                 (e.target.src =
                                   process.env.PUBLIC_URL +
@@ -134,7 +134,22 @@ function Profile({ posts, setAllPosts }) {
                               className="img-thumbnail"
                               src={post.imageData}
                               alt=""
-                            />
+                            /> */}
+
+                            <Image
+                             className="img-thumbnail"
+                              responsive
+                              placeholderColor="red"
+                              cloudName={"strictlysocial"}
+                              publicId={post.imageName}
+                            >
+                              <Transformation
+                                width="150"
+                                height="150"
+                                gravity="faces"
+                                crop="fill"
+                              />
+                            </Image>
                           </a>{" "}
                         </div>
                       ))}
