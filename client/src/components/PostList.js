@@ -5,20 +5,38 @@ import Post from "./Post";
 import { useLocation } from "react-router-dom";
 import { getUser } from "../utils/utils";
 import { connect } from "react-redux";
-import { toggleLike, sharePost, deletePost, deleteComment, submitComment } from "../redux/Posts/Posts.actions";
-function PostList({posts, atoggleLike, asharePost, adeletePost, adeleteComment, asubmitComment}) {
+import {
+  toggleLike,
+  sharePost,
+  deletePost,
+  deleteComment,
+  submitComment,
+} from "../redux/Posts/Posts.actions";
+function PostList({
+  posts,
+  atoggleLike,
+  asharePost,
+  adeletePost,
+  adeleteComment,
+  asubmitComment,
+}) {
   let [currentUser] = useState(getUser());
   const { key } = useLocation();
   const [commentText, setCommentText] = useState("");
+  function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
   const toggleLike = async (post) => {
     try {
+      await sleep(500);
       const res = await axios.put(`/api/posts/likes/${post._id}`);
-    //   setPosts((prevPosts) => {
-    //     return prevPosts.map((a) =>
-    //       a.id === post.id ? { ...a, likes: res.data } : { ...a }
-    //     );
-    //   });
-        atoggleLike({post, likes: res.data});
+
+      //   setPosts((prevPosts) => {
+      //     return prevPosts.map((a) =>
+      //       a.id === post.id ? { ...a, likes: res.data } : { ...a }
+      //     );
+      //   });
+      atoggleLike({ post, likes: res.data });
     } catch (error) {
       console.log(error.message);
     }
@@ -34,13 +52,13 @@ function PostList({posts, atoggleLike, asharePost, adeletePost, adeleteComment, 
           },
         }
       );
-    //   setPosts((prevPosts) => {
-    //     return prevPosts.map((a) =>
-    //       a._id === post._id ? { ...a, comments: res.data } : { ...a }
-    //     );
-    //   });
-      asubmitComment({post, comments: res.data});
-      setCommentText("")
+      //   setPosts((prevPosts) => {
+      //     return prevPosts.map((a) =>
+      //       a._id === post._id ? { ...a, comments: res.data } : { ...a }
+      //     );
+      //   });
+      asubmitComment({ post, comments: res.data });
+      setCommentText("");
     } catch (error) {
       console.log(error.message);
     }
@@ -53,7 +71,7 @@ function PostList({posts, atoggleLike, asharePost, adeletePost, adeleteComment, 
         // setPosts((prevPosts) => {
         //   return prevPosts.filter((a) => a._id !== post._id);
         // });
-        adeletePost({post})
+        adeletePost({ post });
       }
     } catch (error) {
       console.log(error.message);
@@ -61,11 +79,11 @@ function PostList({posts, atoggleLike, asharePost, adeletePost, adeleteComment, 
   };
   const sharePost = async (post) => {
     try {
-        const res = await axios.get(`/api/posts/share/${post._id}`);
-        // setPosts((prevPosts) => {
-        //   return [res.data.newpost, ...prevPosts];
-        // });
-        asharePost({post: res.data.newpost})
+      const res = await axios.get(`/api/posts/share/${post._id}`);
+      // setPosts((prevPosts) => {
+      //   return [res.data.newpost, ...prevPosts];
+      // });
+      asharePost({ post: res.data.newpost });
     } catch (error) {
       console.log(error.message);
     }
@@ -82,17 +100,16 @@ function PostList({posts, atoggleLike, asharePost, adeletePost, adeleteComment, 
         //     a._id === post._id ? { ...a, comments: res.data } : { ...a }
         //   );
         // });
-        adeleteComment({post, comments: res.data})
+        adeleteComment({ post, comments: res.data });
       }
     } catch (error) {
       console.log(error.message);
     }
   };
-  useEffect(() => {
-  }, [key, getUser]);
+  useEffect(() => {}, [key, getUser]);
   return (
-    <React.Fragment>{
-        posts &&
+    <React.Fragment>
+      {posts &&
         posts.map((post) => (
           <Post
             key={post._id}
@@ -109,25 +126,24 @@ function PostList({posts, atoggleLike, asharePost, adeletePost, adeleteComment, 
           />
         ))}
       {posts && posts.length === 0 && <h6 className="m-2">No Posts found</h6>}
-      </React.Fragment>
+    </React.Fragment>
   );
 }
 
-const mapStateToProps = state => {
-    return {
-      posts: state.posts.posts,
-    }
-}
+const mapStateToProps = (state) => {
+  return {
+    posts: state.posts.posts,
+  };
+};
 
-const mapDispatchToProps = dispatch => {
-    return {
-        atoggleLike: (payload) => dispatch(toggleLike(payload)),
-        asharePost: (payload) => dispatch(sharePost(payload)),
-        adeleteComment: (payload) => dispatch(deleteComment(payload)),
-        asubmitComment: (payload) => dispatch(submitComment(payload)),
-        adeletePost: (payload) => dispatch(deletePost(payload)),
-    }
-  }
-  
+const mapDispatchToProps = (dispatch) => {
+  return {
+    atoggleLike: (payload) => dispatch(toggleLike(payload)),
+    asharePost: (payload) => dispatch(sharePost(payload)),
+    adeleteComment: (payload) => dispatch(deleteComment(payload)),
+    asubmitComment: (payload) => dispatch(submitComment(payload)),
+    adeletePost: (payload) => dispatch(deletePost(payload)),
+  };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(PostList);
