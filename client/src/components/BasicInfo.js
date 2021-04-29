@@ -235,8 +235,8 @@ export default function BasicInfo({
                 </Link>
               </li>
               <li className="list-group-item my-0 py-2 px-1">
-                <Link to="/search/covid19">
-                  <i className="fa fa-fw fa-medkit"></i> Covid19
+                <Link to="/search/covid-19">
+                  <i className="fa fa-fw fa-medkit"></i> Covid-19
                 </Link>
               </li>
               <li className="list-group-item my-0 py-2 px-1">

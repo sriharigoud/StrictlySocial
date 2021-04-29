@@ -16,6 +16,38 @@ const transporter = require("../../helpers/smtpConfig");
 const multerConfig = require("../../helpers/multer");
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
+const NewsAPI = require("newsapi");
+const request = require("request");
+const newsapi = new NewsAPI("031719ac992040b68a5a32ebd765b172");
+
+router.get("/top-news", async (req, res) => {
+   let newpost = {
+    user: '608438c33383641df099002a',
+    text: "",
+    name: "StrictlySocial Official",
+    avatar: "https://res.cloudinary.com/strictlysocial/image/upload/c_fill,g_faces,h_300,w_300/onmrvacdyb3dntkyvzy0",
+    likes: [],
+    comments: [],
+    imageName: "none",
+    imageData: "",
+    linkData: {},
+  }
+  const sports = await newsapi.v2.topHeadlines({
+    // sources:'google-news-in',
+    category: 'sports',
+    language: 'en',
+    country: 'in'
+  })
+
+  if(sports && sports.articles.length > 0){
+    let {title, description, url, urlToImage} = sports.articles[0];
+    let post = new Post(newpost)
+    post.text = title;
+    post.linkData = {title, url, description, ogImage: urlToImage}
+    await post.save();
+  }
+  res.send("Done")
+});
 
 router.post(
   "/register",
@@ -83,13 +115,11 @@ router.post(
             following: user.following,
             followers: user.followers,
             bio: user.bio,
-            imageData:user.imageData,
-            imageName:user.imageName
+            imageData: user.imageData,
+            imageName: user.imageName,
           });
         }
       );
-
-
     } catch (error) {
       console.log(error.message);
       res.status(500).send("Server error");
@@ -116,11 +146,11 @@ router.get("/popular", auth, async (req, res) => {
 // most followed people
 router.get("/notifications", auth, async (req, res) => {
   try {
-    let notifications = await Notification.find({receiver: req.user.id})
-    .sort({date: -1})
-    .populate({path: "sender", select: '_id, name'})
-    .populate({path: "post", select: '_id, text'})
-    .limit(50);
+    let notifications = await Notification.find({ receiver: req.user.id })
+      .sort({ date: -1 })
+      .populate({ path: "sender", select: "_id, name" })
+      .populate({ path: "post", select: "_id, text" })
+      .limit(50);
     res.json(notifications);
   } catch (error) {
     console.log(error.message);
@@ -223,49 +253,48 @@ router.post("/", auth, async (req, res) => {
   }).single("imageData");
   try {
     let user = await User.findById(req.user.id);
-      new Promise((resolve, reject) => {
-        upload(req, res, function (err) {
-          // req.file contains information of uploaded file
-          // req.body contains information of text fields, if there were any
-          console.log(err)
-          if (req.fileValidationError) {
-            return res.status(500).send(req.fileValidationError);
-          } else if (err instanceof multer.MulterError) {
-            return res.status(500).send(err);
-          } else if (err) {
-            return res.status(500).send(err);
-          }
-      
-          // Display uploaded image for user validation
-          resolve()
-        });
-      }).then(async () => {
-        if(!req.body.text){
-          return res.status(500).send("Bio can't be blank");
+    new Promise((resolve, reject) => {
+      upload(req, res, function (err) {
+        // req.file contains information of uploaded file
+        // req.body contains information of text fields, if there were any
+        console.log(err);
+        if (req.fileValidationError) {
+          return res.status(500).send(req.fileValidationError);
+        } else if (err instanceof multer.MulterError) {
+          return res.status(500).send(err);
+        } else if (err) {
+          return res.status(500).send(err);
         }
-        user.bio = req.body.text;
-        if(req.file){
-          if(user.imageName != "none"){
-            try {
-              await cloudinary.uploader.destroy(user.imageName);
-            } catch (error) {
-              console.log(error.message);
-            }
+
+        // Display uploaded image for user validation
+        resolve();
+      });
+    }).then(async () => {
+      if (!req.body.text) {
+        return res.status(500).send("Bio can't be blank");
+      }
+      user.bio = req.body.text;
+      if (req.file) {
+        if (user.imageName != "none") {
+          try {
+            await cloudinary.uploader.destroy(user.imageName);
+          } catch (error) {
+            console.log(error.message);
           }
-          user.imageName = req.file.filename;
-          user.imageData = req.file.path;
         }
-        await user.save();
-        
-        // if(req.file){
-        //   const filter = { user: user._id.toString() };
-        //   const update = { avatar: "/" + req.file.path };
-      
-        //   let doc = await Post.updateMany(filter, update);
-        // }
-        res.json(user);
-      })
-   
+        user.imageName = req.file.filename;
+        user.imageData = req.file.path;
+      }
+      await user.save();
+
+      // if(req.file){
+      //   const filter = { user: user._id.toString() };
+      //   const update = { avatar: "/" + req.file.path };
+
+      //   let doc = await Post.updateMany(filter, update);
+      // }
+      res.json(user);
+    });
   } catch (error) {
     console.log(error.message);
     res.status(500).send("Server error");
@@ -365,8 +394,8 @@ router.put("/follow/:id", auth, async (req, res) => {
       const notification = new Notification({
         sender: req.user.id,
         receiver: req.params.id,
-        action: "follow"
-      })
+        action: "follow",
+      });
       await notification.save();
     } else {
       currentUser.following.splice(followingIndex, 1);
