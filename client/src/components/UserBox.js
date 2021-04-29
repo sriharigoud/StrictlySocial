@@ -21,15 +21,16 @@ export default function UserBox({ user, currentUser, setUserInfo, userInfo, setC
       <div className="p-1">
         <span className="round">
           <img
-            className="img-fluid img-responsive rounded-circle"
+            className="rounded-circle"
             onError={(e) => e.target.src = user.avatar}
             src={user.imageData ? user.imageData : user.avatar}
             alt="user"
             width="50"
+            height="50"
           />
         </span>
       </div>
-      <div className="comment-text w-100">
+      <div className="comment-text w-100 p-1">
         <span className="float-right action-icons my-2 mr-2">
           {user._id !== currentUser._id && user._id !== '608438c33383641df099002a' && (
             <button data={JSON.stringify(currentUser.following)} onClick={() => toggleFollow(user)} className="btn btn-primary" title="Follow">
