@@ -55,7 +55,7 @@ function Notifications({ channel, setNts, notifications, setAll }) {
               currentUser={currentUser}
             />
           </div>
-          <div className="col-md-6 border-left border-right ">
+          <div className="col-md-6 border-left border-right mb-2">
             <h5>Notifications</h5>
             <ul className="list-group custom-nav m-0 border-top  border-bottom p-0 list-group-flush">
               {notifications &&

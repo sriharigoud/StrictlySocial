@@ -32,10 +32,15 @@ body {
 }
 .userContainer > img{
   /* height: 150px; */
+  max-width: 100%;
+  width: 100%;
 }
 .navbar,
 .card-header {
   background: #d7a2fd !important;
+}
+.card-footer {
+  padding: .75rem .5rem !important;
 }
 .card-header .text-muted {
   color: #1d2124 !important;

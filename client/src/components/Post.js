@@ -74,31 +74,31 @@ export default function Post({
         <div className="d-flex justify-content-between align-items-center">
           <div className="d-flex justify-content-between align-items-center">
             <div className="mr-2">
-              {post.user.imageName === "none" && (
-                <img
-                  onError={(e) => (e.target.src = post.user.avatar)}
-                  className="rounded-circle"
-                  width="45"
-                  height="45"
-                  src={post.user.avatar}
-                  alt=""
-                />
-              )}
+            {post.user.imageName === "none" &&<img
+                onError={(e) => (e.target.src = post.user.avatar)}
+                className="rounded-circle"
+                width="45"
+                height="45"
+                src={
+                  post.user.avatar
+                }
+                alt=""
+              />}
               {post.user.imageName !== "none" && (
-                <Image
-                  className="rounded-circle mr-2"
-                  placeholderColor="red"
-                  cloudName={"strictlysocial"}
-                  publicId={post.user.imageName}
-                >
-                  <Transformation
-                    width="45"
-                    height="45"
-                    gravity="faces"
-                    crop="fill"
-                  />
-                </Image>
-              )}
+                          <Image
+                            className="rounded-circle mr-2"
+                            placeholderColor="red"
+                            cloudName={"strictlysocial"}
+                            publicId={post.user.imageName}
+                          >
+                            <Transformation
+                              width="45"
+                              height="45"
+                              gravity="faces"
+                              crop="fill"
+                            />
+                          </Image>
+                        )}
             </div>
             <div className="ml-2">
               <div className="h5 m-0">
@@ -119,7 +119,7 @@ export default function Post({
         </div>
       </div>
       <div className="py-2 card-body">
-        <div className="text-muted h7 mb-1 float-right">
+        <div className="text-muted h7 mb-1">
           <i className="fa fa-clock-o"></i>{" "}
           <ReactTimeAgo date={new Date(post.date)} />
         </div>
@@ -193,7 +193,7 @@ export default function Post({
         </a>
         {showComments && (
           <div className="comments mt-2 border-top">
-            <div className="row add-comment-section my-2">
+            <div className="d-flex flex-row add-comment-section my-2">
               {currentUser.imageName === "none" && (
                 <img
                   onError={(e) => (e.target.src = currentUser.avatar)}
@@ -231,7 +231,7 @@ export default function Post({
                 autoFocus
                 placeholder="Add comment"
                 rows={1}
-                className="col-8 rc-mentions form-control mr-3"
+                className="form-control mr-3"
                 onChange={(text) => setCommentText(text)}
                 value={commentText}
                 style={{ width: "100%" }}
@@ -245,7 +245,7 @@ export default function Post({
               </Mentions>
               <button
                 onClick={() => submitComment(post)}
-                className="col-2 h-50 btn-small btn btn-primary"
+                className="btn btn-primary"
                 type="button"
               >
                 Comment
@@ -254,8 +254,8 @@ export default function Post({
             <div className="comment-section">
               {post.comments &&
                 post.comments.map((comment, i) => (
-                  <div key={i} className="border-top pt-1 mx-0 row comment-row">
-                    <div className="col-1 pt-2 ">
+                  <div key={i} className="d-flex border-top pt-1 flex-row comment-row">
+                    <div className="pt-2 ">
                       <span className="round">
                         {comment.user.imageName === "none" && (
                           <img
@@ -286,7 +286,7 @@ export default function Post({
                         )}
                       </span>
                     </div>
-                    <div className="comment-text pl-4 h-50 col-11">
+                    <div className="comment-text w-100">
                       {comment.user._id === userId && (
                         <span className="float-right action-icons mr-2">
                           <a

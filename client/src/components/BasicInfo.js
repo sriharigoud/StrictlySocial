@@ -104,6 +104,7 @@ export default function BasicInfo({
           )}
           {userInfo.imageName !== "none" && (
             <Image
+            responsive
               placeholderColor="red"
               cloudName={"strictlysocial"}
               publicId={userInfo.imageName}
