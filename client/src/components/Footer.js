@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Navbar, Nav, NavDropdown } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 
 export default function Footer() {
   return (

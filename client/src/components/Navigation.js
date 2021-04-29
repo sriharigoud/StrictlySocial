@@ -17,6 +17,12 @@ export default function Navigation({ notifications }) {
     setUserInfo({});
     history.push("/login");
   };
+  const handleFormSubmit = e => {
+    e.preventDefault()
+    if(searchQuery){
+     history.push("/search/" + searchQuery)
+    }
+  }
   return (
     <div className="mb-0 w-100">
       <nav className="navbar navbar-light">
@@ -25,7 +31,7 @@ export default function Navigation({ notifications }) {
         </Link>
         {userInfo && userInfo.name && (
           <React.Fragment>
-            <form className="form-inline">
+            <form onSubmit={(e) => handleFormSubmit(e)} className="form-inline">
               <div className="input-group">
                 <input
                   type="text"

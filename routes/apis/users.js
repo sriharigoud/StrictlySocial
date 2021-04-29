@@ -115,7 +115,8 @@ router.get("/notifications", auth, async (req, res) => {
     let notifications = await Notification.find({receiver: req.user.id})
     .sort({date: -1})
     .populate({path: "sender", select: '_id, name'})
-    .populate({path: "post", select: '_id, text'});
+    .populate({path: "post", select: '_id, text'})
+    limit(50);
     res.json(notifications);
   } catch (error) {
     console.log(error.message);

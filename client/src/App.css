@@ -22,7 +22,7 @@ body {
   z-index: 1;
   transform: translate(-50%, -50%);
   left: 50%;
-  display:none !important;
+  /* display:none !important; */
 }
 .userContainer:hover > .editProfile{
   display:block !important;
@@ -50,7 +50,9 @@ body {
 *{
   font-family: 'Open Sans', sans-serif;
 }
-
+.comment-row{
+  overflow-x:hidden;
+}
 .well {
   margin-top:-20px;
   background-color:#007FBD;

@@ -210,22 +210,22 @@ export default function BasicInfo({
           <div className="card-text border-top border-bottom">
             <ul className="list-group custom-nav border-0 mt-0 px-0 pt-0 list-group-flush">
               <li className="list-group-item my-0 py-2 px-1">
-                <Link to="/news">
+                <Link to="/search/news">
                   <i className="fa fa-fw fa-newspaper-o"></i> News
                 </Link>
               </li>
               <li className="list-group-item my-0 py-2 px-1">
-                <Link to="/covid19">
+                <Link to="/search/covid19">
                   <i className="fa fa-fw fa-medkit"></i> Covid19
                 </Link>
               </li>
               <li className="list-group-item my-0 py-2 px-1">
-                <Link to="/entertainment">
+                <Link to="/search/entertainment">
                   <i className="fa fa-fw fa-film"></i> Entertainment
                 </Link>
               </li>
               <li className="list-group-item my-0 py-2 px-1">
-                <Link to="/sports">
+                <Link to="/search/sports">
                   <i className="fa fa-fw fa-trophy"></i> Sports
                 </Link>
               </li>

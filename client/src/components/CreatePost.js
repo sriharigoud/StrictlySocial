@@ -2,10 +2,12 @@ import React, { useState, useEffect, useRef } from "react";
 import { Tabs, Tab } from "react-bootstrap";
 import axios from "axios";
 import Mentions from "rc-mentions";
-import debounce from 'lodash.debounce';
+import debounce from "lodash.debounce";
+import { createPost } from "../redux/Posts/Posts.actions";
+import { connect } from "react-redux";
 
 const { Option } = Mentions;
-export default function CreatePost({ setPosts }) {
+function CreatePost({ createPost }) {
   const [text, setText] = useState("");
   const [users, setUsers] = useState([]);
   const [key, setKey] = useState("text");
@@ -18,9 +20,7 @@ export default function CreatePost({ setPosts }) {
           "Content-Type": "application/json",
         },
       });
-      setPosts((prevPosts) => {
-        return [res.data.newpost, ...prevPosts];
-      });
+      createPost(res.data.newpost);
       setText("");
     } catch (error) {
       console.log(error.message);
@@ -29,22 +29,20 @@ export default function CreatePost({ setPosts }) {
 
   const uploadImage = async () => {
     try {
-      if(file){
+      if (file) {
         let imageFormObj = new FormData();
         imageFormObj.append("imageName", Date.now() + "postimage");
         imageFormObj.append("imageData", file);
         const res = await axios.post(`/api/posts/uploadImage`, imageFormObj);
-        setPosts((prevPosts) => {
-          return [res.data.newpost, ...prevPosts];
-        });
+        createPost(res.data.newpost);
       } else {
-        alert("Please select an image!")
+        alert("Please select an image!");
       }
     } catch (error) {
       console.log(error.message);
-      if(error.response){
-        alert(error.response.data)
-        }
+      if (error.response) {
+        alert(error.response.data);
+      }
     }
   };
   const fileChangedHandler = (event) => {
@@ -94,7 +92,12 @@ export default function CreatePost({ setPosts }) {
               defaultValue={text}
               value={text}
             >
-              {users && users.map((user) => (<Option key={user._id} value={user.email.split("@")[0]}>{user.name}</Option>))}
+              {users &&
+                users.map((user) => (
+                  <Option key={user._id} value={user.email.split("@")[0]}>
+                    {user.name}
+                  </Option>
+                ))}
             </Mentions>
           </div>
         </Tab>
@@ -129,3 +132,11 @@ export default function CreatePost({ setPosts }) {
     </div>
   );
 }
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    createPost: (payload) => dispatch(createPost(payload)),
+  };
+};
+
+export default connect(null, mapDispatchToProps)(CreatePost);

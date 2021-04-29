@@ -3,11 +3,13 @@ import { useLocation } from "react-router";
 import SearchContainer from "./SearchContainer";
 
 export default function Search() {
-  const { key, pathname } = useLocation();
+  const { pathname } = useLocation();
 
-  useEffect(() => {
-  });
+  useEffect(() => {});
   return (
-    <SearchContainer showPeople={true} searchKey={pathname.replace("/search/", "")}></SearchContainer>
+    <SearchContainer
+      showPeople={true}
+      searchKey={pathname.replace("/search/", "")}
+    ></SearchContainer>
   );
 }

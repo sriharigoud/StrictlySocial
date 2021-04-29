@@ -231,7 +231,9 @@ router.get("/search/:searchQuery", auth, async (req, res) => {
         { name: { $regex: req.params.searchQuery, $options: "i" } },
       ],
     })
-      .populate("owner", "name")
+    .populate("owner", "name")
+    .populate({path: "user", select: "name avatar imageData"})
+    .populate({path: "comments.user", select: "name avatar imageData"})
       .limit(10)
       .exec(function (err, result) {
         if (err) return res.status(500).send("Server error");

@@ -11,7 +11,6 @@ import axios from "axios";
 import debounce from "lodash.debounce";
 const { Option } = Mentions;
 
-
 hashtag(linkify);
 mention(linkify);
 export default function Post({
@@ -24,7 +23,7 @@ export default function Post({
   sharePost,
   deleteComment,
   currentUser,
-  commentText
+  commentText,
 }) {
   const [users, setUsers] = useState([]);
   const [showComments, setShowComments] = useState(false);
@@ -75,11 +74,13 @@ export default function Post({
           <div className="d-flex justify-content-between align-items-center">
             <div className="mr-2">
               <img
-                onError={(e) => e.target.src = post.user.avatar}
+                onError={(e) => (e.target.src = post.user.avatar)}
                 className="rounded-circle"
                 width="45"
                 height="45"
-                src={post.user.imageData ? post.user.imageData : post.user.avatar}
+                src={
+                  post.user.imageData ? post.user.imageData : post.user.avatar
+                }
                 alt=""
               />
             </div>
@@ -102,12 +103,10 @@ export default function Post({
         </div>
       </div>
       <div className="py-2 card-body">
-        <div className="text-muted h7 mb-1">
-          <i className="fa fa-clock-o"></i> <ReactTimeAgo date={new Date(post.date)} />
+        <div className="text-muted h7 mb-1 float-right">
+          <i className="fa fa-clock-o"></i>{" "}
+          <ReactTimeAgo date={new Date(post.date)} />
         </div>
-        <a className="card-link" href="#">
-          <h5 className="card-title">{post.title}</h5>
-        </a>
 
         {post.text && (
           <div className="card-text">
@@ -156,7 +155,7 @@ export default function Post({
         )}
       </div>
       <div className="card-footer">
-        <a className="card-link" onClick={() => toggleLike(post)}>
+        <a role="button" className="card-link" onClick={() => toggleLike(post)}>
           <i className="fa fa-gittip"></i>
           {post.likes &&
           post.likes.some((className) => className.user === userId)
@@ -164,21 +163,31 @@ export default function Post({
             : " Like"}
           ({post && post.likes && post.likes.length})
         </a>
-        <a className="card-link" onClick={toggleComment}>
+        <a role="button" className="card-link" onClick={toggleComment}>
           <i className="fa fa-comment"></i> Comment (
           {post.comments && post.comments.length})
         </a>
-        <a href="#" onClick={() => sharePost(post)} className="card-link">
+        <a
+          role="button"
+          href="#"
+          onClick={() => sharePost(post)}
+          className="card-link"
+        >
           <i className="fa fa-mail-forward"></i> Share
         </a>
         {showComments && (
           <div className="comments mt-2 border-top">
-            <div className="d-flex flex-row add-comment-section my-2">
+            <div className="row add-comment-section my-2">
               <img
-                onError={(e) => e.target.src = currentUser.avatar}
-                className="img-fluid img-responsive rounded-circle mr-2"
-                src={currentUser.imageData ? currentUser.imageData : currentUser.avatar}
-                width="38"
+                onError={(e) => (e.target.src = currentUser.avatar)}
+                src={
+                  currentUser.imageData
+                    ? currentUser.imageData
+                    : currentUser.avatar
+                }
+                className="rounded-circle mr-2"
+                width="40"
+                height="40"
                 alt=""
               />
               {/* <input
@@ -193,7 +202,7 @@ export default function Post({
                 autoFocus
                 placeholder="Add comment"
                 rows={1}
-                className="form-control mr-3"
+                className="col-8 rc-mentions form-control mr-3"
                 onChange={(text) => setCommentText(text)}
                 value={commentText}
                 style={{ width: "100%" }}
@@ -207,7 +216,7 @@ export default function Post({
               </Mentions>
               <button
                 onClick={() => submitComment(post)}
-                className="btn btn-primary"
+                className="col-2 h-50 btn-small btn btn-primary"
                 type="button"
               >
                 Comment
@@ -216,22 +225,24 @@ export default function Post({
             <div className="comment-section">
               {post.comments &&
                 post.comments.map((comment, i) => (
-                  <div
-                    key={i}
-                    className="d-flex border-top pt-1 flex-row comment-row"
-                  >
-                    <div className="p-2">
+                  <div key={i} className="border-top pt-1 mx-0 row comment-row">
+                    <div className="col-1 pt-2 ">
                       <span className="round">
                         <img
-                          onError={(e) => e.target.src = comment.user.avatar}
-                          className="img-fluid img-responsive rounded-circle"
-                          src={comment.user.imageData ? comment.user.imageData : comment.user.avatar}
+                          onError={(e) => (e.target.src = comment.user.avatar)}
+                          className="rounded-circle"
+                          src={
+                            comment.user.imageData
+                              ? comment.user.imageData
+                              : comment.user.avatar
+                          }
                           alt="user"
                           width="50"
+                          height="50"
                         />
                       </span>
                     </div>
-                    <div className="comment-text w-100">
+                    <div className="comment-text pl-4 h-50 col-11">
                       {comment.user._id === userId && (
                         <span className="float-right action-icons mr-2">
                           <a
@@ -245,12 +256,12 @@ export default function Post({
                       )}
                       <h5 className="mb-0">{comment.name}</h5>
                       <div className="comment-footer">
-                        <span className="date text-muted">
+                        <span className="date border-bottom text-muted">
                           <i className="fa fa-clock-o"></i>{" "}
                           <ReactTimeAgo date={new Date(comment.date)} />
                         </span>
                       </div>
-                      <p className="my-0">
+                      <p className="my-1">
                         {" "}
                         <Linkify
                           options={linkifyOptions}

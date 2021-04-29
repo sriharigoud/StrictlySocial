@@ -18,10 +18,6 @@ import ResetPassword from "./components/ResetPassword";
 import { createBrowserHistory } from "history";
 import axios from "axios";
 import { doLogout } from "./utils/utils";
-import Covid19 from "./components/explore/Covid19";
-import Entertainment from "./components/explore/Entertainment";
-import Sports from "./components/explore/Sports";
-import News from "./components/explore/News";
 import Notifications from "./components/Notifications";
 import {connect} from 'react-redux';
 
@@ -135,7 +131,6 @@ function App({AddNotification}) {
             exact
           />
           <PrivateRoute component={Home} path="/home" exact />
-          <PrivateRoute component={News} path="/news" exact />
           <PrivateRoute
             channel={channel}
             setNts={setNotifications}
@@ -143,9 +138,6 @@ function App({AddNotification}) {
             path="/notifications"
             exact
           />
-          <PrivateRoute component={Sports} path="/sports" exact />
-          <PrivateRoute component={Entertainment} path="/entertainment" exact />
-          <PrivateRoute component={Covid19} path="/covid19" exact />
           <PrivateRoute component={Profile} path="/profile/:id" />
           <PrivateRoute component={Search} path="/search/:searchQuery" exact />
           <PrivateRoute component={PostContainer} path="/post/:id" exact />
