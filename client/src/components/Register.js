@@ -47,8 +47,8 @@ export default function Regsiter() {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
   return (
-    <div className="mt-2 border py-2">
-      <Container>
+    <div className="mt-2 mx-2 border py-2 px-2">
+      {/* <Container> */}
         <Row>
           <Col md={7} className="border-right mb-2">
             <Main />
@@ -98,7 +98,7 @@ export default function Regsiter() {
             </Form>
           </Col>
         </Row>
-      </Container>
+      {/* </Container> */}
     </div>
   );
 }
