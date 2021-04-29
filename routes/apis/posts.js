@@ -239,6 +239,7 @@ router.get("/search/:searchQuery", auth, async (req, res) => {
     .populate({path: "user", select: "name avatar imageData imageName"})
     .populate({path: "comments.user", select: "name avatar imageData imageName"})
       .limit(10)
+      .sort({ date: -1 })
       .exec(function (err, result) {
         if (err) return res.status(500).send("Server error");
         res.json(result);
