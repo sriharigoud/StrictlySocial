@@ -30,7 +30,7 @@ db.once("open", () => {
       const nss = await Notification.findOne({ _id: notification._id })
         .populate({ path: "sender", select: "_id, name" })
         .populate({ path: "post", select: "_id, text" });
-      console.log(nss);
+      // console.log(nss);
       pusher.trigger("notifications", "inserted", nss);
     }
   });
@@ -92,7 +92,7 @@ const PORT = process.env.PORT || 5000;
 
 // Schedule tasks to be run on the server.
 cron.schedule('0 0 0 * * *', async function() {
-  console.log('running a every 4am');
+  console.log('running a every 12am');
 
   let newpost = {
     user: '608438c33383641df099002a',
@@ -116,7 +116,7 @@ cron.schedule('0 0 0 * * *', async function() {
 
   if(health && health.articles.length > 0){
     let {title, description, url, urlToImage} = health.articles[0];
-    let post = new Post(newpost)
+    let post = new Post({...newpost})
     post.text = title;
     post.linkData = {title, url, description, ogImage: urlToImage}
     await post.save();
@@ -131,7 +131,7 @@ cron.schedule('0 0 0 * * *', async function() {
 
   if(sports && sports.articles.length > 0){
     let {title, description, url, urlToImage} = sports.articles[0];
-    let post = new Post(newpost)
+    let post = new Post({...newpost})
     post.text = title;
     post.linkData = {title, url, description, ogImage: urlToImage}
     await post.save();
@@ -146,7 +146,7 @@ cron.schedule('0 0 0 * * *', async function() {
 
   if(entertainment && entertainment.articles.length > 0){
     let {title, description, url, urlToImage} = entertainment.articles[0];
-    let post = new Post(newpost)
+    let post = new Post({...newpost})
     post.text = title;
     post.linkData = {title, url, description, ogImage: urlToImage}
     await post.save();
@@ -161,7 +161,7 @@ cron.schedule('0 0 0 * * *', async function() {
 
   if(general && general.articles.length > 0){
     let {title, description, url, urlToImage} = general.articles[0];
-    let post = new Post(newpost)
+    let post = new Post({...newpost})
     post.text = title;
     post.linkData = {title, url, description, ogImage: urlToImage}
     await post.save();
