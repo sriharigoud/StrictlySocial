@@ -4,6 +4,7 @@ import axios from "axios";
 import { Modal, Button, Form } from "react-bootstrap";
 import { Image, Transformation } from "cloudinary-react";
 import { Link } from "react-router-dom";
+import Explore from "./Explore";
 export default function BasicInfo({
   userInfo,
   setUserInfo,
@@ -224,35 +225,7 @@ export default function BasicInfo({
         </Modal>
       </div>
 
-      <div className="card mt-2 mb-2 gedf-card">
-        <div className="card-body px-2">
-          <h5 className="card-title mb-2">Explore</h5>
-          <div className="card-text border-top border-bottom">
-            <ul className="list-group custom-nav border-0 mt-0 px-0 pt-0 list-group-flush">
-              <li className="list-group-item my-0 py-2 px-1">
-                <Link to="/search/news">
-                  <i className="fa fa-fw fa-newspaper-o"></i> News
-                </Link>
-              </li>
-              <li className="list-group-item my-0 py-2 px-1">
-                <Link to="/search/covid-19">
-                  <i className="fa fa-fw fa-medkit"></i> Covid-19
-                </Link>
-              </li>
-              <li className="list-group-item my-0 py-2 px-1">
-                <Link to="/search/entertainment">
-                  <i className="fa fa-fw fa-film"></i> Entertainment
-                </Link>
-              </li>
-              <li className="list-group-item my-0 py-2 px-1">
-                <Link to="/search/sports">
-                  <i className="fa fa-fw fa-trophy"></i> Sports
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </React.Fragment>
+      <Explore />
+      </React.Fragment>
   );
 }

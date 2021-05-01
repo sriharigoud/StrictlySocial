@@ -40,7 +40,7 @@ body {
   background: #d7a2fd !important;
 }
 .card-footer {
-  padding: .75rem .5rem !important;
+  /* padding: .75rem .5rem !important; */
 }
 .card-header .text-muted {
   color: #1d2124 !important;

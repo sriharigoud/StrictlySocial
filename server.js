@@ -89,7 +89,9 @@ if (process.env.NODE_ENV === "production") {
 
 const PORT = process.env.PORT || 5000;
 
-
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 // Schedule tasks to be run on the server.
 cron.schedule('0 0 0 * * *', async function() {
   console.log('running a every 12am');
@@ -117,11 +119,12 @@ cron.schedule('0 0 0 * * *', async function() {
   if(health && health.articles.length > 0){
     let {title, description, url, urlToImage} = health.articles[0];
     let post = new Post({...newpost})
-    post.text = title;
+    post.text = title + " #health #covid-19 #covid19";;
     post.linkData = {title, url, description, ogImage: urlToImage}
     await post.save();
   }
 
+  sleep(5000);
   const sports = await newsapi.v2.topHeadlines({
     // sources:'google-news-in',
     category: 'sports',
@@ -132,11 +135,12 @@ cron.schedule('0 0 0 * * *', async function() {
   if(sports && sports.articles.length > 0){
     let {title, description, url, urlToImage} = sports.articles[0];
     let post = new Post({...newpost})
-    post.text = title;
+    post.text = title + " #sports";
     post.linkData = {title, url, description, ogImage: urlToImage}
     await post.save();
   }
 
+  sleep(5000);
   const entertainment = await newsapi.v2.topHeadlines({
     // sources:'google-news-in',
     category: 'entertainment',
@@ -147,11 +151,12 @@ cron.schedule('0 0 0 * * *', async function() {
   if(entertainment && entertainment.articles.length > 0){
     let {title, description, url, urlToImage} = entertainment.articles[0];
     let post = new Post({...newpost})
-    post.text = title;
+    post.text = title + " #entertainment";
     post.linkData = {title, url, description, ogImage: urlToImage}
     await post.save();
   }
 
+  sleep(5000);
   const general = await newsapi.v2.topHeadlines({
     // sources:'google-news-in',
     category: 'general',
@@ -162,10 +167,59 @@ cron.schedule('0 0 0 * * *', async function() {
   if(general && general.articles.length > 0){
     let {title, description, url, urlToImage} = general.articles[0];
     let post = new Post({...newpost})
-    post.text = title;
+    post.text = title + " #news";
     post.linkData = {title, url, description, ogImage: urlToImage}
     await post.save();
   }
+
+  sleep(5000);
+  const science = await newsapi.v2.topHeadlines({
+    // sources:'google-news-in',
+    category: 'science',
+    language: 'en',
+    country: 'in'
+  })
+
+  if(science && science.articles.length > 0){
+    let {title, description, url, urlToImage} = science.articles[0];
+    let post = new Post({...newpost})
+    post.text = title + " #science";
+    post.linkData = {title, url, description, ogImage: urlToImage}
+    await post.save();
+  }
+
+  sleep(5000);
+  const technology = await newsapi.v2.topHeadlines({
+    // sources:'google-news-in',
+    category: 'technology',
+    language: 'en',
+    country: 'in'
+  })
+
+  if(technology && technology.articles.length > 0){
+    let {title, description, url, urlToImage} = technology.articles[0];
+    let post = new Post({...newpost})
+    post.text = title + " #technology";
+    post.linkData = {title, url, description, ogImage: urlToImage}
+    await post.save();
+  }
+
+  sleep(5000);
+  const business = await newsapi.v2.topHeadlines({
+    // sources:'google-news-in',
+    category: 'business',
+    language: 'en',
+    country: 'in'
+  })
+
+  if(business && business.articles.length > 0){
+    let {title, description, url, urlToImage} = business.articles[0];
+    let post = new Post({...newpost})
+    post.text = title + " #business";
+    post.linkData = {title, url, description, ogImage: urlToImage}
+    await post.save();
+  }
+  sleep(5000);
   console.log("Done")
 });
 
