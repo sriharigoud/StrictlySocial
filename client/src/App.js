@@ -57,7 +57,7 @@ function App({AddNotification}) {
       const currentUser = JSON.parse(localStorage.getItem("user"));
       if (
         currentUser &&
-        currentUser._id === data.receiver &&
+        currentUser._id === data.receiver._id &&
         currentUser._id !== data.sender._id
       ) {
         if (

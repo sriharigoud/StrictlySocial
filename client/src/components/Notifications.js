@@ -14,15 +14,8 @@ import { connect } from "react-redux";
 function Notifications({ channel, setNts, notifications, setAll }) {
   let [currentUser, setCurrentUser] = useState(getUser());
   const userInfo = getUser();
-  // const [notifications, setNotifications] = useState();
   const { key } = useLocation();
   
-//   const addNotification = (newNotification) => {
-//       console.log(newNotification, currentUser)
-//       if(newNotification.receiver === currentUser._id){
-//         setNotifications(pre => [newNotification, ...pre]);
-//       }
-// };
   useEffect(() => {
     // setNts([])
     if (userInfo.token) {
@@ -31,17 +24,12 @@ function Notifications({ channel, setNts, notifications, setAll }) {
     async function getPopular() {
       try {
         const res = await axios.get("/api/users/notifications");
-        // setNotifications(res.data)
         setAll(res.data);
       } catch (error) {
         console.log(error.message);
       }
     }
     getPopular();
-    // channel.bind('inserted', function(data) {
-    //     addNotification(data)
-    // });
-
   }, [key, getUser]);
   return (
     <React.Fragment>
