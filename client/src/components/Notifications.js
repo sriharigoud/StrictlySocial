@@ -11,13 +11,13 @@ import ReactTimeAgo from "react-time-ago";
 import { setAll } from "../redux/Notifications/Notifications.actions";
 import { connect } from "react-redux";
 
-function Notifications({ channel, setNts, notifications, setAll }) {
+function Notifications({ setNts, notifications, setAll }) {
   let [currentUser, setCurrentUser] = useState(getUser());
   const userInfo = getUser();
   const { key } = useLocation();
   
   useEffect(() => {
-    // setNts([])
+    setNts([])
     if (userInfo.token) {
       setAuthToken(userInfo.token);
     }

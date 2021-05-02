@@ -119,7 +119,7 @@ export default function Post({
         </div>
       </div>
       <div className="py-2 card-body">
-        <div className="text-muted h7 mb-1">
+        <div title={post.date} className="text-muted h7 mb-1">
           <i className="fa fa-clock-o"></i>{" "}
           <ReactTimeAgo date={new Date(post.date)} />
         </div>
@@ -300,7 +300,7 @@ export default function Post({
                       )}
                       <h5 className="mb-0">{comment.name}</h5>
                       <div className="comment-footer">
-                        <span className="date border-bottom text-muted">
+                        <span title={comment.date} className="date border-bottom text-muted">
                           <i className="fa fa-clock-o"></i>{" "}
                           <ReactTimeAgo date={new Date(comment.date)} />
                         </span>
