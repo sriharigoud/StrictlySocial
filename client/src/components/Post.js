@@ -87,7 +87,7 @@ export default function Post({
               {post.user.imageName !== "none" && (
                           <Image
                             className="rounded-circle mr-2"
-                            placeholderColor="red"
+                            
                             cloudName={"strictlysocial"}
                             publicId={post.user.imageName}
                           >
@@ -102,11 +102,11 @@ export default function Post({
             </div>
             <div className="ml-2">
               <div className="h5 m-0">
-                <Link to={`/profile/${post.user._id}`}>{post.name}</Link>{" "}
+                <Link to={`/profile/${post.user && post.user.email.split("@")[0]}`}>{post.name}</Link>{" "}
                 {post.owner && (
                   <span>
                     Shared{" "}
-                    <Link to={`/profile/${post.owner._id}`}>
+                    <Link to={`/profile/${post.owner && post.owner.email.split("@")[0]}`}>
                       {post.owner.name}
                     </Link>
                     's Post
@@ -207,7 +207,7 @@ export default function Post({
               {currentUser.imageName !== "none" && (
                 <Image
                   className="rounded-circle mr-2"
-                  placeholderColor="red"
+                  
                   cloudName={"strictlysocial"}
                   publicId={currentUser.imageName}
                 >
@@ -272,7 +272,7 @@ export default function Post({
                         {comment.user.imageName !== "none" && (
                           <Image
                             className="rounded-circle mr-2"
-                            placeholderColor="red"
+                            
                             cloudName={"strictlysocial"}
                             publicId={comment.user.imageName}
                           >

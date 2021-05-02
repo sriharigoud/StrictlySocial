@@ -58,7 +58,7 @@ function Notifications({ setNts, notifications, setAll }) {
                         <i class="fa fa-gittip"></i>{" "}
                         <Link
                           className="d-inline"
-                          to={"/profile/" + notification.sender._id}
+                          to={"/profile/" + notification.sender.email.split("@")[0]}
                         >
                           {notification.sender.name}
                         </Link>{" "}
@@ -84,7 +84,7 @@ function Notifications({ setNts, notifications, setAll }) {
                         <i class="fa fa-mail-forward"></i>{" "}
                         <Link
                           className="d-inline"
-                          to={"/profile/" + notification.sender._id}
+                          to={"/profile/" + notification.sender.email.split("@")[0]}
                         >
                           {notification.sender.name}
                         </Link>{" "}
@@ -109,7 +109,7 @@ function Notifications({ setNts, notifications, setAll }) {
                         <i class="fa fa-comment"></i>{" "}
                         <Link
                           className="d-inline"
-                          to={"/profile/" + notification.sender._id}
+                          to={"/profile/" + notification.sender.email.split("@")[0]}
                         >
                           {notification.sender.name}
                         </Link>{" "}
@@ -135,7 +135,7 @@ function Notifications({ setNts, notifications, setAll }) {
                         <i class="fa fa-user-plus"></i>{" "}
                         <Link
                           className="d-inline"
-                          to={"/profile/" + notification.sender._id}
+                          to={"/profile/" + notification.sender.email.split("@")[0]}
                         >
                           {notification.sender.name}
                         </Link>{" "}
@@ -153,7 +153,7 @@ function Notifications({ setNts, notifications, setAll }) {
                         <i class="fa fa-user-plus"></i>{" "}
                         <Link
                           className="d-inline"
-                          to={"/profile/" + notification.sender._id}
+                          to={"/profile/" + notification.sender.email.split("@")[0]}
                         >
                           {notification.sender.name}
                         </Link>{" "}
@@ -180,7 +180,7 @@ function Notifications({ setNts, notifications, setAll }) {
                         <i class="fa fa-user-plus"></i>{" "}
                         <Link
                           className="d-inline"
-                          to={"/profile/" + notification.sender._id}
+                          to={"/profile/" + notification.sender.email.split("@")[0]}
                         >
                           {notification.sender.name}
                         </Link>{" "}

@@ -51,7 +51,6 @@ function Home({setAllPosts}) {
   );
 }
 
-
 const mapDispatchToProps = dispatch => {
   return {
     setAllPosts: (payload) => dispatch(setAllPosts(payload)),

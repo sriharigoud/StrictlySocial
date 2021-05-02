@@ -139,7 +139,7 @@ function Profile({ posts, setAllPosts }) {
                             <Image
                              className="img-thumbnail"
                               responsive
-                              placeholderColor="red"
+                              
                               cloudName={"strictlysocial"}
                               publicId={post.imageName}
                             >

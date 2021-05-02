@@ -60,7 +60,7 @@ export default function SideBar() {
                         <Image
                           alt={user.name}
                           className="rounded-circle mr-2"
-                          placeholderColor="red"
+                          
                           cloudName={"strictlysocial"}
                           publicId={user.imageName}
                         >
@@ -76,7 +76,7 @@ export default function SideBar() {
                   </div>
                   <div className="comment-text w-100">
                     <h5 className="mb-0">
-                      <Link to={`/profile/${user._id}`}>{user.name}</Link>
+                      <Link to={`/profile/${user.email.split("@")[0]}`}>{user.name}</Link>
                     </h5>
                     <p
                       title={"@" + user.email.split("@")[0]}

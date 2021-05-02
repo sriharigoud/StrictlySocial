@@ -3,7 +3,7 @@ import { Link, useHistory } from "react-router-dom";
 import { Form, Button, Alert } from "react-bootstrap";
 import axios from "axios";
 import { doLogin } from "../utils/utils";
-import { Container, Row, Col } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 import Main from "./Main";
 export default function Regsiter() {
   let history = useHistory();
@@ -48,7 +48,6 @@ export default function Regsiter() {
   };
   return (
     <div className="mt-2 mx-2 border py-2 px-2">
-      {/* <Container> */}
         <Row>
           <Col md={7} className="border-right mb-2">
             <Main />
@@ -98,7 +97,6 @@ export default function Regsiter() {
             </Form>
           </Col>
         </Row>
-      {/* </Container> */}
     </div>
   );
 }

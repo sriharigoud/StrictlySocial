@@ -72,7 +72,7 @@ export default function Navigation({ notifications }) {
                 <Image
                   alt={userInfo.name}
                   className="rounded-circle mr-2"
-                  placeholderColor="red"
+                  
                   cloudName={"strictlysocial"}
                   publicId={userInfo.imageName}
                 >

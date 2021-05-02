@@ -105,7 +105,7 @@ export default function BasicInfo({
           {userInfo.imageName !== "none" && (
             <Image
             responsive
-              placeholderColor="red"
+              
               cloudName={"strictlysocial"}
               publicId={userInfo.imageName}
             >
@@ -148,7 +148,7 @@ export default function BasicInfo({
           <div className="h5 my-0 heading">
             <Link
               style={{ textDecoration: "none" }}
-              to={`/profile/${userInfo._id}`}
+              to={`/profile/${userInfo.email && userInfo.email.split("@")[0]}`}
             >
               {userInfo.name}
             </Link>
