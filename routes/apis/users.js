@@ -17,7 +17,6 @@ const multerConfig = require("../../helpers/multer");
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
 const NewsAPI = require("newsapi");
-const request = require("request");
 const newsapi = new NewsAPI("031719ac992040b68a5a32ebd765b172");
 
 router.get("/top-news", async (req, res) => {
@@ -148,8 +147,8 @@ router.get("/notifications", auth, async (req, res) => {
   try {
     let notifications = await Notification.find({ receiver: req.user.id })
       .sort({ date: -1 })
-      .populate({ path: "sender", select: "_id, name, email" })
-      .populate({ path: "post", select: "_id, text" })
+      .populate({ path: "sender", select: "_id name email" })
+      .populate({ path: "post", select: "_id text" })
       .limit(50);
     res.json(notifications);
   } catch (error) {
@@ -365,6 +364,7 @@ router.post(
     res.send("Password is updated successfully!");
   }
 );
+
 router.put("/follow/:id", auth, async (req, res) => {
   try {
     let user = await User.findById(req.params.id)

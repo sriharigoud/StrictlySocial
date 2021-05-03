@@ -5,14 +5,16 @@ import Mentions from "rc-mentions";
 import debounce from "lodash.debounce";
 import { createPost } from "../redux/Posts/Posts.actions";
 import { connect } from "react-redux";
+import { Image, Transformation } from "cloudinary-react";
 
 const { Option } = Mentions;
 function CreatePost({ createPost }) {
   const [text, setText] = useState("");
   const [users, setUsers] = useState([]);
+  const [hashtags, setHashtags] = useState([]);
   const [key, setKey] = useState("text");
   const [file, setFile] = useState();
-
+  const [prefix, setPrefix] = useState("@");
   const submitPost = async () => {
     try {
       const res = await axios.post(`/api/posts`, JSON.stringify({ text }), {
@@ -45,14 +47,21 @@ function CreatePost({ createPost }) {
       }
     }
   };
+
   const fileChangedHandler = (event) => {
     setFile(event.target.files[0]);
   };
 
-  const onSearch = (search) => {
-    loadGithubUsers(search);
+  const onSearch = (search, prefix) => {
+    setPrefix(prefix);
+    if (prefix === "@") {
+      loadUsers(search);
+    } else {
+      loadHashTags(search);
+    }
   };
-  const loadGithubUsers = async (key) => {
+
+  const loadUsers = async (key) => {
     try {
       const res = await axios.get(`/api/users/search/${key}`);
       setUsers(res.data);
@@ -60,7 +69,20 @@ function CreatePost({ createPost }) {
       setUsers([]);
     }
   };
-  debounce(loadGithubUsers, 1000);
+
+  const loadHashTags = async (key) => {
+    try {
+      if(key){
+        const res = await axios.get(`/api/posts/hashtags/${key}`);
+        setHashtags(res.data);
+      }
+    } catch (error) {
+      setHashtags([]);
+    }
+  };
+
+  debounce(loadUsers, 1000);
+  debounce(loadHashTags, 1000);
 
   return (
     <div className="card p-2 gedf-card">
@@ -83,19 +105,51 @@ function CreatePost({ createPost }) {
               placeholder="What are you thinking?"
             ></textarea> */}
             <Mentions
-              onSearch={onSearch}
+              prefix={["@", "#"]}
+              onSearch={(text, prefix) => onSearch(text, prefix)}
               autoFocus
               rows={3}
-              onSelect={(OptionProps) => console.log(OptionProps)}
               onChange={(text) => setText(text)}
               style={{ width: "100%" }}
               defaultValue={text}
               value={text}
             >
-              {users &&
+              {prefix === "@" &&
+                users &&
                 users.map((user) => (
                   <Option key={user._id} value={user.email.split("@")[0]}>
+                    {user.imageName === "none" && (
+                      <img
+                        onError={(e) => (e.target.src = user.avatar)}
+                        src={user.avatar}
+                        className="rounded-circle mr-2"
+                        width="30"
+                        height="30"
+                        alt=""
+                      />
+                    )}
+                    {user.imageName !== "none" && (
+                      <Image
+                        className="rounded-circle mr-2"
+                        cloudName={"strictlysocial"}
+                        publicId={user.imageName}
+                      >
+                        <Transformation
+                          width="30"
+                          height="30"
+                          gravity="faces"
+                          crop="fill"
+                        />
+                      </Image>
+                    )}
                     {user.name}
+                  </Option>
+                ))}
+              {prefix === "#" &&
+                hashtags &&
+                hashtags.map((hashtag) => (
+                  <Option key={hashtag._id} value={hashtag.name.split("#")[1]}>
+                    {hashtag.name}
                   </Option>
                 ))}
             </Mentions>

@@ -103,9 +103,9 @@ const notifyUsers = async () => {
       if (change.operationType === "insert") {
         const notification = change.fullDocument;
         const nss = await Notification.findOne({ _id: notification._id })
-          .populate({ path: "sender", select: "_id, name" })
-          .populate({ path: "receiver", select: "_id, name, email" })
-          .populate({ path: "post", select: "_id, text" });
+          .populate({ path: "sender", select: "_id name" })
+          .populate({ path: "receiver", select: "_id name email" })
+          .populate({ path: "post", select: "_id text" });
         try {
           pusher.trigger(
             "notifications",
