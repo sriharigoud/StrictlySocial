@@ -10,6 +10,7 @@ import SideBar from "./SideBar";
 import ReactTimeAgo from "react-time-ago";
 import { setAll } from "../redux/Notifications/Notifications.actions";
 import { connect } from "react-redux";
+import ProfileLink from "./ProfileLink";
 
 function Notifications({ setNts, notifications, setAll }) {
   let [currentUser, setCurrentUser] = useState(getUser());
@@ -56,12 +57,7 @@ function Notifications({ setNts, notifications, setAll }) {
                         className="list-group-item my-0 py-1 px-1"
                       >
                         <i class="fa fa-gittip"></i>{" "}
-                        <Link
-                          className="d-inline"
-                          to={"/profile/" + notification.sender.email.split("@")[0]}
-                        >
-                          {notification.sender.name}
-                        </Link>{" "}
+                        <ProfileLink id={notification.sender.email.split("@")[0]} name={notification.sender.name} />{" "}
                         Liked your post{" "}
                         <Link
                           className="d-inline"
@@ -82,12 +78,7 @@ function Notifications({ setNts, notifications, setAll }) {
                         className="list-group-item my-0 py-1 px-1"
                       >
                         <i class="fa fa-mail-forward"></i>{" "}
-                        <Link
-                          className="d-inline"
-                          to={"/profile/" + notification.sender.email.split("@")[0]}
-                        >
-                          {notification.sender.name}
-                        </Link>{" "}
+                        <ProfileLink id={notification.sender.email.split("@")[0]} name={notification.sender.name} />{" "}
                         Shared your post{" "}
                         <Link
                           className="d-inline"
@@ -107,12 +98,7 @@ function Notifications({ setNts, notifications, setAll }) {
                         className="list-group-item my-0 py-1 px-1"
                       >
                         <i class="fa fa-comment"></i>{" "}
-                        <Link
-                          className="d-inline"
-                          to={"/profile/" + notification.sender.email.split("@")[0]}
-                        >
-                          {notification.sender.name}
-                        </Link>{" "}
+                        <ProfileLink id={notification.sender.email.split("@")[0]} name={notification.sender.name} />{" "}
                         Commented on your post{" "}
                         <Link
                           className="d-inline"
@@ -133,12 +119,7 @@ function Notifications({ setNts, notifications, setAll }) {
                         className="list-group-item my-0 py-1 px-1"
                       >
                         <i class="fa fa-user-plus"></i>{" "}
-                        <Link
-                          className="d-inline"
-                          to={"/profile/" + notification.sender.email.split("@")[0]}
-                        >
-                          {notification.sender.name}
-                        </Link>{" "}
+                        <ProfileLink id={notification.sender.email.split("@")[0]} name={notification.sender.name} />{" "}
                         started following you{" "}
                         <div className="date text-muted">
                           <i className="fa fa-clock-o"></i>{" "}
@@ -151,12 +132,7 @@ function Notifications({ setNts, notifications, setAll }) {
                         className="list-group-item my-0 py-1 px-1"
                       >
                         <i class="fa fa-user-plus"></i>{" "}
-                        <Link
-                          className="d-inline"
-                          to={"/profile/" + notification.sender.email.split("@")[0]}
-                        >
-                          {notification.sender.name}
-                        </Link>{" "}
+                        <ProfileLink id={notification.sender.email.split("@")[0]} name={notification.sender.name} />{" "}
                         tagged you in the post{" "}
                         <Link
                           className="d-inline"
@@ -178,12 +154,7 @@ function Notifications({ setNts, notifications, setAll }) {
                         className="list-group-item my-0 py-1 px-1"
                       >
                         <i class="fa fa-user-plus"></i>{" "}
-                        <Link
-                          className="d-inline"
-                          to={"/profile/" + notification.sender.email.split("@")[0]}
-                        >
-                          {notification.sender.name}
-                        </Link>{" "}
+                        <ProfileLink id={notification.sender.email.split("@")[0]} name={notification.sender.name} />{" "}
                         mentioned in the comments of the post{" "}
                         <Link
                           className="d-inline"

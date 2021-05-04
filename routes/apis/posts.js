@@ -199,6 +199,7 @@ router.get("/hashtags/:searchQuery", auth, async (req, res) => {
     res.status(500).send("Server error");
   }
 });
+
 router.get("/share/:id", auth, async (req, res) => {
   try {
     let user = await User.findById(req.user.id);
@@ -247,22 +248,22 @@ router.get("/share/:id", auth, async (req, res) => {
 });
 
 // get all posts
-router.get("/", auth, async (req, res) => {
-// router.get("/:page/:limit", auth, async (req, res) => {
+// router.get("/", auth, async (req, res) => {
+router.get("/:page/:limit", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
     const fowls = user.following.map((f) => f.toString());
     fowls.push(req.user.id);
     
-    // let {page, limit} = req.params;
+    let {page, limit} = req.params;
     // const posts = await Post.find().sort({ date: -1 });
     const posts = await Post.find({ user: { $in: fowls } })
       .populate("owner", "name email")
       .populate({path: "user", select: postColumns})
       .populate({path: "comments.user", select: postColumns})
-      // .limit(new Number(limit))
-      // .skip((page-1) * limit)
-      .sort({ date: -1 });
+      // .sort({ date: -1 })
+      .limit(parseInt(limit, 10))
+      .skip((page-1) * limit)
 
     res.json(posts);
   } catch (error) {
@@ -385,13 +386,17 @@ router.get("/:id", auth, async (req, res) => {
 });
 
 // get posts by user id
-router.get("/user/:id", auth, async (req, res) => {
+router.get("/user/:id/:page/:limit", auth, async (req, res) => {
   try {
+    let {page, limit} = req.params;
+
     const posts = await Post.find({ user: req.params.id })
       .populate("owner", "name email")
       .populate({path: "user", select: postColumns})
       .populate({path: "comments.user", select: postColumns})
-      .sort({ date: -1 });
+      .limit(new Number(limit))
+      .skip((page-1) * limit)
+      // .sort({ date: -1 });
     res.json(posts);
   } catch (error) {
     console.log(error.message);

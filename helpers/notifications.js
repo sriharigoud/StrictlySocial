@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Pusher = require("pusher");
 const Notification = require("../models/Notification");
 const transporter = require("../helpers/smtpConfig");
-
+const domain = "polar-brushlands-34281.herokuapp.com"
 const pusher = new Pusher({
   appId: "1194970",
   key: "7dc61c61506f7d658f25",
@@ -16,11 +16,11 @@ const sendEmail = async (tmpl, data) => {
     to: data.receiver.email,
     from: "StrictlySocial",
     subject: "Notifications",
-    html: `Hi, 
+    html: `Hi ${data.sender.name}, 
     <br /> <br />
     ${tmpl}
     <br /><br /><br /><br />
-    Thanks
+    Thanks<br /><br />
     StrictlySocial`,
     text: `Hi, 
 
@@ -38,57 +38,57 @@ const sendEmail = async (tmpl, data) => {
 
 function notificationTemplate(data) {
   if (data.action === "like") {
-    return `<a href="https://polar-brushlands-34281.herokuapp.com/profile/${
+    return `<a href="https://${domain}/profile/${
       data.sender._id
     }" target="_blank">${
       data.sender.name
-    }</a> liked your post <a href="https://polar-brushlands-34281.herokuapp.com/post/${
+    }</a> liked your post <a href="https://${domain}/post/${
       data.post._id
     }" target="_blank">${
       data.post.text ? data.post.text.substring(0, 50) : "Image"
     }</a>`;
   } else if (data.action === "comment") {
-    return `<a href="https://polar-brushlands-34281.herokuapp.com/profile/${
+    return `<a href="https://${domain}/profile/${
       data.sender._id
     }" target="_blank">${
       data.sender.name
-    }</a> commented on your post <a href="https://polar-brushlands-34281.herokuapp.com/post/${
+    }</a> commented on your post <a href="https://${domain}/post/${
       data.post._id
     }" target="_blank">${
       data.post.text ? data.post.text.substring(0, 50) : "Image"
     } </a>`;
   } else if (data.action === "share") {
-    return `<a href="https://polar-brushlands-34281.herokuapp.com/profile/${
+    return `<a href="https://${domain}/profile/${
       data.sender._id
     }" target="_blank">${
       data.sender.name
-    }</a> shared your post <a href="https://polar-brushlands-34281.herokuapp.com/post/${
+    }</a> shared your post <a href="https://${domain}/post/${
       data.post._id
     }" target="_blank">${
       data.post.text ? data.post.text.substring(0, 50) : "Image"
     }</a>`;
   } else if (data.action === "tag") {
-    return `<a href="https://polar-brushlands-34281.herokuapp.com/profile/${
+    return `<a href="https://${domain}/profile/${
       data.sender._id
     }" target="_blank">${
       data.sender.name
-    }</a> tagged you in the <a href="https://polar-brushlands-34281.herokuapp.com/post/${
+    }</a> tagged you in the <a href="https://${domain}/post/${
       data.post._id
     }" target="_blank">post ${
       data.post.text ? data.post.text.substring(0, 50) : "Image"
     }</a>`;
   } else if (data.action === "mention") {
-    return `<a href="https://polar-brushlands-34281.herokuapp.com/profile/${
+    return `<a href="https://${domain}/profile/${
       data.sender._id
     }" target="_blank">${
       data.sender.name
-    }</a> mentioned you in the post <a href="https://polar-brushlands-34281.herokuapp.com/post/${
+    }</a> mentioned you in the post <a href="https://${domain}/post/${
       data.post._id
     }" target="_blank">${
       data.post.text ? data.post.text.substring(0, 50) : "Image"
     }</a>`;
   } else if (data.action === "follow") {
-    return `<a href="https://polar-brushlands-34281.herokuapp.com/profile/${data.sender._id}" target="_blank">${data.sender.name}</a> started following you`;
+    return `<a href="https://${domain}/profile/${data.sender._id}" target="_blank">${data.sender.name}</a> started following you`;
   } else {
     return "";
   }

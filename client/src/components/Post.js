@@ -10,6 +10,8 @@ import mention from "linkifyjs/plugins/mention";
 import Mentions from "rc-mentions";
 import axios from "axios";
 import debounce from "lodash.debounce";
+import ProfileLink from "./ProfileLink";
+import DynamicImg from "./DynamicImg";
 const { Option } = Mentions;
 
 hashtag(linkify);
@@ -74,41 +76,27 @@ export default function Post({
         <div className="d-flex justify-content-between align-items-center">
           <div className="d-flex justify-content-between align-items-center">
             <div className="mr-2">
-            {post.user.imageName === "none" &&<img
-                onError={(e) => (e.target.src = post.user.avatar)}
-                className="rounded-circle"
+              <DynamicImg
+                imageName={post.user.imageName}
+                CSSClassName="rounded-circle mr-2"
                 width="45"
                 height="45"
-                src={
-                  post.user.avatar
-                }
-                alt=""
-              />}
-              {post.user.imageName !== "none" && (
-                          <Image
-                            className="rounded-circle mr-2"
-                            
-                            cloudName={"strictlysocial"}
-                            publicId={post.user.imageName}
-                          >
-                            <Transformation
-                              width="45"
-                              height="45"
-                              gravity="faces"
-                              crop="fill"
-                            />
-                          </Image>
-                        )}
+                avatar={post.user.avatar}
+              />
             </div>
             <div className="ml-2">
               <div className="h5 m-0">
-                <Link to={`/profile/${post.user && post.user.email.split("@")[0]}`}>{post.name}</Link>{" "}
+                <ProfileLink
+                  id={post.user && post.user.email.split("@")[0]}
+                  name={post.name}
+                />{" "}
                 {post.owner && (
                   <span>
                     Shared{" "}
-                    <Link to={`/profile/${post.owner && post.owner.email.split("@")[0]}`}>
-                      {post.owner.name}
-                    </Link>
+                    <ProfileLink
+                      id={post.owner && post.owner.email.split("@")[0]}
+                      name={post.owner.name}
+                    />
                     's Post
                   </span>
                 )}
@@ -194,31 +182,14 @@ export default function Post({
         {showComments && (
           <div className="comments mt-2 border-top">
             <div className="d-flex flex-row add-comment-section my-2">
-              {currentUser.imageName === "none" && (
-                <img
-                  onError={(e) => (e.target.src = currentUser.avatar)}
-                  src={currentUser.avatar}
-                  className="rounded-circle mr-2"
-                  width="40"
-                  height="40"
-                  alt=""
-                />
-              )}
-              {currentUser.imageName !== "none" && (
-                <Image
-                  className="rounded-circle mr-2"
-                  
-                  cloudName={"strictlysocial"}
-                  publicId={currentUser.imageName}
-                >
-                  <Transformation
-                    width="40"
-                    height="40"
-                    gravity="faces"
-                    crop="fill"
-                  />
-                </Image>
-              )}
+              <DynamicImg
+                imageName={currentUser.imageName}
+                CSSClassName="rounded-circle mr-2"
+                width="40"
+                height="40"
+                avatar={currentUser.avatar}
+              />
+
               {/* <input
                 type="text"
                 onChange={(e) => setCommentText(e.target.value)}
@@ -254,36 +225,19 @@ export default function Post({
             <div className="comment-section">
               {post.comments &&
                 post.comments.map((comment, i) => (
-                  <div key={i} className="d-flex border-top pt-1 flex-row comment-row">
+                  <div
+                    key={i}
+                    className="d-flex border-top pt-1 flex-row comment-row"
+                  >
                     <div className="pt-2 ">
                       <span className="round">
-                        {comment.user.imageName === "none" && (
-                          <img
-                            onError={(e) =>
-                              (e.target.src = comment.user.avatar)
-                            }
-                            className="rounded-circle"
-                            src={comment.user.avatar}
-                            alt="user"
-                            width="50"
-                            height="50"
-                          />
-                        )}
-                        {comment.user.imageName !== "none" && (
-                          <Image
-                            className="rounded-circle mr-2"
-                            
-                            cloudName={"strictlysocial"}
-                            publicId={comment.user.imageName}
-                          >
-                            <Transformation
-                              width="50"
-                              height="50"
-                              gravity="faces"
-                              crop="fill"
-                            />
-                          </Image>
-                        )}
+                        <DynamicImg
+                          imageName={comment.user.imageName}
+                          CSSClassName="rounded-circle mr-2"
+                          width="50"
+                          height="50"
+                          avatar={comment.user.avatar}
+                        />
                       </span>
                     </div>
                     <div className="comment-text w-100">
@@ -300,7 +254,10 @@ export default function Post({
                       )}
                       <h5 className="mb-0">{comment.name}</h5>
                       <div className="comment-footer">
-                        <span title={comment.date} className="date border-bottom text-muted">
+                        <span
+                          title={comment.date}
+                          className="date border-bottom text-muted"
+                        >
                           <i className="fa fa-clock-o"></i>{" "}
                           <ReactTimeAgo date={new Date(comment.date)} />
                         </span>

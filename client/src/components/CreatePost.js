@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import { Tabs, Tab } from "react-bootstrap";
 import axios from "axios";
 import Mentions from "rc-mentions";
 import debounce from "lodash.debounce";
 import { createPost } from "../redux/Posts/Posts.actions";
 import { connect } from "react-redux";
-import { Image, Transformation } from "cloudinary-react";
+import DynamicImg from "./DynamicImg";
 
 const { Option } = Mentions;
 function CreatePost({ createPost }) {
@@ -72,7 +72,7 @@ function CreatePost({ createPost }) {
 
   const loadHashTags = async (key) => {
     try {
-      if(key){
+      if (key) {
         const res = await axios.get(`/api/posts/hashtags/${key}`);
         setHashtags(res.data);
       }
@@ -118,30 +118,13 @@ function CreatePost({ createPost }) {
                 users &&
                 users.map((user) => (
                   <Option key={user._id} value={user.email.split("@")[0]}>
-                    {user.imageName === "none" && (
-                      <img
-                        onError={(e) => (e.target.src = user.avatar)}
-                        src={user.avatar}
-                        className="rounded-circle mr-2"
-                        width="30"
-                        height="30"
-                        alt=""
-                      />
-                    )}
-                    {user.imageName !== "none" && (
-                      <Image
-                        className="rounded-circle mr-2"
-                        cloudName={"strictlysocial"}
-                        publicId={user.imageName}
-                      >
-                        <Transformation
-                          width="30"
-                          height="30"
-                          gravity="faces"
-                          crop="fill"
-                        />
-                      </Image>
-                    )}
+                    <DynamicImg
+                      CSSClassName="rounded-circle mr-2"
+                      imageName={user.imageName}
+                      width="30"
+                      height="30"
+                      avatar={user.avatar}
+                    />
                     {user.name}
                   </Option>
                 ))}

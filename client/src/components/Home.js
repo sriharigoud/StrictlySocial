@@ -9,19 +9,35 @@ import setAuthToken from "../utils/setAuthToken";
 import PostList from "./PostList";
 import { connect } from "react-redux";
 import { setAllPosts } from "../redux/Posts/Posts.actions";
+import InfiniteScroll from "react-infinite-scroll-component";
 
-function Home({setAllPosts}) {
+
+function Home({setAllPosts, posts}) {
   let [currentUser, setCurrentUser] = useState(getUser());
-
+  let [page, setPage] = useState(1);
+  let [hasMore, setHasMore] = useState(true);
+  const fetchMoreData = () => {
+    setPage(page + 1);
+    fetchPosts()
+  }
+  async function fetchPosts() {
+    if(page === 1){
+      posts = [];
+    }
+    let response = await axios(`/api/posts/${page}/10`);
+    setAllPosts(posts.concat(response.data));
+    if(!response.data.length){
+      setHasMore(false)
+    }
+  }
   useEffect(() => {
     if (currentUser.token) {
       setAuthToken(currentUser.token);
     }
-    async function fetchPosts() {
-      let response = await axios("/api/posts");
-      setAllPosts(response.data);
-    }
+
     try {
+      setAllPosts([])
+      setPage(page + 1);
       fetchPosts();
     } catch (error) {
       console.log(error.message);
@@ -41,7 +57,18 @@ function Home({setAllPosts}) {
          </div>
         <div className="col-md-6 border-left border-right">
           <CreatePost />
-          <PostList />
+          <InfiniteScroll
+          endMessage={
+            <p style={{ textAlign: 'center' }}>
+              <b>Yay! You have seen it all</b>
+            </p>
+          }
+          dataLength={posts.length}
+          next={fetchMoreData}
+          hasMore={hasMore}
+          loader={<h4>Loading...</h4>}
+        >
+          <PostList /></InfiniteScroll>
         </div>
         <div className="col-md-3">
           <SideBar />
@@ -57,4 +84,10 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default connect(null, mapDispatchToProps)(Home);
+const mapStateToProps = state => {
+  return {
+    posts: state.posts.posts,
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

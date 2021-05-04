@@ -4,6 +4,8 @@ import { Image, Transformation } from "cloudinary-react";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { getUser } from "../utils/utils";
 import { NavDropdown } from "react-bootstrap";
+import ProfileLink from "./ProfileLink";
+import DynamicImg from "./DynamicImg";
 
 export default function Navigation({ notifications }) {
   const [userInfo, setUserInfo] = useState(null);
@@ -18,12 +20,12 @@ export default function Navigation({ notifications }) {
     setUserInfo({});
     history.push("/login");
   };
-  const handleFormSubmit = e => {
-    e.preventDefault()
-    if(searchQuery){
-     history.push("/search/" + searchQuery)
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    if (searchQuery) {
+      history.push("/search/" + searchQuery);
     }
-  }
+  };
   return (
     <div className="mb-0 w-100">
       <nav className="navbar navbar-light">
@@ -58,32 +60,13 @@ export default function Navigation({ notifications }) {
             </form>
             <div className="mt-2">
               <span className="round float-left pt-0 mr-0 mt-1 ">
-              {userInfo.imageName === "none" && <img
-                  onError={(e) => (e.target.src = userInfo.avatar)}
-                  className="rounded-circle"
-                  src={
-                    userInfo.avatar
-                  }
-                  alt={userInfo.name}
+                <DynamicImg
+                  avatar={userInfo.avatar}
+                  imageName={userInfo.imageName}
                   width="30"
                   height="30"
-                />}
-                {userInfo.imageName !== "none" && (
-                <Image
-                  alt={userInfo.name}
-                  className="rounded-circle mr-2"
-                  
-                  cloudName={"strictlysocial"}
-                  publicId={userInfo.imageName}
-                >
-                  <Transformation
-                    width="30"
-                    height="30"
-                    gravity="faces"
-                    crop="fill"
-                  />
-                </Image>
-              )}
+                  CSSClassName="rounded-circle mr-"
+                />
               </span>
               <NavDropdown
                 title={userInfo.name}
@@ -95,10 +78,11 @@ export default function Navigation({ notifications }) {
                   Notifications ({notifications.length})
                 </Link>{" "}
                 <NavDropdown.Divider />
-                <Link to={`/profile/${userInfo.email.split("@")[0]}`}>
-                  My Profile
-                </Link>
-              {""}
+                <ProfileLink
+                  id={userInfo.email.split("@")[0]}
+                  name="My Profile"
+                />
+                {""}
                 <NavDropdown.Divider />
                 <a role="button" onClick={() => logout()}>
                   Logout

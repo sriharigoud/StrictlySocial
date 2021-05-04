@@ -1,4 +1,5 @@
-import { ADDPOST, ALLPOSTS, LIKE, DELETE, DELETECOMMENT, SHARE, ADDCOMMENT } from "./Posts.types";
+import { ADDPOST, ALLPOSTS, LIKE, DELETE, DELETECOMMENT, SHARE, ADDCOMMENT, RESETPOSTS } from "./Posts.types";
+import { LOCATION_CHANGE } from 'react-router-redux';
 
 const INITIAL_STATE = {
   posts: [],
@@ -11,7 +12,8 @@ function postsReducer(state = INITIAL_STATE, action) {
         ...state,
         posts: [action.payload, ...state.posts]
       };
-
+    case LOCATION_CHANGE:
+      return []
     case ALLPOSTS:
       return {
         ...state,

@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { Image, Transformation } from "cloudinary-react";
 import { doLogin } from "../utils/utils";
+import ProfileLink from "./ProfileLink";
+import DynamicImg from "./DynamicImg";
 
 export default function UserBox({
   user,
@@ -33,30 +35,13 @@ export default function UserBox({
     <div className="d-flex border my-2 pt-1 flex-row comment-row">
       <div className="p-1">
         <span className="round">
-        {user.imageName === "none" && <img
-            className="rounded-circle"
-            onError={(e) => (e.target.src = user.avatar)}
-            src={user.avatar}
-            alt="user"
+          <DynamicImg
+            avatar={user.avatar}
+            imageName={user.imageName}
             width="50"
             height="50"
-          />}
-          {user.imageName !== "none" && (
-            <Image
-              alt={user.name}
-              className="rounded-circle mr-2"
-              
-              cloudName={"strictlysocial"}
-              publicId={user.imageName}
-            >
-              <Transformation
-                width="50"
-                height="50"
-                gravity="faces"
-                crop="fill"
-              />
-            </Image>
-          )}
+            CSSClassName="rounded-circle mr-2"
+          />
         </span>
       </div>
       <div className="comment-text w-100 p-1">
@@ -77,7 +62,7 @@ export default function UserBox({
             )}
         </span>
         <h5 className="mb-0">
-          <Link to={`/profile/${user.email.split("@")[0]}`}>{user.name}</Link>
+          <ProfileLink id={user.email.split("@")[0]} name={user.name} />
         </h5>
         <p className="my-0">{"@" + user.email.split("@")[0]}</p>
       </div>

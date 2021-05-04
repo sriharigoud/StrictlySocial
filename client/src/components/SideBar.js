@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 import setAuthToken from "../utils/setAuthToken";
 import { getUser } from "../utils/utils";
 import "./Home.css";
+import ProfileLink from "./ProfileLink";
+import DynamicImg from "./DynamicImg";
 
 export default function SideBar() {
   const userInfo = getUser();
@@ -46,37 +48,21 @@ export default function SideBar() {
                 >
                   <div className="p-1">
                     <span className="round">
-                      {user.imageName === "none" && (
-                        <img
-                          onError={(e) => (e.target.src = user.avatar)}
-                          className="rounded-circle"
-                          src={user.avatar}
-                          alt="user"
-                          width="50"
-                          height="50"
-                        />
-                      )}
-                      {user.imageName !== "none" && (
-                        <Image
-                          alt={user.name}
-                          className="rounded-circle mr-2"
-                          
-                          cloudName={"strictlysocial"}
-                          publicId={user.imageName}
-                        >
-                          <Transformation
-                            width="50"
-                            height="50"
-                            gravity="faces"
-                            crop="fill"
-                          />
-                        </Image>
-                      )}
+                      <DynamicImg
+                        avatar={user.avatar}
+                        imageName={user.imageName}
+                        width="50"
+                        height="50"
+                        CSSClassName="rounded-circle mr-"
+                      />
                     </span>
                   </div>
                   <div className="comment-text w-100">
                     <h5 className="mb-0">
-                      <Link to={`/profile/${user.email.split("@")[0]}`}>{user.name}</Link>
+                      <ProfileLink
+                        id={user.email.split("@")[0]}
+                        name={user.name}
+                      />
                     </h5>
                     <p
                       title={"@" + user.email.split("@")[0]}

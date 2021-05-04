@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./Home.css";
+import InfiniteScroll from "react-infinite-scroll-component";
 import BasicInfo from "./BasicInfo";
 import SideBar from "./SideBar";
 import { useLocation } from "react-router-dom";
@@ -19,14 +20,31 @@ function Profile({ posts, setAllPosts }) {
   let [currentUser, setCurrentUser] = useState(getUser());
   const [userInfo, setUserInfo] = useState({});
   const { pathname, key } = useLocation();
-  useEffect(() => {
-    async function fetchPosts(userid) {
-      if (currentUser.token) {
-        setAuthToken(currentUser.token);
-      }
-      let response = await axios("/api/posts/user/" + userid);
-      setAllPosts(response.data);
+  let [page, setPage] = useState(1);
+  let [hasMore, setHasMore] = useState(true);
+  const fetchMoreData = () => {
+    setPage(page + 1);
+    fetchPosts(userInfo._id);
+  };
+  async function fetchPosts(userid) {
+    if(page === 1){
+      posts = [];
     }
+    if(userInfo && userInfo._id !== userid){
+      posts = [];
+      page = 1;
+      setPage(page + 1);
+    } 
+    if (currentUser.token) {
+      setAuthToken(currentUser.token);
+    }
+    let response = await axios(`/api/posts/user/${userid}/${page}/10`);
+    setAllPosts(posts.concat(response.data));
+    if (!response.data.length) {
+      setHasMore(false);
+    }
+  }
+  useEffect(() => {
     async function getUserInfo() {
       if (currentUser.token) {
         setAuthToken(currentUser.token);
@@ -35,6 +53,8 @@ function Profile({ posts, setAllPosts }) {
         "/api/users/" + pathname.replace("/profile/", "")
       );
       setUserInfo(response.data);
+      setAllPosts([])
+      setPage(page + 1);
       fetchPosts(response.data._id);
     }
     try {
@@ -42,7 +62,8 @@ function Profile({ posts, setAllPosts }) {
     } catch (error) {
       console.log(error.message);
     }
-  }, [key, getUser]);
+
+  }, [key, getUser, setPage]);
   return (
     <div className="container-fluid mt-0 pt-2 gedf-wrapper border border-top-0 h-100">
       <div className="row">
@@ -65,7 +86,20 @@ function Profile({ posts, setAllPosts }) {
             id="noanim-tab-example"
           >
             <Tab eventKey="feed" title="Feed" className="pt-1">
-              <PostList />
+              <InfiniteScroll
+                endMessage={
+                  <p style={{ textAlign: "center" }}>
+                    <b>Yay! You have seen it all</b>
+                  </p>
+                }
+                dataLength={posts.length}
+                next={fetchMoreData}
+                hasMore={hasMore}
+                loader={<h4>Loading...</h4>}
+              >
+                {" "}
+                <PostList />
+              </InfiniteScroll>
             </Tab>
             <Tab
               eventKey="following"
@@ -125,21 +159,9 @@ function Profile({ posts, setAllPosts }) {
                           className="col-lg-3 col-md-4 col-xs-6 m-0 p-0 thumb"
                         >
                           <a href={post.imageData} className="thumbnail">
-                            {/* <img
-                              onError={(e) =>
-                                (e.target.src =
-                                  process.env.PUBLIC_URL +
-                                  "/img/no-image-available_1.jpg")
-                              }
-                              className="img-thumbnail"
-                              src={post.imageData}
-                              alt=""
-                            /> */}
-
                             <Image
-                             className="img-thumbnail"
+                              className="img-thumbnail"
                               responsive
-                              
                               cloudName={"strictlysocial"}
                               publicId={post.imageName}
                             >

@@ -5,6 +5,8 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { Image, Transformation } from "cloudinary-react";
 import { Link } from "react-router-dom";
 import Explore from "./Explore";
+import ProfileLink from "./ProfileLink";
+import DynamicImg from "./DynamicImg";
 export default function BasicInfo({
   userInfo,
   setUserInfo,
@@ -99,27 +101,14 @@ export default function BasicInfo({
         }
       >
         <div style={{ position: "relative" }} className="userContainer">
-          {userInfo.imageName === "none" && (
-            <img className="w-100" src={userInfo.avatar} alt={userInfo.name} />
-          )}
-          {userInfo.imageName !== "none" && (
-            <Image
-            responsive
-              
-              cloudName={"strictlysocial"}
-              publicId={userInfo.imageName}
-            >
-              <Transformation
-                width="300"
-                height="300"
-                gravity="faces"
-                crop="fill"
-              />
-            </Image>
-          )}
-         
-          {/* </a> */}
-          {/* </SRLWrapper> */}
+          <DynamicImg
+            CSSClassName="w-100"
+            imageName={userInfo.imageName}
+            width="300"
+            height="300"
+            avatar={userInfo.avatar}
+          />
+
           {currentUser && currentUser._id === userInfo._id && (
             <button
               className="btn btn-primary w-50 m-auto editProfile"
@@ -146,55 +135,18 @@ export default function BasicInfo({
         </div>
         <div className="card-body px-3 py-1 pb-0">
           <div className="h5 my-0 heading">
-            <Link
+            <ProfileLink
               style={{ textDecoration: "none" }}
-              to={`/profile/${userInfo.email && userInfo.email.split("@")[0]}`}
-            >
-              {userInfo.name}
-            </Link>
+              id={userInfo.email && userInfo.email.split("@")[0]}
+              name={userInfo.name}
+            />
           </div>
           <div className="h7 my-0 text-muted">
             {userInfo.email && "@" + userInfo.email.split("@")[0]}
           </div>
-          {/* <div className="h7">{userInfo.bio}</div> */}
+          <div className="h7">{userInfo.bio}</div>
         </div>
-        {/* <ul className="list-group border-0 mt-0 px-2 pt-0 list-group-flush">
-        <li className="list-group-item my-0 py-2 px-1">
-          <a href="#home">
-            <i className="fa fa-fw fa-home"></i> Home
-          </a>
-        </li>
-        <li className="list-group-item my-0 py-2 px-1">
-          <a href="#home">
-            <i className="fa fa-fw fa-home"></i> Explore
-          </a>
-        </li>
-        <li className="list-group-item my-0 py-2 px-1">
-          <a href="#home">
-            <i className="fa fa-fw fa-home"></i> Notifications
-          </a>
-        </li>
-        <li className="list-group-item my-0 py-2 px-1">
-          <a href="#home">
-            <i className="fa fa-fw fa-home"></i> Profile
-          </a>
-        </li>
-      </ul> */}
 
-        {/* <ul className="list-group d-none d-md-block list-group-flush">
-        <li className="list-group-item">
-          <div className="h6 text-muted">Followers</div>
-          <div className="h5">
-            {userInfo.followers ? userInfo.followers.length : 0}
-          </div>
-        </li>
-        <li className="list-group-item">
-          <div className="h6 text-muted">Following</div>
-          <div className="h5">
-            {userInfo.following ? userInfo.following.length : 0}
-          </div>
-        </li>
-      </ul> */}
         <Modal show={show} onHide={handleClose}>
           <Modal.Body>
             <Form.Group controlId="exampleForm.ControlTextarea1">
@@ -226,6 +178,6 @@ export default function BasicInfo({
       </div>
 
       <Explore />
-      </React.Fragment>
+    </React.Fragment>
   );
 }

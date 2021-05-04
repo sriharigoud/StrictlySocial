@@ -5,3 +5,4 @@ export const ADDCOMMENT = "ADDCOMMENT";
 export const SHARE = "SHARE";
 export const ALLPOSTS = "ALLPOSTS";
 export const DELETECOMMENT = "DELETECOMMENT";
+export const RESETPOSTS = "RESETPOSTS";
