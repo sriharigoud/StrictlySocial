@@ -45,21 +45,24 @@ async function insertHashTags(text) {
   const hashTags = text.match(/(^|\s)(#[a-z\d-]+)/gi);
   if (hashTags && hashTags.length > 0) {
     try {
-      hashTags.forEach(async val => {
-        console.log(val)
+      hashTags.forEach(async (val) => {
+        console.log(val);
         HashTag.findOneAndUpdate(
           { name: val },
           { $inc: { count: 1 } },
           { upsert: true, new: true, setDefaultsOnInsert: true }
-        ).then(updatedDocument => {
-          if(updatedDocument) {
-            console.log(`Successfully updated document: ${updatedDocument}.`)
-          } else {
-            console.log("No document matches the provided query.")
-          }
-          return updatedDocument
-        })
-        .catch(err => console.error(`Failed to find and update document: ${err}`));
+        )
+          .then((updatedDocument) => {
+            if (updatedDocument) {
+              console.log(`Successfully updated document: ${updatedDocument}.`);
+            } else {
+              console.log("No document matches the provided query.");
+            }
+            return updatedDocument;
+          })
+          .catch((err) =>
+            console.error(`Failed to find and update document: ${err}`)
+          );
       });
     } catch (error) {
       console.log(error);
@@ -95,7 +98,7 @@ router.post(
             $ogImage = $('meta[property="og:image"]').attr("content"),
             $ogkeywords = $('meta[property="og:keywords"]').attr("content"),
             $images = $("img");
-            
+
           resObj.url = url;
 
           if ($title) {
@@ -144,10 +147,10 @@ router.post(
           insertHashTags(text);
           const newpost = await post.save();
           let anewpost = await Post.findOne({ _id: newpost._id })
-        .populate("owner", "name email")
-        .populate({path: "user", select: postColumns})
-        .populate({path: "comments.user", select: postColumns})
-        res.json({ newpost: anewpost });
+            .populate("owner", "name email")
+            .populate({ path: "user", select: postColumns })
+            .populate({ path: "comments.user", select: postColumns });
+          res.json({ newpost: anewpost });
         });
       } else {
         let post = new Post({
@@ -167,13 +170,11 @@ router.post(
         insertTags(text);
         insertHashTags(text);
         let anewpost = await Post.findOne({ _id: newpost._id })
-        .populate("owner", "name email")
-        .populate({path: "user", select: postColumns})
-        .populate({path: "comments.user", select: postColumns})
+          .populate("owner", "name email")
+          .populate({ path: "user", select: postColumns })
+          .populate({ path: "comments.user", select: postColumns });
         res.json({ newpost: anewpost });
       }
-
-
     } catch (error) {
       console.log(error.message);
       res.status(500).send("Server error");
@@ -182,15 +183,42 @@ router.post(
 );
 
 // search
-router.get("/hashtags/:searchQuery", auth, async (req, res) => {
+router.get("/search/:searchQuery/:page/:limit", auth, async (req, res) => {
   try {
-    if(req.params.searchQuery){
-    await HashTag.find({ name: { $regex: req.params.searchQuery, $options: "i" } })
-      .limit(10)
+    let { page, limit } = req.params;
+    await Post.find({
+      $or: [
+        { text: { $regex: new RegExp(req.params.searchQuery), $options: "i" } },
+        { name: { $regex: new RegExp(req.params.searchQuery), $options: "i" } },
+      ],
+    }).sort({ _id: -1 })
+      .populate("owner", "name email")
+      .populate({ path: "user", select: postColumns })
+      .populate({ path: "comments.user", select: postColumns })
+      .skip((page - 1) * limit)
+      .limit(parseInt(limit, 10))
       .exec(function (err, result) {
         if (err) return res.status(500).send("Server error");
         res.json(result);
       });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send("Server error");
+  }
+});
+
+// search
+router.get("/hashtags/:searchQuery", auth, async (req, res) => {
+  try {
+    if (req.params.searchQuery) {
+      await HashTag.find({
+        name: { $regex: req.params.searchQuery, $options: "i" },
+      })
+        .limit(10)
+        .exec(function (err, result) {
+          if (err) return res.status(500).send("Server error");
+          res.json(result);
+        });
     } else {
       res.json([]);
     }
@@ -222,7 +250,7 @@ router.get("/share/:id", auth, async (req, res) => {
       name: user.name,
       owner: post.user,
       user: user._id,
-      linkData: post.linkData
+      linkData: post.linkData,
     });
 
     let newpost = await anewpost.save();
@@ -230,14 +258,14 @@ router.get("/share/:id", auth, async (req, res) => {
       sender: req.user.id,
       receiver: post.user,
       post: req.params.id,
-      action: "share"
-    })
-    await notification.save()
+      action: "share",
+    });
+    await notification.save();
     anewpost = await Post.findOne({ _id: newpost._id })
-        .populate("owner", "name email")
-        .populate({path: "user", select: postColumns})
-        .populate({path: "comments.user", select: postColumns})
-        res.json({ newpost: anewpost });
+      .populate("owner", "name email")
+      .populate({ path: "user", select: postColumns })
+      .populate({ path: "comments.user", select: postColumns });
+    res.json({ newpost: anewpost });
     res.json({
       newpost: anewpost,
     });
@@ -254,16 +282,17 @@ router.get("/:page/:limit", auth, async (req, res) => {
     const user = await User.findById(req.user.id);
     const fowls = user.following.map((f) => f.toString());
     fowls.push(req.user.id);
-    
-    let {page, limit} = req.params;
+
+    let { page, limit } = req.params;
     // const posts = await Post.find().sort({ date: -1 });
     const posts = await Post.find({ user: { $in: fowls } })
+      .sort({ _id: -1 })
       .populate("owner", "name email")
-      .populate({path: "user", select: postColumns})
-      .populate({path: "comments.user", select: postColumns})
-      // .sort({ date: -1 })
-      .limit(parseInt(limit, 10))
-      .skip((page-1) * limit)
+      .populate({ path: "user", select: postColumns })
+      .populate({ path: "comments.user", select: postColumns })
+      .skip((page - 1) * limit)
+
+      .limit(parseInt(limit, 10));
 
     res.json(posts);
   } catch (error) {
@@ -291,87 +320,63 @@ router.get("/popular", auth, async (req, res) => {
   }
 });
 
-// search
-router.get("/search/:searchQuery", auth, async (req, res) => {
+// create post with image
+router.post("/uploadImage", auth, async (req, res) => {
+  let upload = multer({
+    storage: multerConfig.storage,
+    fileFilter: multerConfig.imageFilter,
+  }).single("imageData");
   try {
-    await Post.find({
-      $or: [
-        { text: { $regex: req.params.searchQuery, $options: "i" } },
-        { name: { $regex: req.params.searchQuery, $options: "i" } },
-      ],
-    })
-    .populate("owner", "name email")
-    .populate({path: "user", select: postColumns})
-    .populate({path: "comments.user", select: postColumns})
-      .limit(50)
-      .sort({ date: -1 })
-      .exec(function (err, result) {
-        if (err) return res.status(500).send("Server error");
-        res.json(result);
+    new Promise((resolve, reject) => {
+      upload(req, res, async function (err) {
+        if (req.fileValidationError) {
+          return res.status(500).send(req.fileValidationError);
+        } else if (err instanceof multer.MulterError) {
+          return res.status(500).send(err);
+        } else if (err) {
+          return res.status(500).send(err);
+        }
+
+        resolve();
       });
+    }).then(async () => {
+      // Display uploaded image for user validation
+      let user = await User.findById(req.user.id);
+      console.log(
+        cloudinary.image(req.file.filename, { fetch_format: "auto" })
+      );
+      const text = "";
+      let post = new Post({
+        user: user.id,
+        text,
+        name: user.name,
+        avatar: user.imageData ? user.imageData : user.avatar,
+        likes: [],
+        comments: [],
+        imageName: req.file.filename,
+        imageData: req.file.path,
+      });
+
+      const newpost = await post.save();
+      anewpost = await Post.findOne({ _id: newpost._id })
+        .populate("owner", "name email")
+        .populate({ path: "user", select: postColumns })
+        .populate({ path: "comments.user", select: postColumns });
+      res.json({ newpost: anewpost });
+    });
   } catch (error) {
     console.log(error.message);
     res.status(500).send("Server error");
   }
 });
 
-// create post with image
-router.post(
-  "/uploadImage",
-  auth,
-  async (req, res) => {
-    let upload = multer({
-      storage: multerConfig.storage,
-      fileFilter: multerConfig.imageFilter,
-    }).single("imageData");
-    try {
-      new Promise((resolve, reject) => {
-        upload(req, res, async function (err) {
-          if (req.fileValidationError) {
-            return res.status(500).send(req.fileValidationError);
-          } else if (err instanceof multer.MulterError) {
-            return res.status(500).send(err);
-          } else if (err) {
-            return res.status(500).send(err);
-          }
-         
-          resolve()
-        });
-      }).then(async () => {
-        // Display uploaded image for user validation
-        let user = await User.findById(req.user.id);
-        console.log(cloudinary.image(req.file.filename, {fetch_format: "auto"}));
-        const text = "";
-        let post = new Post({
-          user: user.id,
-          text,
-          name: user.name,
-          avatar: user.imageData ? user.imageData : user.avatar,
-          likes: [],
-          comments: [],
-          imageName: req.file.filename,
-          imageData: req.file.path,
-        });
-
-        const newpost = await post.save();
-        anewpost = await Post.findOne({ _id: newpost._id })
-        .populate("owner", "name email")
-        .populate({path: "user", select: postColumns})
-        .populate({path: "comments.user", select: postColumns})
-        res.json({ newpost: anewpost });
-      })
-    } catch (error) {
-      console.log(error.message);
-      res.status(500).send("Server error");
-    }
-  }
-);
-
 // get post by id
 router.get("/:id", auth, async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id).populate("owner", "name email").populate({path: "user", select: postColumns})
-    .populate({path: "comments.user", select: postColumns});
+    const post = await Post.findById(req.params.id)
+      .populate("owner", "name email")
+      .populate({ path: "user", select: postColumns })
+      .populate({ path: "comments.user", select: postColumns });
     if (!post) {
       return res.status(404).json({ msg: "Post not found" });
     }
@@ -388,15 +393,16 @@ router.get("/:id", auth, async (req, res) => {
 // get posts by user id
 router.get("/user/:id/:page/:limit", auth, async (req, res) => {
   try {
-    let {page, limit} = req.params;
+    let { page, limit } = req.params;
 
     const posts = await Post.find({ user: req.params.id })
+      .sort({ _id: -1 })
       .populate("owner", "name email")
-      .populate({path: "user", select: postColumns})
-      .populate({path: "comments.user", select: postColumns})
+      .populate({ path: "user", select: postColumns })
+      .populate({ path: "comments.user", select: postColumns })
       .limit(new Number(limit))
-      .skip((page-1) * limit)
-      // .sort({ date: -1 });
+      .skip((page - 1) * limit);
+    // .sort({ date: -1 });
     res.json(posts);
   } catch (error) {
     console.log(error.message);
@@ -407,7 +413,10 @@ router.get("/user/:id/:page/:limit", auth, async (req, res) => {
 // post delete
 router.delete("/:id", auth, async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id).populate("owner", "name email");
+    const post = await Post.findById(req.params.id).populate(
+      "owner",
+      "name email"
+    );
     if (!post) {
       return res.status(404).json({ msg: "Post not found" });
     }
@@ -415,11 +424,11 @@ router.delete("/:id", auth, async (req, res) => {
     if (post.user.toString() !== req.user.id) {
       return res.status(403).json({ msg: "Unauthorized access" });
     }
-    if(post.imageName != "none"){
+    if (post.imageName != "none") {
       try {
         await cloudinary.uploader.destroy(post.imageName);
       } catch (error) {
-        console.log(error.message)
+        console.log(error.message);
       }
     }
 
@@ -438,7 +447,10 @@ router.delete("/:id", auth, async (req, res) => {
 // Like/unlike
 router.put("/likes/:id", auth, async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id).populate("owner", "name email");
+    const post = await Post.findById(req.params.id).populate(
+      "owner",
+      "name email"
+    );
     if (!post) {
       return res.status(404).json({ msg: "Post not found" });
     }
@@ -452,9 +464,9 @@ router.put("/likes/:id", auth, async (req, res) => {
         sender: req.user.id,
         receiver: post.user,
         post: req.params.id,
-        action: "like"
-      })
-      await notification.save()
+        action: "like",
+      });
+      await notification.save();
     } else {
       post.likes.splice(likeIndex, 1);
     }
@@ -483,9 +495,9 @@ router.post(
     }
     let { text } = req.body;
     try {
-      const post = await Post.findById(req.params.id).populate("owner", "name email").populate({path: "comments.user", select: postColumns})
-      ;
-
+      const post = await Post.findById(req.params.id)
+        .populate("owner", "name email")
+        .populate({ path: "comments.user", select: postColumns });
       if (!post) {
         return res.status(404).json({ msg: "Post not found" });
       }
@@ -501,31 +513,54 @@ router.post(
 
       post.comments.unshift(comment);
       const re = await post.save();
-      if(req.user.id !== post.user){ //send notification only if commented user not him/her
+      if (req.user.id !== post.user) {
+        //send notification only if commented user not him/her
         const notification = new Notification({
           sender: req.user.id,
           receiver: post.user,
           post: req.params.id,
-          action: "comment"
-        })
-        await notification.save()
+          action: "comment",
+        });
+        await notification.save();
       }
 
       const tags = text.match(/@[0-9a-z](\.?[0-9a-z])*/gi);
-      if(tags && tags.length > 0){
-        const ausers = await User.find({ email: { $in: tags.map(e => new RegExp(e.split("@")[1])) } })
-        const notifications = ausers.map(a =>  { 
-          if(a._id != req.user.id.toString()){ // dont send notifcation to the use who comments
-           return {'sender':req.user.id, 'receiver': a._id, 'action':'mention', 'post': post._id}
+      if (tags && tags.length > 0) {
+        const ausers = await User.find({
+          email: { $in: tags.map((e) => new RegExp(e.split("@")[1])) },
+        });
+        const notifications = ausers.map((a) => {
+          if (a._id != req.user.id.toString()) {
+            // dont send notifcation to the use who comments
+            return {
+              sender: req.user.id,
+              receiver: a._id,
+              action: "mention",
+              post: post._id,
+            };
           }
         });
         try {
           await Notification.insertMany(notifications);
         } catch (error) {
-          console.log(error)
+          console.log(error);
         }
       }
-      res.json(post.comments.map(c => c._id == re.comments[0]._id ? Object.assign(re.comments[0], {user: {_id:req.user.id, name: user.name, avatar: user.avatar, imageData: user.imageData, imageName: user.imageName}}) : c));
+      res.json(
+        post.comments.map((c) =>
+          c._id == re.comments[0]._id
+            ? Object.assign(re.comments[0], {
+                user: {
+                  _id: req.user.id,
+                  name: user.name,
+                  avatar: user.avatar,
+                  imageData: user.imageData,
+                  imageName: user.imageName,
+                },
+              })
+            : c
+        )
+      );
     } catch (error) {
       console.log(error.message);
       if (error.kind === "ObjectId") {
@@ -544,7 +579,9 @@ router.delete("/comments/:id/:commentId", auth, async (req, res) => {
   }
   let { text } = req.body;
   try {
-    const post = await Post.findById(req.params.id).populate("owner", "name email").populate({path: "comments.user", select: postColumns});
+    const post = await Post.findById(req.params.id)
+      .populate("owner", "name email")
+      .populate({ path: "comments.user", select: postColumns });
 
     if (!post) {
       return res.status(404).json({ msg: "Post not found" });
@@ -570,7 +607,5 @@ router.delete("/comments/:id/:commentId", auth, async (req, res) => {
     res.status(500).send("Server error");
   }
 });
-
-
 
 module.exports = router;

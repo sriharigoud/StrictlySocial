@@ -56,7 +56,7 @@ function Notifications({ setNts, notifications, setAll }) {
                         key={notification._id}
                         className="list-group-item my-0 py-1 px-1"
                       >
-                        <i class="fa fa-gittip"></i>{" "}
+                        <i className="fa fa-gittip"></i>{" "}
                         <ProfileLink id={notification.sender.email.split("@")[0]} name={notification.sender.name} />{" "}
                         Liked your post{" "}
                         <Link
@@ -77,7 +77,7 @@ function Notifications({ setNts, notifications, setAll }) {
                         key={notification._id}
                         className="list-group-item my-0 py-1 px-1"
                       >
-                        <i class="fa fa-mail-forward"></i>{" "}
+                        <i className="fa fa-mail-forward"></i>{" "}
                         <ProfileLink id={notification.sender.email.split("@")[0]} name={notification.sender.name} />{" "}
                         Shared your post{" "}
                         <Link
@@ -97,7 +97,7 @@ function Notifications({ setNts, notifications, setAll }) {
                         key={notification._id}
                         className="list-group-item my-0 py-1 px-1"
                       >
-                        <i class="fa fa-comment"></i>{" "}
+                        <i className="fa fa-comment"></i>{" "}
                         <ProfileLink id={notification.sender.email.split("@")[0]} name={notification.sender.name} />{" "}
                         Commented on your post{" "}
                         <Link
@@ -118,7 +118,7 @@ function Notifications({ setNts, notifications, setAll }) {
                         key={notification._id}
                         className="list-group-item my-0 py-1 px-1"
                       >
-                        <i class="fa fa-user-plus"></i>{" "}
+                        <i className="fa fa-user-plus"></i>{" "}
                         <ProfileLink id={notification.sender.email.split("@")[0]} name={notification.sender.name} />{" "}
                         started following you{" "}
                         <div className="date text-muted">
@@ -131,7 +131,7 @@ function Notifications({ setNts, notifications, setAll }) {
                         key={notification._id}
                         className="list-group-item my-0 py-1 px-1"
                       >
-                        <i class="fa fa-user-plus"></i>{" "}
+                        <i className="fa fa-user-plus"></i>{" "}
                         <ProfileLink id={notification.sender.email.split("@")[0]} name={notification.sender.name} />{" "}
                         tagged you in the post{" "}
                         <Link
@@ -153,7 +153,7 @@ function Notifications({ setNts, notifications, setAll }) {
                         key={notification._id}
                         className="list-group-item my-0 py-1 px-1"
                       >
-                        <i class="fa fa-user-plus"></i>{" "}
+                        <i className="fa fa-user-plus"></i>{" "}
                         <ProfileLink id={notification.sender.email.split("@")[0]} name={notification.sender.name} />{" "}
                         mentioned in the comments of the post{" "}
                         <Link
