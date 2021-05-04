@@ -19,6 +19,7 @@ import PostList from "./PostList";
 function Profile({ posts, setAllPosts }) {
   let [currentUser, setCurrentUser] = useState(getUser());
   const [userInfo, setUserInfo] = useState({});
+  const [activeEventKey, setActiveEventKey] = useState("feed");
   const { pathname, key } = useLocation();
   let [page, setPage] = useState(1);
   let [hasMore, setHasMore] = useState(true);
@@ -27,14 +28,15 @@ function Profile({ posts, setAllPosts }) {
     fetchPosts(userInfo._id);
   };
   async function fetchPosts(userid) {
-    if(page === 1){
+    if (page === 1) {
       posts = [];
     }
-    if(userInfo && userInfo._id !== userid){
+    if (userInfo && userInfo._id !== userid) {
+      setActiveEventKey("feed");
       posts = [];
       page = 1;
       setPage(page + 1);
-    } 
+    }
     if (currentUser.token) {
       setAuthToken(currentUser.token);
     }
@@ -53,7 +55,7 @@ function Profile({ posts, setAllPosts }) {
         "/api/users/" + pathname.replace("/profile/", "")
       );
       setUserInfo(response.data);
-      setAllPosts([])
+      setAllPosts([]);
       setPage(page + 1);
       fetchPosts(response.data._id);
     }
@@ -62,7 +64,6 @@ function Profile({ posts, setAllPosts }) {
     } catch (error) {
       console.log(error.message);
     }
-
   }, [key, getUser, setPage]);
   return (
     <div className="container-fluid mt-0 pt-2 gedf-wrapper border border-top-0 h-100">
@@ -76,16 +77,25 @@ function Profile({ posts, setAllPosts }) {
           />
         </div>
         <div className="col-md-6 border-left border-right ">
-          {currentUser._id === pathname.replace("/profile/", "") && (
-            <CreatePost />
-          )}
+          {currentUser.email.split("@")[0] ===
+            pathname.replace("/profile/", "") && <CreatePost />}
           <hr />
           <Tabs
-            defaultActiveKey="feed"
+            fill
+            activeKey={activeEventKey}
             transition={false}
+            onSelect={(k) => setActiveEventKey(k)}
             id="noanim-tab-example"
           >
-            <Tab eventKey="feed" title="Feed" className="pt-1">
+            <Tab
+              eventKey="feed"
+              title={
+                <span>
+                  <i className="fa fa-rss" /> Feed
+                </span>
+              }
+              className="pt-1"
+            >
               <InfiniteScroll
                 endMessage={
                   <p style={{ textAlign: "center" }}>
@@ -103,11 +113,15 @@ function Profile({ posts, setAllPosts }) {
             </Tab>
             <Tab
               eventKey="following"
-              title={`Following (${
-                userInfo.following && userInfo.following.length
-                  ? userInfo.following.length
-                  : 0
-              })`}
+              title={
+                <span>
+                  <i className="fa fa-user" /> Following (
+                  {userInfo.following && userInfo.following.length
+                    ? userInfo.following.length
+                    : 0}
+                  )
+                </span>
+              }
             >
               {userInfo.following &&
                 userInfo.following.map((user, d) => (
@@ -126,11 +140,15 @@ function Profile({ posts, setAllPosts }) {
             </Tab>
             <Tab
               eventKey="followers"
-              title={`Followers (${
-                userInfo.followers && userInfo.followers.length
-                  ? userInfo.followers.length
-                  : 0
-              })`}
+              title={
+                <span>
+                  <i className="fa fa-user" /> Followers (
+                  {userInfo.followers && userInfo.followers.length
+                    ? userInfo.following.length
+                    : 0}
+                  )
+                </span>
+              }
             >
               {userInfo.followers &&
                 userInfo.followers.map((user, i) => (
@@ -147,7 +165,14 @@ function Profile({ posts, setAllPosts }) {
                 <h6 className="m-2">No Followers found</h6>
               )}
             </Tab>
-            <Tab eventKey="photos" title="Photos">
+            <Tab
+              eventKey="photos"
+              title={
+                <span>
+                  <i className="fa fa-picture-o" /> Photos
+                </span>
+              }
+            >
               <SRLWrapper>
                 <div className="row px-3">
                   {posts &&
@@ -198,6 +223,7 @@ const mapStateToProps = (state) => {
     posts: state.posts.posts,
   };
 };
+
 const mapDispatchToProps = (dispatch) => {
   return {
     setAllPosts: (payload) => dispatch(setAllPosts(payload)),

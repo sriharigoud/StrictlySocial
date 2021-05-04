@@ -27,6 +27,7 @@ import {
 } from "react-notifications";
 import "react-notifications/lib/notifications.css";
 import { AddNotification, setAll } from "./redux/Notifications/Notifications.actions";
+import ScrollToTop from "./components/ScrollToTop";
 Pusher.logToConsole = true;
 
 var pusher = new Pusher("7dc61c61506f7d658f25", {
@@ -109,6 +110,7 @@ function App({AddNotification}) {
   return (
     <div className="container-fluid h-auto app px-0 border-right border-left border-light">
       <Router history={history}>
+        <ScrollToTop />
         <Navigation notifications={notifications} />
         <Switch>
           <PublicRoute restricted={true} component={Login} path="/" exact />

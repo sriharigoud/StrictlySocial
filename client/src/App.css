@@ -58,6 +58,12 @@ body {
 .comment-row{
   overflow-x:hidden;
 }
+.navbar .btn-outline-primary, .navbar .btn-outline-primary:active{
+  border-color: #fff !important;
+}
+.navbar .btn{
+ color: #fff;
+}
 .well {
   margin-top:-20px;
   background-color:#007FBD;

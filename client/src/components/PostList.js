@@ -125,7 +125,7 @@ function PostList({
             commentText={commentText}
           />
         ))}
-      {posts && posts.length === 0 && <h6 className="m-2">No Posts found</h6>}
+      {/* {posts && posts.length === 0 && <h6 className="m-2">No Posts found</h6>} */}
     </React.Fragment>
   );
 }

@@ -87,14 +87,22 @@ function CreatePost({ createPost }) {
   return (
     <div className="card p-2 gedf-card">
       <Tabs
+        fill
         activeKey={key}
         onSelect={(k) => setKey(k)}
         id="uncontrolled-tab-example"
       >
-        <Tab eventKey="text" title="Text">
+        <Tab
+          eventKey="text"
+          title={
+            <span>
+              <i className="fa fa-file-text" /> Text
+            </span>
+          }
+        >
           <div className="form-group mt-2">
             <label className="sr-only" htmlFor="message">
-              post
+              Text
             </label>
             {/* <textarea
               value={text}
@@ -138,7 +146,11 @@ function CreatePost({ createPost }) {
             </Mentions>
           </div>
         </Tab>
-        <Tab eventKey="images" title="Image">
+        <Tab eventKey="images" title={
+            <span>
+              <i className="fa fa-file-image-o" /> Image
+            </span>
+          }>
           <div className="form-group mt-2">
             <div className="custom-file">
               <input
