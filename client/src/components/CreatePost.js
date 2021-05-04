@@ -38,7 +38,7 @@ function CreatePost({ createPost }) {
         const res = await axios.post(`/api/posts/uploadImage`, imageFormObj);
         createPost(res.data.newpost);
       } else {
-        alert("Please select an image!");
+        alert("Please select an Photo!");
       }
     } catch (error) {
       console.log(error.message);
@@ -148,7 +148,7 @@ function CreatePost({ createPost }) {
         </Tab>
         <Tab eventKey="images" title={
             <span>
-              <i className="fa fa-file-image-o" /> Image
+              <i className="fa fa-file-image-o" /> Photo
             </span>
           }>
           <div className="form-group mt-2">
@@ -160,7 +160,7 @@ function CreatePost({ createPost }) {
                 id="customFile"
               />
               <label className="custom-file-label" htmlFor="customFile">
-                Upload image
+                Upload Photo
               </label>
             </div>
           </div>
