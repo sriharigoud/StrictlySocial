@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ExportLink from './ExploreLink';
-export default function Explore() {
+export default function Explore({hideExplore}) {
   const [Links, setLinks] = useState([
     {
       url: "news",
@@ -40,7 +40,7 @@ export default function Explore() {
   ]);
   useEffect(() => {});
   return (
-    <div className="card mt-2 mb-2 gedf-card">
+    <div className={!hideExplore ? "card mt-2 mb-0 gedf-card" : "card mt-2 mb-0 gedf-card d-none d-md-block"}>
       <div className="card-body px-2">
         <h5 className="card-title mb-2">Explore</h5>
         <div className="card-text border-top border-bottom">

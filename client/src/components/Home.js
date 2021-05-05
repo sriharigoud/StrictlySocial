@@ -11,23 +11,22 @@ import { connect } from "react-redux";
 import { setAllPosts } from "../redux/Posts/Posts.actions";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-
-function Home({setAllPosts, posts}) {
+function Home({ setAllPosts, posts }) {
   let [currentUser, setCurrentUser] = useState(getUser());
   let [page, setPage] = useState(1);
   let [hasMore, setHasMore] = useState(true);
   const fetchMoreData = () => {
     setPage(page + 1);
-    fetchPosts()
-  }
+    fetchPosts();
+  };
   async function fetchPosts() {
-    if(page === 1){
+    if (page === 1) {
       posts = [];
     }
     let response = await axios(`/api/posts/${page}/10`);
     setAllPosts(posts.concat(response.data));
-    if(!response.data.length){
-      setHasMore(false)
+    if (!response.data.length) {
+      setHasMore(false);
     }
   }
   useEffect(() => {
@@ -36,7 +35,7 @@ function Home({setAllPosts, posts}) {
     }
 
     try {
-      setAllPosts([])
+      setAllPosts([]);
       setPage(page + 1);
       fetchPosts();
     } catch (error) {
@@ -48,27 +47,37 @@ function Home({setAllPosts, posts}) {
       <div className="row">
         <div className="col-md-3 ">
           <BasicInfo
-            hideProfileInfoSmallDevices = {true} 
+            hideProfileInfoSmallDevices={true}
             setUserInfo={() => console.log("Do nothing")}
             userInfo={currentUser}
             setCurrentUser={setCurrentUser}
             currentUser={currentUser}
           />
-         </div>
+        </div>
         <div className="col-md-6 border-left border-right">
           <CreatePost />
+          <hr />
           <InfiniteScroll
-          endMessage={
-            <p style={{ textAlign: 'center' }}>
-              <b>Yay! You have seen it all</b>
-            </p>
-          }
-          dataLength={posts.length}
-          next={fetchMoreData}
-          hasMore={hasMore}
-          loader={<h4>Loading...</h4>}
-        >
-          <PostList /></InfiniteScroll>
+            endMessage={
+              <p style={{ textAlign: "center" }}>
+                <b>Yay! You have seen it all</b>
+              </p>
+            }
+            dataLength={posts.length}
+            next={fetchMoreData}
+            hasMore={hasMore}
+            loader={
+              <h4 style={{ textAlign: "center" }}>
+                <i
+                  className="fa fa-circle-o-notch fa-spin"
+                  style={{ fontSize: "24px" }}
+                ></i>
+                Loading...
+              </h4>
+            }
+          >
+            <PostList />
+          </InfiniteScroll>
         </div>
         <div className="col-md-3">
           <SideBar />
@@ -78,16 +87,16 @@ function Home({setAllPosts, posts}) {
   );
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     setAllPosts: (payload) => dispatch(setAllPosts(payload)),
-  }
-}
+  };
+};
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     posts: state.posts.posts,
-  }
-}
+  };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

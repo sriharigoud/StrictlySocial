@@ -64,7 +64,7 @@ function SearchContainer({ searchKey, showPeople, setAllPosts, posts }) {
   return (
     <div className="container-fluid mt-0 pt-2 gedf-wrapper border border-top-0 h-100">
       <div className="row">
-        <div className="col-md-3">
+        <div className="col-md-3 d-none d-md-block">
           <BasicInfo
             setUserInfo={() => console.log("Do nothing")}
             userInfo={currentUser}
@@ -73,7 +73,7 @@ function SearchContainer({ searchKey, showPeople, setAllPosts, posts }) {
           />
         </div>
         <div className="col-md-6 border-left border-right ">
-          <h4>Search Results: </h4>
+          <h5 className="mb-2 mt-2">Search results for "{searchKey}"</h5>
           <Tabs
             defaultActiveKey="posts"
             transition={false}
@@ -89,7 +89,15 @@ function SearchContainer({ searchKey, showPeople, setAllPosts, posts }) {
                 dataLength={posts.length}
                 next={fetchMoreData}
                 hasMore={hasMore}
-                loader={<h4>Loading...</h4>}
+                loader={
+                  <h4 style={{ textAlign: "center" }}>
+                    <i
+                      className="fa fa-circle-o-notch fa-spin"
+                      style={{ fontSize: "24px" }}
+                    ></i>
+                    Loading...
+                  </h4>
+                }
               >
               <PostList />
               </InfiniteScroll>

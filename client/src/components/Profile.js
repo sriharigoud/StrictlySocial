@@ -74,6 +74,7 @@ function Profile({ posts, setAllPosts }) {
             setUserInfo={setUserInfo}
             setCurrentUser={setCurrentUser}
             currentUser={currentUser}
+            hideExplore={true}
           />
         </div>
         <div className="col-md-6 border-left border-right ">
@@ -105,7 +106,15 @@ function Profile({ posts, setAllPosts }) {
                 dataLength={posts.length}
                 next={fetchMoreData}
                 hasMore={hasMore}
-                loader={<h4>Loading...</h4>}
+                loader={
+                  <h4 style={{ textAlign: "center" }}>
+                    <i
+                      className="fa fa-circle-o-notch fa-spin"
+                      style={{ fontSize: "24px" }}
+                    ></i>
+                    Loading...
+                  </h4>
+                }
               >
                 {" "}
                 <PostList />

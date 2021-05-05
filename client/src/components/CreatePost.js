@@ -85,7 +85,7 @@ function CreatePost({ createPost }) {
   debounce(loadHashTags, 1000);
 
   return (
-    <div className="card p-2 gedf-card">
+    <div className="card mt-2 p-2 gedf-card">
       <Tabs
         fill
         activeKey={key}
@@ -119,7 +119,9 @@ function CreatePost({ createPost }) {
               rows={3}
               onChange={(text) => setText(text)}
               style={{ width: "100%" }}
+              className="p-2"
               defaultValue={text}
+              placeholder="What are you thinking?"
               value={text}
             >
               {prefix === "@" &&

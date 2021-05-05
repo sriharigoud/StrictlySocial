@@ -13,6 +13,7 @@ export default function BasicInfo({
   setCurrentUser,
   currentUser,
   hideProfileInfoSmallDevices,
+  hideExplore
 }) {
   const [show, setShow] = useState(false);
   const [value, setValue] = useState(userInfo.bio);
@@ -177,7 +178,7 @@ export default function BasicInfo({
         </Modal>
       </div>
 
-      <Explore />
+      <Explore hideExplore={hideExplore} />
     </React.Fragment>
   );
 }
