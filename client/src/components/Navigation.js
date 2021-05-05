@@ -71,7 +71,8 @@ export default function Navigation({ notifications }) {
               <NavDropdown
                 title={userInfo.name}
                 className="float-right"
-                id="collasible-nav-dropdown"
+                id="basic-nav-dropdown"
+                collapseOnSelect="true"
               >
                 <Link to={`/home`}>Home</Link> <NavDropdown.Divider />
                 <Link to={`/notifications`}>

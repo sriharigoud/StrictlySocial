@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import ReactTimeAgo from "react-time-ago";
 import Linkify from "linkifyjs/react";
-import { Image, Transformation } from "cloudinary-react";
 import { SRLWrapper } from "simple-react-lightbox";
 import * as linkify from "linkifyjs";
+import urlParser from "js-video-url-parser";
 import hashtag from "linkifyjs/plugins/hashtag";
 import mention from "linkifyjs/plugins/mention";
 import Mentions from "rc-mentions";
@@ -43,6 +42,20 @@ export default function Post({
       return href;
     },
   };
+  function validateYouTubeUrl(url) {
+    let res = urlParser.parse(url);
+    if (res) {
+      if (res.provider === "youtube") {
+        return "https://www.youtube.com/embed/" + res.id;
+      } else if (res.provider === "vimeo") {
+        return "https://player.vimeo.com/video/" + res.id;
+      } else if (res.provider === "ted") {
+        return "https://embed.ted.com/talks/" + res.id;
+      } else if (res.provider === "dailymotion") {
+        return "https://www.dailymotion.com/embed/video/" + res.id;
+      }
+    }
+  }
   const onSearch = (search) => {
     loadGithubUsers(search);
   };
@@ -55,13 +68,13 @@ export default function Post({
     }
   };
   debounce(loadGithubUsers, 1000);
-  const UrlEnhancer = (props) => {
-    const { url } = props;
-    return (
-      <a href={url} rel="noopener noreferrer" target="_blank">
-        {url}
-      </a>
-    );
+  const UrlEnhancer = (url) => {
+    const src = validateYouTubeUrl(url);
+    if (src) {
+      return <p><iframe height="300" className="w-100 border-0" title={src} src={src} /></p>;
+    }
+
+    return ("");
   };
   return (
     <div className="card my-2 gedf-card">
@@ -119,7 +132,7 @@ export default function Post({
               {post.text}
             </Linkify>
             {/* </ReactHashtag> */}
-            {post.linkData && post.linkData.url && (
+            {post.linkData && post.linkData.url && !validateYouTubeUrl(post.linkData.url) && (
               <a
                 className="card p-2"
                 style={{ textDecoration: "none" }}
@@ -140,6 +153,7 @@ export default function Post({
                 </div>
               </a>
             )}
+            {post.linkData && validateYouTubeUrl(post.linkData.url) && UrlEnhancer(post.linkData && post.linkData.url)}
           </div>
         )}
         {post.imageName !== "none" && (
