@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Pusher = require("pusher");
 const Notification = require("../models/Notification");
 const transporter = require("../helpers/smtpConfig");
-const domain = "polar-brushlands-34281.herokuapp.com"
+const domain = "strictlysocial.herokuapp.com"
 const pusher = new Pusher({
   appId: "1194970",
   key: "7dc61c61506f7d658f25",

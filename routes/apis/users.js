@@ -85,13 +85,16 @@ router.post(
         email,
         avatar,
         password,
-        following: ["608438c33383641df099002a"],
+        following: ["608438c33383641df099002a"] // strictlysocial id
       });
+      
 
       const salt = await bcrypt.genSaltSync(10);
       user.password = await bcrypt.hash(password, salt);
 
       await user.save();
+
+      await User.findOneAndUpdate({_id: "608438c33383641df099002a"}, { "$push": { "followers": user.id }});
 
       const payload = {
         user: {
@@ -129,13 +132,21 @@ router.post(
 // most followed people
 router.get("/popular", auth, async (req, res) => {
   try {
-    await User.find()
-      .sort({ followers: -1 })
-      .limit(5)
-      .exec((err, result) => {
-        if (err) return res.status(500).send("Server error");
-        res.json(result);
-      });
+    // await User.find()
+    //   .sort({ followers: -1 })
+    //   .limit(5)
+    //   .exec((err, result) => {
+    //     if (err) return res.status(500).send("Server error");
+    //     res.json(result);
+    //   });
+
+    User.aggregate([
+      { $project: {name:1, _id:1, email:1, imageData: 1, imageName:1, avatar: 1, followers: 1, following:1, followersCount: {$size: "$followers"}}},
+      { $sort: { followersCount: -1 } },
+    ]).limit(5).exec((err, result) => {
+      if (err) return res.status(500).send("Server error");
+      res.json(result);
+    });
   } catch (error) {
     console.log(error.message);
     res.status(500).send("Server error");
@@ -167,7 +178,6 @@ router.post(
     }
     try {
       const user = await User.findOne({ email: req.body.email });
-      console.log(user);
       if (!user) {
         return res
           .status(400)
@@ -205,13 +215,14 @@ router.post(
 router.get("/:id", auth, async (req, res) => {
   try {
     let user;
-    if (ObjectId.isValid(req.params.id)) {
+    let id = req.params.id;
+    if (id.match(/^[0-9a-fA-F]{24}$/)) {
       user = await User.findById(req.params.id)
         .populate("following", "-password")
         .populate("followers", "-password")
         .select("-password");
     } else {
-      user = await User.findOne({ email: { $regex: req.params.id + ".*" } })
+      user = await User.findOne({ email: { $regex: req.params.id + "@.*" } })
         .populate("following", "-password")
         .populate("followers", "-password")
         .select("-password");

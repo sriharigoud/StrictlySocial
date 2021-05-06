@@ -46,7 +46,6 @@ async function insertHashTags(text) {
   if (hashTags && hashTags.length > 0) {
     try {
       hashTags.forEach(async (val) => {
-        console.log(val);
         HashTag.findOneAndUpdate(
           { name: val },
           { $inc: { count: 1 } },
@@ -191,7 +190,8 @@ router.get("/search/:searchQuery/:page/:limit", auth, async (req, res) => {
         { text: { $regex: new RegExp(req.params.searchQuery), $options: "i" } },
         { name: { $regex: new RegExp(req.params.searchQuery), $options: "i" } },
       ],
-    }).sort({ _id: -1 })
+    })
+      .sort({ _id: -1 })
       .populate("owner", "name email")
       .populate({ path: "user", select: postColumns })
       .populate({ path: "comments.user", select: postColumns })
@@ -304,16 +304,24 @@ router.get("/:page/:limit", auth, async (req, res) => {
 // get most liked posts
 router.get("/popular", auth, async (req, res) => {
   try {
-    await Post.find()
-      // .where("text")
-      // .ne("")
-      .populate("owner", "name email")
-      .sort({ likes: -1 })
-      .limit(5)
-      .exec(function (err, result) {
-        if (err) return res.status(500).send("Server error");
-        res.json(result);
-      });
+    // await Post.find()
+    //   // .where("text")
+    //   // .ne("")
+    //   .populate("owner", "name email")
+    //   .sort({ likes: -1 })
+    //   .limit(5)
+    //   .exec(function (err, result) {
+    //     if (err) return res.status(500).send("Server error");
+    //     res.json(result);
+    //   });
+    Post.aggregate([
+      { $project: { text: 1, imageData: 1, imageName:1, _id:1,  likesCount: { $size: "$likes" } } },
+      { $sort: { likesCount: -1 } },
+      // { $lookup: {from: 'users', localField: 'user', foreignField: '_id', as: 'owner'} }
+    ]).limit(5).exec(function (err, result) {
+      if (err) return res.status(500).send(err);
+      res.json(result);
+    });
   } catch (error) {
     console.log(error.message);
     res.status(500).send("Server error");
