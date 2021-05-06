@@ -153,7 +153,7 @@ function Profile({ posts, setAllPosts }) {
                 <span>
                   <i className="fa fa-user" /> Followers (
                   {userInfo.followers && userInfo.followers.length
-                    ? userInfo.following.length
+                    ? userInfo.followers.length
                     : 0}
                   )
                 </span>
