@@ -20,6 +20,7 @@ import axios from "axios";
 import { doLogout } from "./utils/utils";
 import Notifications from "./components/Notifications";
 import {connect} from 'react-redux';
+import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 import {
   NotificationContainer,

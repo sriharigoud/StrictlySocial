@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from "react";
+
 import { doLogout } from "../utils/utils";
-import { Image, Transformation } from "cloudinary-react";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { getUser } from "../utils/utils";
 import { NavDropdown } from "react-bootstrap";
 import ProfileLink from "./ProfileLink";
 import DynamicImg from "./DynamicImg";
+import axios from "axios";
+import { Typeahead, withAsync } from "react-bootstrap-typeahead";
+const AsyncTypeahead = withAsync(Typeahead);
 
 export default function Navigation({ notifications }) {
   const [userInfo, setUserInfo] = useState(null);
   const [searchQuery, setsearchQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [options, setOptions] = useState([]);
+  const filterBy = () => true;
   let history = useHistory();
   const { key } = useLocation();
   useEffect(() => {
@@ -26,6 +32,17 @@ export default function Navigation({ notifications }) {
       history.push("/search/" + searchQuery);
     }
   };
+  const handleSearch = async (query) => {
+    setIsLoading(true);
+    try {
+      setsearchQuery(query)
+      let response = await axios.get(`/api/users/search/${query}`);
+      setOptions(response.data);
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   return (
     <div className="mb-0 w-100">
       <nav className="navbar navbar-light">
@@ -34,15 +51,42 @@ export default function Navigation({ notifications }) {
         </Link>
         {userInfo && userInfo.name && (
           <React.Fragment>
-            <form onSubmit={(e) => handleFormSubmit(e)} className="form-inline">
+            <form onSubmit={(e) => handleFormSubmit(e)} className="form-inline AsyncTypeahead">
               <div className="input-group">
-                <input
+                {/* <input
                   type="text"
                   placeholder="Search StrictlySocial"
                   className="form-control"
                   aria-label="Recipient's username"
                   onChange={(e) => setsearchQuery(e.target.value)}
                   aria-describedby="button-addon2"
+                /> */}
+                <AsyncTypeahead
+                  filterBy={filterBy}
+                  id="async-example"
+                  // className="form-control"
+                  isLoading={isLoading}
+                  searchText="Searching..."
+                  labelKey="name"
+                  minLength={3}
+                  onSearch={handleSearch}
+                  options={options}
+                  value={searchQuery}
+                  onChange={(selected) => selected[0] && history.push("/profile/" + selected[0]._id)}
+                  // onInputChange={(text) => setsearchQuery(text)}
+                  placeholder="Search StrictlySocial"
+                  renderMenuItemChildren={(option, props) => (
+                    <React.Fragment>
+                      <DynamicImg
+                        CSSClassName="rounded-circle mr-2"
+                        imageName={option.imageName}
+                        width="30"
+                        height="30"
+                        avatar={option.avatar}
+                      />
+                      {option.name}
+                    </React.Fragment>
+                  )}
                 />
                 <div className="input-group-append">
                   <button
