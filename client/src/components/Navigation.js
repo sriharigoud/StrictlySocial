@@ -70,7 +70,7 @@ export default function Navigation({ notifications }) {
                   onSearch={handleSearch}
                   options={options}
                   value={searchQuery}
-                  onKeyDown={(e) => e.keyCode === 13 && handleFormSubmit(e)}
+                  onKeyDown={(e) => e.target.value !== '' && e.keyCode === 13 && handleFormSubmit(e)}
                   onChange={(selected) => selected[0] && history.push("/profile/" + selected[0]._id)}
                   // onInputChange={(text) => setsearchQuery(text)}
                   placeholder="Search StrictlySocial"
