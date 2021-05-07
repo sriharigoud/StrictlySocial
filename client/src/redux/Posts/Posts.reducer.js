@@ -1,4 +1,4 @@
-import { ADDPOST, ALLPOSTS, LIKE, DELETE, DELETECOMMENT, SHARE, ADDCOMMENT, RESETPOSTS } from "./Posts.types";
+import { ADDPOST, ALLPOSTS, LIKE, DELETE, DELETECOMMENT, SHARE, ADDCOMMENT, SETPOST } from "./Posts.types";
 import { LOCATION_CHANGE } from 'react-router-redux';
 
 const INITIAL_STATE = {
@@ -50,6 +50,13 @@ function postsReducer(state = INITIAL_STATE, action) {
       return {
         ...state,
         posts: state.posts.map((a) => a._id === action.payload.post._id ? { ...a, likes: action.payload.likes } : { ...a }
+      ),
+    };
+
+    case SETPOST:
+      return {
+        ...state,
+        posts: state.posts.map((a) => a._id === action.payload.post._id ? {...action.payload.post} : { ...a }
       ),
     };
 

@@ -1,8 +1,6 @@
 const express = require("express");
 const request = require("request");
-const fs = require("fs");
 const cheerio = require("cheerio");
-const path = require("path");
 const router = express.Router();
 const { check, validationResult } = require("express-validator");
 const auth = require("../../middleware/auth");

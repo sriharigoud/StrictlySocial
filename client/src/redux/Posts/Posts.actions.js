@@ -1,4 +1,4 @@
-import { ADDPOST, ALLPOSTS, LIKE, DELETE, DELETECOMMENT, SHARE, ADDCOMMENT, RESETPOSTS } from "./Posts.types";
+import { ADDPOST, ALLPOSTS, LIKE, DELETE, DELETECOMMENT, SHARE, ADDCOMMENT, SETPOST } from "./Posts.types";
 
 export const createPost = (payload) => {
   return {
@@ -49,9 +49,9 @@ export const setAllPosts = (payload) => {
   };
 };
 
-export const resetAll = (payload) => {
+export const setPost = (payload) => {
   return {
-    type: RESETPOSTS,
+    type: SETPOST,
     payload: payload
   };
 };

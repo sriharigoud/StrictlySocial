@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Pusher from "pusher-js";
-import { BrowserRouter as Router, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Switch, useLocation } from "react-router-dom";
 import "./App.css";
 import Home from "./components/Home";
 import Search from "./components/Search";
@@ -29,6 +29,7 @@ import {
 import "react-notifications/lib/notifications.css";
 import { AddNotification, setAll } from "./redux/Notifications/Notifications.actions";
 import ScrollToTop from "./components/ScrollToTop";
+import { createPost, deletePost, setPost } from "./redux/Posts/Posts.actions";
 Pusher.logToConsole = true;
 
 var pusher = new Pusher("7dc61c61506f7d658f25", {
@@ -36,6 +37,7 @@ var pusher = new Pusher("7dc61c61506f7d658f25", {
 });
 
 var channel = pusher.subscribe("notifications");
+var postChannel = pusher.subscribe("posts");
 const history = createBrowserHistory();
 
 axios.interceptors.response.use(
@@ -51,9 +53,9 @@ axios.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-function App({AddNotification}) {
+function App({AddNotification, setPost, adeletePost, createPost}) {
   let [notifications, setNotifications] = useState([]);
-  
+
   useEffect(() => {
     channel.bind("inserted", function (data) {
       const currentUser = JSON.parse(localStorage.getItem("user"));
@@ -103,9 +105,28 @@ function App({AddNotification}) {
         }
       }
     });
+
+    postChannel.bind("updated", function (data) {
+      setPost(data)
+    });
+
+    postChannel.bind("deleted", function (post) {
+      adeletePost({ post })
+    });
+
+    postChannel.bind("inserted", function (post) {
+      const pathname = window.location.pathname;
+      const currentUser = JSON.parse(localStorage.getItem("user"));
+      if(pathname.includes("profile") && pathname.replace("/profile/", "") !== currentUser.email.split("@")[0]){
+        createPost(post)
+      } else if(pathname.includes("home") && currentUser.following.includes(post.user._id)){
+        createPost(post)
+      }
+    });
     
     return () => {
       channel.unbind();
+      postChannel.unbind();
     };
   });
   return (
@@ -156,6 +177,9 @@ const mapDispatchToProps = dispatch => {
   return {
     AddNotification: (data) => dispatch(AddNotification(data)),
     setAll: () => dispatch(setAll()),
+    setPost: (post) => dispatch(setPost({ post })),
+    adeletePost: (payload) => dispatch(deletePost(payload)),
+    createPost: (payload) => dispatch(createPost(payload)),
   }
 }
 
