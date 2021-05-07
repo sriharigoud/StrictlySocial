@@ -33,12 +33,10 @@ export default function Navigation({ notifications }) {
     }
   };
   const handleSearch = async (query) => {
-    setIsLoading(true);
     try {
       setsearchQuery(query)
       let response = await axios.get(`/api/users/search/${query}`);
       setOptions(response.data);
-      setIsLoading(false);
     } catch (error) {
       console.log(error.message);
     }
@@ -72,6 +70,7 @@ export default function Navigation({ notifications }) {
                   onSearch={handleSearch}
                   options={options}
                   value={searchQuery}
+                  onKeyDown={(e) => e.keyCode === 13 && handleFormSubmit(e)}
                   onChange={(selected) => selected[0] && history.push("/profile/" + selected[0]._id)}
                   // onInputChange={(text) => setsearchQuery(text)}
                   placeholder="Search StrictlySocial"
