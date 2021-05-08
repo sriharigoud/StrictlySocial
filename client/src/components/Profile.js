@@ -183,18 +183,18 @@ function Profile({ posts, setAllPosts }) {
               }
             >
               <SRLWrapper>
-                <div className="row px-3">
+                <div className="row px-3 pt-2">
                   {posts &&
                     posts
                       .filter((post) => post.imageName !== "none")
                       .map((post) => (
                         <div
                           key={post._id}
-                          className="col-lg-3 col-md-4 col-xs-6 m-0 p-0 thumb"
+                          className="col-lg-3 col-md-5 col-xs-12 my-1 mx-1 p-0 thumb"
                         >
                           <a href={post.imageData} className="thumbnail">
                             <Image
-                              className="img-thumbnail"
+                              className="img-thumbnail w-100 m-0 mx-2"
                               responsive
                               cloudName={"strictlysocial"}
                               publicId={post.imageName}
