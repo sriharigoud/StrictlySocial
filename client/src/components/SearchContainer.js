@@ -5,13 +5,14 @@ import SideBar from "./SideBar";
 import { getUser } from "../utils/utils";
 import setAuthToken from "../utils/setAuthToken";
 import { useLocation } from "react-router";
-import { Tabs, Tab } from "react-bootstrap";
+import { Tabs, Tab, CardDeck, Card } from "react-bootstrap";
 import UserBox from "./UserBox";
 import BasicInfo from "./BasicInfo";
 import PostList from "./PostList";
 import { setAllPosts } from "../redux/Posts/Posts.actions";
 import { connect } from "react-redux";
 import InfiniteScroll from "react-infinite-scroll-component";
+import Imgur from "./Imgur";
 
 function SearchContainer({ searchKey, showPeople, setAllPosts, posts }) {
   let [currentUser, setCurrentUser] = useState(getUser());
@@ -25,15 +26,15 @@ function SearchContainer({ searchKey, showPeople, setAllPosts, posts }) {
     fetchPosts();
   };
   async function fetchPosts() {
-    if(page === 1){
+    if (page === 1) {
       posts = [];
     }
-    console.log(sKey, searchKey)
-    if(sKey && sKey !== searchKey){
+    console.log(sKey, searchKey);
+    if (sKey && sKey !== searchKey) {
       posts = [];
       page = 1;
       setPage(page + 1);
-    } 
+    }
     if (currentUser.token) {
       setAuthToken(currentUser.token);
     }
@@ -44,7 +45,7 @@ function SearchContainer({ searchKey, showPeople, setAllPosts, posts }) {
     }
   }
   useEffect(() => {
-    setsKey(searchKey)
+    setsKey(searchKey);
     if (currentUser.token) {
       setAuthToken(currentUser.token);
     }
@@ -56,10 +57,10 @@ function SearchContainer({ searchKey, showPeople, setAllPosts, posts }) {
         console.log(error.message);
       }
     }
-    setAllPosts([])
+    setAllPosts([]);
     setPage(page + 1);
     searchUsers();
-    fetchPosts()
+    fetchPosts();
   }, [key, getUser]);
   return (
     <div className="container-fluid mt-0 pt-2 gedf-wrapper border border-top-0 h-100">
@@ -80,7 +81,7 @@ function SearchContainer({ searchKey, showPeople, setAllPosts, posts }) {
             id="noanim-tab-example"
           >
             <Tab eventKey="posts" title="Posts" className="pt-1">
-            <InfiniteScroll
+              <InfiniteScroll
                 endMessage={
                   <p style={{ textAlign: "center" }}>
                     <b>Yay! You have seen it all</b>
@@ -99,7 +100,7 @@ function SearchContainer({ searchKey, showPeople, setAllPosts, posts }) {
                   </h4>
                 }
               >
-              <PostList />
+                <PostList />
               </InfiniteScroll>
             </Tab>
 
@@ -117,6 +118,12 @@ function SearchContainer({ searchKey, showPeople, setAllPosts, posts }) {
                 {!users.length && <h6>No People Found</h6>}
               </Tab>
             )}
+
+            {/* {searchKey === "entertainment" && (
+              <Tab eventKey="imgur" title="Funny Images" className="pt-2">
+                <Imgur />
+              </Tab>
+            )} */}
           </Tabs>
         </div>
         <div className="col-md-3">

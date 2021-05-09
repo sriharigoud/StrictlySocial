@@ -13,6 +13,23 @@ const Notification = require("../../models/Notification");
 const HashTag = require("../../models/HashTag");
 const postColumns = "name email avatar imageData imageName";
 
+router.get("/imgur/:page",  async (req, res) => {
+  var options = {
+    method: "GET",
+    url: `https://api.imgur.com/3/gallery/t/funny/viral/${req.params.page}/?showViral=true&mature=false&perPage=4&page=${req.params.page}`,
+    headers: {
+      Authorization: "Client-ID 93db57018469bdc",
+    },
+  };
+  request(options, function (error, response) {
+    if (error) res.status(500).send("Server error");
+
+    const items = JSON.parse(response.body).data.items;
+    const images = items.map(item => item.images && item.images[0] && Object.assign({}, {type: item.images[0].type, link: item.images[0].link, id: item.images[0].id}));
+    res.json(images);
+  });
+});
+
 async function insertTags(text) {
   const tags = text.match(/@[0-9a-z](\.?[0-9a-z])*/gi);
 
@@ -313,13 +330,23 @@ router.get("/popular", auth, async (req, res) => {
     //     res.json(result);
     //   });
     Post.aggregate([
-      { $project: { text: 1, imageData: 1, imageName:1, _id:1,  likesCount: { $size: "$likes" } } },
+      {
+        $project: {
+          text: 1,
+          imageData: 1,
+          imageName: 1,
+          _id: 1,
+          likesCount: { $size: "$likes" },
+        },
+      },
       { $sort: { likesCount: -1 } },
       // { $lookup: {from: 'users', localField: 'user', foreignField: '_id', as: 'owner'} }
-    ]).limit(5).exec(function (err, result) {
-      if (err) return res.status(500).send(err);
-      res.json(result);
-    });
+    ])
+      .limit(5)
+      .exec(function (err, result) {
+        if (err) return res.status(500).send(err);
+        res.json(result);
+      });
   } catch (error) {
     console.log(error.message);
     res.status(500).send("Server error");

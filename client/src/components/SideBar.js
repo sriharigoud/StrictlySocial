@@ -1,6 +1,5 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { Image, Transformation } from "cloudinary-react";
 import { useLocation } from "react-router";
 import { Link } from "react-router-dom";
 import setAuthToken from "../utils/setAuthToken";

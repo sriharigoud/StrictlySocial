@@ -88,7 +88,7 @@ export default function Post({
         )}
         <div className="d-flex justify-content-between align-items-center">
           <div className="d-flex justify-content-between align-items-center">
-            <div className="mr-2">
+            <div className="mr-0">
               <DynamicImg
                 imageName={post.user.imageName}
                 CSSClassName="rounded-circle mr-2"
@@ -114,6 +114,7 @@ export default function Post({
                   </span>
                 )}
               </div>
+              <p className="text-muted m-0 p-0">{"@"+post.user.email.split("@")[0]}</p>
             </div>
           </div>
           <div></div>

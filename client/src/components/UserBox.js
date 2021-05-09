@@ -1,7 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import axios from "axios";
-import { Image, Transformation } from "cloudinary-react";
 import { doLogin } from "../utils/utils";
 import ProfileLink from "./ProfileLink";
 import DynamicImg from "./DynamicImg";

@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { doLogin } from "../utils/utils";
 import axios from "axios";
 import { Modal, Button, Form } from "react-bootstrap";
-import { Image, Transformation } from "cloudinary-react";
-import { Link } from "react-router-dom";
 import Explore from "./Explore";
 import ProfileLink from "./ProfileLink";
 import DynamicImg from "./DynamicImg";
